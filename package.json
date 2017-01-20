@@ -1,0 +1,19 @@
+{
+  "name": "rubiks-cube-solver",
+  "version": "0.1.0",
+  "description": "Outputs a solution using the Fridrich Method for a given cube state.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rubiks",
+    "cube",
+    "solve",
+    "solver",
+    "algorithm",
+    "fridrich"
+  ],
+  "author": "Scott McKenzie",
+  "license": "ISC"
+}
