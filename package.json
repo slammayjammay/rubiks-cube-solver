@@ -15,5 +15,8 @@
     "fridrich"
   ],
   "author": "Scott McKenzie",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "gl-vec3": "^1.0.3"
+  }
 }

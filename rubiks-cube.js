@@ -24,6 +24,15 @@ class RubiksCube {
    * See this example: http://2.bp.blogspot.com/_XQ7FznWBAYE/S9Sbric1KNI/AAAAAAAAAFs/wGAb_LcSOwo/s1600/rubik.png
    */
    constructor(cubeState) {
+     this._notationToRotation = {
+       F: { axis: 'z', mag: -1 },
+       R: { axis: 'x', mag: -1 },
+       U: { axis: 'y', mag: -1 },
+       D: { axis: 'y', mag: 1 },
+       L: { axis: 'x', mag: 1 },
+       B: { axis: 'z', mag: 1 },
+     }
+
      this._build(cubeState)
    }
 
@@ -107,7 +116,7 @@ class RubiksCube {
    _colorFace(face, colors) {
      let cubiesToColor = this.getFace(face)
      for (let i = 0; i < colors.length; i++) {
-       cubiesToColor[i].addColor(colors[i])
+       cubiesToColor[i].setColor(face, colors[i])
      }
    }
 
@@ -169,6 +178,45 @@ class RubiksCube {
          return cubie
        }
      }
+   }
+
+   /**
+    * Gets the rotation axis and magnitude of rotation based on notation.
+    * Then finds all cubes on the correct face, and rotates them around the
+    * rotation axis.
+    * @param {string} notation - The move notation.
+    */
+   move(notation) {
+     let move = notation[0]
+     let axis = this._notationToRotation[move].axis
+     let mag = this._notationToRotation[move].mag * Math.PI / 2
+
+     if (!axis || !mag) {
+       throw new Error(`Could not find axis or mag for move "${notation}"`)
+     }
+
+     if (notation.includes('Prime')) {
+       mag *= -1
+     }
+
+     let cubesToRotate = this.getFace(move)
+     for (let cubie of cubesToRotate) {
+       cubie.rotate(axis, mag)
+     }
+   }
+
+   toString() {
+     let cubeState = ''
+
+     let faces = ['FRONT', 'RIGHT', 'UP', 'DOWN', 'LEFT', 'BACK']
+     for (let face of faces) {
+       let cubies = this.getFace(face)
+       for (let cubie of cubies) {
+         cubeState += cubie.getColorOfFace(face)
+       }
+     }
+
+     return cubeState
    }
 }
 
