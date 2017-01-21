@@ -186,22 +186,24 @@ class RubiksCube {
     * rotation axis.
     * @param {string} notation - The move notation.
     */
-   move(notation) {
-     let move = notation[0]
-     let axis = this._notationToRotation[move].axis
-     let mag = this._notationToRotation[move].mag * Math.PI / 2
+   move(notations) {
+     for (let notation of notations.split(' ')) {
+       let move = notation[0]
+       let axis = this._notationToRotation[move].axis
+       let mag = this._notationToRotation[move].mag * Math.PI / 2
 
-     if (!axis || !mag) {
-       throw new Error(`Could not find axis or mag for move "${notation}"`)
-     }
+       if (!axis || !mag) {
+         throw new Error(`Could not find axis or mag for move "${notation}"`)
+       }
 
-     if (notation.includes('Prime')) {
-       mag *= -1
-     }
+       if (notation.includes('Prime')) {
+         mag *= -1
+       }
 
-     let cubesToRotate = this.getFace(move)
-     for (let cubie of cubesToRotate) {
-       cubie.rotate(axis, mag)
+       let cubesToRotate = this.getFace(move)
+       for (let cubie of cubesToRotate) {
+         cubie.rotate(axis, mag)
+       }
      }
    }
 
