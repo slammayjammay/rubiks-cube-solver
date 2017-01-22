@@ -7,7 +7,7 @@ class Cubie {
    * @param {array} pos - The coordinates of this cubie's position.
    */
   constructor(pos) {
-    this.setPosition(pos)
+    this._setPosition(pos)
 
     this._normalToColor = {}
     this._faceToNormal = {
@@ -55,10 +55,10 @@ class Cubie {
     let newPos = rotationFn(out, this.pos, origin, mag).map(value => {
       return Math.round(value)
     })
-    let newColors = this.getNewColors(axis, newPos)
+    let newColors = this._getNewColors(axis, newPos)
 
-    this.setPosition(newPos)
-    this.setColors(newColors)
+    this._setPosition(newPos)
+    this._setColors(newColors)
   }
 
   /**
@@ -72,7 +72,7 @@ class Cubie {
    * @param {array} newPos - The new position vector.
    * @return {object} - The new normal-color map.
    */
-  getNewColors(axis, newPos) {
+  _getNewColors(axis, newPos) {
     let ret = {}
 
     // get the current and updated array of normals, sorted as 'x', 'y', 'z'
@@ -108,14 +108,14 @@ class Cubie {
     return ret
   }
 
-  setPosition(newPos) {
+  _setPosition(newPos) {
     this.pos = newPos
     this.x = newPos[0]
     this.y = newPos[1]
     this.z = newPos[2]
   }
 
-  setColors(newColors) {
+  _setColors(newColors) {
     this._normalToColor = newColors
   }
 
@@ -161,12 +161,6 @@ class Cubie {
     }
 
     return normals
-
-    // return [
-    //   `${pos[0]} 0 0`,
-    //   `0 ${pos[1]} 0`,
-    //   `0 0 ${pos[2]}`
-    // ]
   }
 
   /**
