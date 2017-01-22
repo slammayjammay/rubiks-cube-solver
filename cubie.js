@@ -29,6 +29,9 @@ class Cubie {
     this._normalToColor[normal] = color
   }
 
+  /**
+   * @return {string}
+   */
   getColorOfFace(face) {
     let normal = this._faceToNormal[face]
     return this._normalToColor[normal]
