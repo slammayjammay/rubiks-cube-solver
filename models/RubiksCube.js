@@ -119,7 +119,7 @@ class RubiksCube {
    _colorFace(face, colors) {
      let cubiesToColor = this.getFace(face)
      for (let i = 0; i < colors.length; i++) {
-       cubiesToColor[i].setColor(face, colors[i])
+       cubiesToColor[i].colorFace(face, colors[i])
      }
    }
 
@@ -253,13 +253,6 @@ class RubiksCube {
      }
 
      return cubeState
-   }
-
-   /**
-    * @see utils/relative-faces.js
-    */
-   _getAdjacentFaceDirection(fromFace, toFace, orientation) {
-     return utils.getAdjacentFaceDirection(fromFace, toFace, orientation)
    }
 }
 
