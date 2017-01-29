@@ -1,10 +1,12 @@
-const Cubie = require('./cubie')
+const utils = require('../utils/relative-faces')
+const Cubie = require('./Cubie')
+const Vector = require('./Vector')
 
 class RubiksCube {
   /**
    * @param {string} cubeState - The string representing the Rubik's Cube.
    *
-   * The cube state shall be represented as:
+   * The cube state are represented as:
    * 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB'
    *
    * where:
@@ -84,6 +86,7 @@ class RubiksCube {
        LEFT: [],
        BACK: []
      }
+
      let currentFace
 
      for (let i = 0; i < cubeState.length; i++) {
@@ -123,6 +126,7 @@ class RubiksCube {
    /**
     * Grab all the cubes on a given face, and return them in order from top left
     * to bottom right.
+    * @param {string} face - The face to grab.
     * @return {array}
     */
    getFace(face) {
@@ -138,33 +142,39 @@ class RubiksCube {
 
      // grab correct cubies
      if (['F', 'FRONT'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['y', 'x', -1, 1]
-       cubies = this._cubies.filter(cubie => cubie.z === 1)
+       [row, col, rowOrder, colOrder] = ['Y', 'X', -1, 1]
+       cubies = this._cubies.filter(cubie => cubie.getZ() === 1)
      } else if (['R', 'RIGHT'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['y', 'z', -1, -1]
-       cubies = this._cubies.filter(cubie => cubie.x === 1)
+       [row, col, rowOrder, colOrder] = ['Y', 'Z', -1, -1]
+       cubies = this._cubies.filter(cubie => cubie.getX() === 1)
      } else if (['U', 'UP'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['z', 'x', 1, 1]
-       cubies = this._cubies.filter(cubie => cubie.y === 1)
+       [row, col, rowOrder, colOrder] = ['Z', 'X', 1, 1]
+       cubies = this._cubies.filter(cubie => cubie.getY() === 1)
      } else if (['D', 'DOWN'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['z', 'x', -1, 1]
-       cubies = this._cubies.filter(cubie => cubie.y === -1)
+       [row, col, rowOrder, colOrder] = ['Z', 'X', -1, 1]
+       cubies = this._cubies.filter(cubie => cubie.getY() === -1)
      } else if (['L', 'LEFT'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['y', 'z', -1, 1]
-       cubies = this._cubies.filter(cubie => cubie.x === -1)
+       [row, col, rowOrder, colOrder] = ['Y', 'Z', -1, 1]
+       cubies = this._cubies.filter(cubie => cubie.getX() === -1)
      } else if (['B', 'BACK'].includes(face)) {
-       [row, col, rowOrder, colOrder] = ['y', 'x', -1, -1]
-       cubies = this._cubies.filter(cubie => cubie.z === -1)
+       [row, col, rowOrder, colOrder] = ['Y', 'X', -1, -1]
+       cubies = this._cubies.filter(cubie => cubie.getZ() === -1)
      }
 
      // order cubies from top left to bottom right
      return cubies.sort((first, second) => {
-       if (first[row] * rowOrder < second[row] * rowOrder) {
+       let firstCubieRow = first[`get${row}`]() * rowOrder
+       let firstCubieCol = first[`get${col}`]() * colOrder
+
+       let secondCubieRow = second[`get${row}`]() * rowOrder
+       let secondCubieCol = second[`get${col}`]() * colOrder
+
+       if (firstCubieRow < secondCubieRow) {
          return -1
-       } else if (first[row] * rowOrder > second[row] * rowOrder) {
+       } else if (firstCubieRow > secondCubieRow) {
          return 1
        } else {
-         return first[col] * colOrder < second[col] * colOrder ? -1 : 1
+         return firstCubieCol < secondCubieCol ? -1 : 1
        }
      })
    }
@@ -174,10 +184,34 @@ class RubiksCube {
     */
    getCubieAtPosition(pos) {
      for (let cubie of this._cubies) {
-       if (cubie.positionEquals(pos)) {
+      if (Vector.areEqual(cubie.position(), pos)) {
          return cubie
        }
      }
+   }
+
+   /**
+    * Finds and returns all cubies with three colors.
+    * @return {array}
+    */
+   corners() {
+     return this._cubies.filter(cubie => cubie.isCorner())
+   }
+
+   /**
+    * Finds and returns all cubies with two colors.
+    * @return {array}
+    */
+   edges() {
+     return this._cubies.filter(cubie => cubie.isEdge())
+   }
+
+   /**
+    * Finds and returns all cubies with one color.
+    * @return {array}
+    */
+   middles() {
+     return this._cubies.filter(cubie => cubie.isMiddle())
    }
 
    /**
@@ -219,6 +253,13 @@ class RubiksCube {
      }
 
      return cubeState
+   }
+
+   /**
+    * @see utils/relative-faces.js
+    */
+   _getAdjacentFaceDirection(fromFace, toFace, orientation) {
+     return utils.getAdjacentFaceDirection(fromFace, toFace, orientation)
    }
 }
 
