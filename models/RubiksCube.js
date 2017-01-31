@@ -39,91 +39,6 @@ class RubiksCube {
    }
 
    /**
-    * Create a "virtual" cube, with individual "cubies" having a 3D coordinate
-    * position and 1 or more colors attached to them.
-    */
-   _build(cubeState) {
-     this._cubies = []
-     this._populateCube()
-
-     let parsedColors = this._parseColors(cubeState)
-
-     for (let face of Object.keys(parsedColors)) {
-       let colors = parsedColors[face]
-       this._colorFace(face, colors)
-     }
-   }
-
-   /**
-    * Populates the "virtual" cube with 26 "empty" cubies by their position.
-    * @return {null}
-    */
-   _populateCube() {
-     for (let x = -1; x <= 1; x++) {
-       for (let y = -1; y <= 1; y++) {
-         for (let z = -1; z <= 1; z++) {
-           // no cubie in the center of the rubik's cube
-           if (x === 0 && y === 0 && z === 0) {
-             continue
-           }
-
-           let cubie = new Cubie([x, y, z])
-           this._cubies.push(cubie)
-         }
-       }
-     }
-   }
-
-   /**
-    * @return {object} - A map with faces for keys and colors for values
-    */
-   _parseColors(cubeState) {
-     let faceColors = {
-       FRONT: [],
-       RIGHT: [],
-       UP: [],
-       DOWN: [],
-       LEFT: [],
-       BACK: []
-     }
-
-     let currentFace
-
-     for (let i = 0; i < cubeState.length; i++) {
-       let color = cubeState[i]
-
-       if (i < 9) {
-         currentFace = 'FRONT'
-       } else if (i < 9 * 2) {
-         currentFace = 'RIGHT'
-       } else if (i < 9 * 3) {
-         currentFace = 'UP'
-       } else if (i < 9 * 4) {
-         currentFace = 'DOWN'
-       } else if (i < 9 * 5) {
-         currentFace = 'LEFT'
-       } else {
-         currentFace = 'BACK'
-       }
-
-       faceColors[currentFace].push(color)
-     }
-
-     return faceColors
-   }
-
-   /**
-    * @param {array} face - An array of the cubies on the given face.
-    * @param {array} colors - An array of the colors on the given face.
-    */
-   _colorFace(face, colors) {
-     let cubiesToColor = this.getFace(face)
-     for (let i = 0; i < colors.length; i++) {
-       cubiesToColor[i].colorFace(face, colors[i])
-     }
-   }
-
-   /**
     * Grab all the cubes on a given face, and return them in order from top left
     * to bottom right.
     * @param {string} face - The face to grab.
@@ -241,6 +156,9 @@ class RubiksCube {
      }
    }
 
+   /**
+    * @return {string}
+    */
    toString() {
      let cubeState = ''
 
@@ -253,6 +171,91 @@ class RubiksCube {
      }
 
      return cubeState
+   }
+
+   /**
+    * Create a "virtual" cube, with individual "cubies" having a 3D coordinate
+    * position and 1 or more colors attached to them.
+    */
+   _build(cubeState) {
+     this._cubies = []
+     this._populateCube()
+
+     let parsedColors = this._parseColors(cubeState)
+
+     for (let face of Object.keys(parsedColors)) {
+       let colors = parsedColors[face]
+       this._colorFace(face, colors)
+     }
+   }
+
+   /**
+    * Populates the "virtual" cube with 26 "empty" cubies by their position.
+    * @return {null}
+    */
+   _populateCube() {
+     for (let x = -1; x <= 1; x++) {
+       for (let y = -1; y <= 1; y++) {
+         for (let z = -1; z <= 1; z++) {
+           // no cubie in the center of the rubik's cube
+           if (x === 0 && y === 0 && z === 0) {
+             continue
+           }
+
+           let cubie = new Cubie([x, y, z])
+           this._cubies.push(cubie)
+         }
+       }
+     }
+   }
+
+   /**
+    * @return {object} - A map with faces for keys and colors for values
+    */
+   _parseColors(cubeState) {
+     let faceColors = {
+       FRONT: [],
+       RIGHT: [],
+       UP: [],
+       DOWN: [],
+       LEFT: [],
+       BACK: []
+     }
+
+     let currentFace
+
+     for (let i = 0; i < cubeState.length; i++) {
+       let color = cubeState[i]
+
+       if (i < 9) {
+         currentFace = 'FRONT'
+       } else if (i < 9 * 2) {
+         currentFace = 'RIGHT'
+       } else if (i < 9 * 3) {
+         currentFace = 'UP'
+       } else if (i < 9 * 4) {
+         currentFace = 'DOWN'
+       } else if (i < 9 * 5) {
+         currentFace = 'LEFT'
+       } else {
+         currentFace = 'BACK'
+       }
+
+       faceColors[currentFace].push(color)
+     }
+
+     return faceColors
+   }
+
+   /**
+    * @param {array} face - An array of the cubies on the given face.
+    * @param {array} colors - An array of the colors on the given face.
+    */
+   _colorFace(face, colors) {
+     let cubiesToColor = this.getFace(face)
+     for (let i = 0; i < colors.length; i++) {
+       cubiesToColor[i].colorFace(face, colors[i])
+     }
    }
 }
 
