@@ -1,13 +1,13 @@
-const Solver = require('./')
+// const Solver = require('./')
+const RubiksCube = require('./models/RubiksCube')
 const Face = require('./models/Face')
 const Vector = require('./models/Vector')
-const getAdjacentFaceDirection = require('./utils/relative-faces').getAdjacentFaceDirection
+const utils = require('./utils')
 
 const SOLVED_STATE = 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB'
 
 class Tester {
   constructor() {
-
     this.states = {
       R:      'FFDFFDFFDRRRRRRRRRUUFUUFUUFDDBDDBDDBLLLLLLLLLUBBUBBUBB',
       RPrime: 'FFUFFUFFURRRRRRRRRUUBUUBUUBDDFDDFDDFLLLLLLLLLDBBDBBDBB',
@@ -31,9 +31,9 @@ class Tester {
   }
 
   testMove(notation) {
-    this.solver = new Solver(SOLVED_STATE)
-    this.solver.cube.move(notation)
-    let success = this.solver.cube.toString() === this.states[notation]
+    let rubiksCube = new RubiksCube(SOLVED_STATE)
+    rubiksCube.move(notation)
+    let success = rubiksCube.toString() === this.states[notation]
 
     if (success) {
       console.log(`Move ${notation} was successful.`)
@@ -41,7 +41,7 @@ class Tester {
       console.log(`Expected: `)
       console.log(this.states[notation])
       console.log(`Received: `)
-      console.log(this.solver.cube.toString())
+      console.log(rubiksCube.toString())
     }
   }
 
@@ -84,14 +84,44 @@ class Tester {
     ]
 
     for (let test of tests) {
-      let result = getAdjacentFaceDirection(test.from, test.to, { [test.orientation.to]: test.orientation.from })
+      let result = utils.getFaceDirection(test.from, test.to, { [test.orientation.to]: test.orientation.from })
       let message
 
       if (result === test.expect) {
         message = `test SUCCEEDED!`
       } else {
         message = `test FAILED: (${test.from}, ${test.to}, { ${test.orientation.to}: ${test.orientation.from} })`
-        message += ` --> expected: ${test.expect}, got: ${result}`
+        message += ` --> expected: ${test.expect} --> got: ${result}`
+      }
+
+      console.log(message)
+    }
+  }
+
+  testRotationFromTo() {
+    let tests = [
+      { face: 'UP', from: 'FRONT', to: 'RIGHT', expect: 'UPrime' },
+      { face: 'UP', from: 'FRONT', to: 'LEFT', expect: 'U' },
+      { face: 'UP', from: 'FRONT', to: 'BACK', expect: 'U U' },
+      { face: 'UP', from: 'FRONT', to: 'FRONT', expect: '' },
+      { face: 'LEFT', from: 'FRONT', to: 'UP', expect: 'LPrime' },
+      { face: 'LEFT', from: 'FRONT', to: 'DOWN', expect: 'L' },
+      { face: 'DOWN', from: 'RIGHT', to: 'LEFT', expect: 'D D' },
+      { face: 'DOWN', from: 'LEFT', to: 'LEFT', expect: '' },
+      { face: 'BACK', from: 'LEFT', to: 'UP', expect: 'BPrime' },
+      { face: 'BACK', from: 'UP', to: 'LEFT', expect: 'B' },
+      { face: 'BACK', from: 'UP', to: 'RIGHT', expect: 'BPrime' }
+    ]
+
+    for (let test of tests) {
+      let result = utils.getRotationFromTo(test.face, test.from, test.to)
+      let message
+
+      if (result === test.expect) {
+        message = `test SUCCEEDED!`
+      } else {
+        message = `test FAILED: (${test.face}, ${test.from}, ${test.to})`
+        message += ` --> expected: ${test.expect} --> got: ${result}`
       }
 
       console.log(message)
