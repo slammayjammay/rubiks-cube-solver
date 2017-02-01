@@ -78,6 +78,13 @@ class Cubie {
   }
 
   /**
+   * @return {array}
+   */
+  faces() {
+    return Object.keys(this._normalToColor)
+  }
+
+  /**
    * @param {string} color - Check if the cubie has this color.
    * @return {boolean}
    */
