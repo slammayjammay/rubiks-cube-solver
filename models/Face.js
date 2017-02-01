@@ -44,7 +44,7 @@ class Face {
       newFace = new Face(newFace)
     }
 
-    let { axis, angle } = Face.getRotationFromNormals(this.normal(), newFace.normal())
+    let { axis, angle } = Vector.getRotationFromNormals(this.normal(), newFace.normal())
     this.vector.rotate(axis, angle)
   }
 
@@ -95,31 +95,6 @@ Face.fromNormal = (normal) => {
   }
 
   return new Face(Face.getFace(normal))
-}
-
-/**
- * Rotates this face by a rotation and angle given by a from normal and a to
- * normal.
- * @param {array} normal1 - The normal to rotate from.
- * @param {array} normal2 - The normal to rotate to.
- * @return {object} - Stores the rotation axis and angle
- */
-Face.getRotationFromNormals = (normal1, normal2) => {
-  let axis = new Vector(cross([], normal1, normal2)).getAxis()
-  let angle = Vector.getAngle(normal1, normal2)
-
-  // when normal1 is equal to or opposite from normal2, it means 2 things: 1)
-  // the cross axis is undefined and 2) the angle is either 0 or PI. This
-  // means that rotating around the axis parallel to normal1 will not result
-  // in any change, while rotating around either of the other two will work
-  // properly.
-  if (!axis) {
-    let axes = ['x', 'y', 'z']
-    axes.splice(axes.indexOf(new Vector(normal1).getAxis()), 1)
-    axis = axes[0]
-  }
-
-  return { axis, angle }
 }
 
 Face.FRONT = new Face('FRONT')
