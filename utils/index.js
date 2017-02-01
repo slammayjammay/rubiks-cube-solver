@@ -3,6 +3,30 @@ const Face = require('../models/Face')
 const Vector = require('../models/Vector')
 
 /**
+ * @param {string} move - The notation of a move, e.g. rPrime.
+ * @return {string}
+ */
+const getFaceOfMove = (move) => {
+  let faceLetter = move[0].toUpperCase()
+
+  if (faceLetter === 'F') return 'FRONT'
+  if (faceLetter === 'R') return 'RIGHT'
+  if (faceLetter === 'U') return 'UP'
+  if (faceLetter === 'D') return 'DOWN'
+  if (faceLetter === 'L') return 'LEFT'
+  if (faceLetter === 'B') return 'BACK'
+}
+
+/**
+ * Almost useless. Almost.
+ * @param {string} face - The string identifying a face.
+ * @return {string}
+ */
+const getMoveOfFace = (face) => {
+  return face[0].toUpperCase()
+}
+
+/**
  * Given a from-face, a to-face, and an orientation object, this returns an
  * adjacent face of from-face that points to to-face when the cube is oriented
  * specified by the orientation object.
@@ -20,9 +44,9 @@ const Vector = require('../models/Vector')
  * @param {Face|string} fromFace - The from face.
  * @param {Face|string} toFace - The to face.
  * @param {object} orientation - The object that specifies the cube orientation.
- * @return {string}
+ * @return {string|number}
  */
-const getAdjacentFaceDirection = (fromFace, toFace, orientation) => {
+const getFaceDirection = (fromFace, toFace, orientation) => {
   let _orientationKey = Object.keys(orientation)[0].toUpperCase()
 
   // throw error if orientation is not specific enough
@@ -43,7 +67,7 @@ const getAdjacentFaceDirection = (fromFace, toFace, orientation) => {
   before = fromFace.normal()
   fromFace.orientTo('FRONT')
   after = fromFace.normal()
-  rotation1 = Face.getRotationFromNormals(before, after)
+  rotation1 = Vector.getRotationFromNormals(before, after)
 
   // rotate orientationFrom by rotation1
   orientationFrom.rotate(rotation1.axis, rotation1.angle)
@@ -52,7 +76,7 @@ const getAdjacentFaceDirection = (fromFace, toFace, orientation) => {
   before = orientationFrom.normal()
   orientationFrom.orientTo(orientationTo)
   after = orientationFrom.normal()
-  rotation2 = Face.getRotationFromNormals(before, after)
+  rotation2 = Vector.getRotationFromNormals(before, after)
 
   // perform rotation2 on fromFace
   fromFace.rotate(rotation2.axis, rotation2.angle)
@@ -71,11 +95,44 @@ const getAdjacentFaceDirection = (fromFace, toFace, orientation) => {
 
   if (direction === 0) {
     return 'FRONT'
-  } else {
+  } else if (direction === Math.PI) {
     return 'BACK'
   }
 }
 
+/**
+ * Finds a move that rotates the given face around its normal, by the angle
+ * described by normal1 -> normal2.
+ * @param {string} face - The face to rotate.
+ * @param {string} from - The from face.
+ * @param {string} to - The to face.
+ * @return {string}
+ */
+const getRotationFromTo = (face, from, to) => {
+  const rotationFace = new Face(face)
+  const fromFace = new Face(from)
+  const toFace = new Face(to)
+
+  let move = getMoveOfFace(face)
+  let angle = Vector.getAngle(fromFace.normal(), toFace.normal())
+  if (rotationFace.vector.getMagnitude() < 0) {
+    angle *= -1
+  }
+
+  if (angle === 0) {
+    return ``
+  } else if (Math.abs(angle) === Math.PI) {
+    return `${move} ${move}`
+  } else if (angle < 0) {
+    return `${move}`
+  } else if (angle > 0) {
+    return `${move}Prime`
+  }
+}
+
 module.exports = {
-  getAdjacentFaceDirection
+  getFaceOfMove,
+  getMoveOfFace,
+  getFaceDirection,
+  getRotationFromTo
 }
