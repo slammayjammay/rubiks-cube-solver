@@ -1,27 +1,17 @@
+const BaseSolver = require('./BaseSolver')
 const Cubie = require('../models/Cubie')
-const getAdjacentFaceDirection = require('../utils/relative-faces').getAdjacentFaceDirection
+const utils = require('../utils')
 
 const CROSS_COLOR = 'U'
 
-class CrossSolver {
-  /**
-   * Solves the first step following the Fridich Method: the cross. Solves the
-   * cross on the UP face by default.
-   *
-   * @param {string|RubiksCube} rubiksCube - This can either be a 54-character
-   * long string representing the cube state (in this case it will have to
-   * "build" another rubik's Cube), or an already built RubiksCube object.
-   */
-  constructor(rubiksCube) {
-    this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube
-    this.totalMoves = []
-  }
-
+class CrossSolver extends BaseSolver {
   solve() {
     let crossEdges = this._getCrossEdges()
     for (let edge of crossEdges) {
       this._solveEdge(edge)
     }
+
+    return this.totalMoves.join(' ')
   }
 
   /**
@@ -37,8 +27,7 @@ class CrossSolver {
    */
   _solveEdge(edge) {
     let caseNumber = this._getCaseNumber(edge)
-    console.log(caseNumber)
-    console.log(edge.colors())
+    this[`_solveCase${caseNumber}`](edge)
   }
 
   /**
@@ -67,13 +56,22 @@ class CrossSolver {
 
     let crossFace = edge.getFaceOfColor(CROSS_COLOR)
     let otherFace = edge.getFaceOfColor(edge.colors().find(color => color !== CROSS_COLOR))
-    let direction = getAdjacentFaceDirection(crossFace, otherFace, { UP: 'UP' })
+    let direction = utils.getFaceDirection(crossFace, otherFace, { UP: 'UP' })
 
     if (direction === 'RIGHT') {
       return 5
     } else if (direction === 'LEFT') {
       return 6
     }
+  }
+
+  _solveCase1(edge) {
+    let currentFace = edge.faces().find(face => face !== 'UP')
+    let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
+    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' }).toUpperCase()
+
+    let solveMove = utils.getRotationFromTo('UP', currentFace, targetFace)
+    this.move(solveMove)
   }
 
   testCases() {
@@ -102,8 +100,4 @@ class CrossSolver {
   }
 }
 
-module.exports = (rubiksCube) => {
-  let crossSolver = new CrossSolver(rubiksCube)
-  // crossSolver.solve(rubiksCube)
-  // return crossSolver.getMoves()
-}
+module.exports = CrossSolver
