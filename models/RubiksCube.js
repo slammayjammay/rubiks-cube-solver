@@ -1,4 +1,3 @@
-const utils = require('../utils/relative-faces')
 const Cubie = require('./Cubie')
 const Vector = require('./Vector')
 
@@ -26,6 +25,10 @@ class RubiksCube {
    * See this example: http://2.bp.blogspot.com/_XQ7FznWBAYE/S9Sbric1KNI/AAAAAAAAAFs/wGAb_LcSOwo/s1600/rubik.png
    */
    constructor(cubeState) {
+     if (cubeState.length !== 9 * 6) {
+       throw new Error('Wrong number of colors provided')
+     }
+
      this._notationToRotation = {
        F: { axis: 'z', mag: -1 },
        R: { axis: 'x', mag: -1 },
@@ -138,12 +141,12 @@ class RubiksCube {
    move(notations) {
      for (let notation of notations.split(' ')) {
        let move = notation[0]
+       if (!move) {
+         return
+       }
+
        let axis = this._notationToRotation[move].axis
        let mag = this._notationToRotation[move].mag * Math.PI / 2
-
-       if (!axis || !mag) {
-         throw new Error(`Could not find axis or mag for move "${notation}"`)
-       }
 
        if (notation.includes('Prime')) {
          mag *= -1
