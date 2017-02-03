@@ -74,7 +74,7 @@ class CrossSolver extends BaseSolver {
     this.move(solveMove)
   }
 
-  testCases() {
+  testCaseNums() {
     let caseNumber, message
     let edge
     let [crossColor, otherColor] = ['U', 'R']
