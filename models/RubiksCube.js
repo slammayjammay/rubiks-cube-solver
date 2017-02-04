@@ -228,7 +228,7 @@ class RubiksCube {
              continue
            }
 
-           let cubie = new Cubie([x, y, z])
+           let cubie = new Cubie({ position: [x, y, z] })
            this._cubies.push(cubie)
          }
        }
