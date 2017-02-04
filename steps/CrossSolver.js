@@ -1,6 +1,7 @@
 const BaseSolver = require('./BaseSolver')
 const RubiksCube = require('../models/RubiksCube')
 const Cubie = require('../models/Cubie')
+const Face = require('../models/Face')
 const utils = require('../utils')
 
 const CROSS_COLOR = 'U'
@@ -131,18 +132,18 @@ class CrossSolver extends BaseSolver {
 
   testCaseNums() {
     let tests = [
-      { position: [0, 1, 1], face1: 'UP', face2: 'FRONT', expect: 1 },
-      { position: [0, -1, 1], face1: 'DOWN', face2: 'FRONT', expect: 2 },
-      { position: [1, 1, 0], face1: 'RIGHT', face2: 'UP', expect: 3 },
-      { position: [1, -1, 0], face1: 'RIGHT', face2: 'DOWN', expect: 4 },
-      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', expect: 5 },
-      { position: [1, 0, 1], face1: 'RIGHT', face2: 'FRONT', expect: 6 }
+      { face1: 'UP', face2: 'FRONT', expect: 1 },
+      { face1: 'DOWN', face2: 'FRONT', expect: 2 },
+      { face1: 'RIGHT', face2: 'UP', expect: 3 },
+      { face1: 'RIGHT', face2: 'DOWN', expect: 4 },
+      { face1: 'RIGHT', face2: 'BACK', expect: 5 },
+      { face1: 'RIGHT', face2: 'FRONT', expect: 6 }
     ]
 
     console.log(`--- TESTING Case Numbers ---`)
 
     tests.forEach(({ face1, face2, expect }) => {
-      let edge = new Cubie([0, 1, 1]).colorFace(face1, 'U').colorFace(face2, 'R')
+      let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
       let result = this._getCaseNumber(edge) === expect
 
       if (result) {
@@ -157,18 +158,18 @@ class CrossSolver extends BaseSolver {
 
   testCase1() {
     let tests = [
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'F' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'L' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'R' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'B' },
-      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'L' },
-      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'F' },
-      { position: [-1, 1, 0], currentFace: 'LEFT', color: 'B' },
-      { position: [-1, 1, 0], currentFace: 'BACK', color: 'L' }
+      { currentFace: 'FRONT', color: 'F' },
+      { currentFace: 'FRONT', color: 'L' },
+      { currentFace: 'FRONT', color: 'R' },
+      { currentFace: 'FRONT', color: 'B' },
+      { currentFace: 'RIGHT', color: 'L' },
+      { currentFace: 'RIGHT', color: 'F' },
+      { currentFace: 'LEFT', color: 'B' },
+      { currentFace: 'BACK', color: 'L' }
     ]
 
-    this._test('Case1', tests, ({ position, currentFace, color }) => {
-      let edge = new Cubie(position).colorFace('UP', 'U').colorFace(currentFace, color)
+    this._test('Case1', tests, ({ currentFace, color }) => {
+      let edge = Cubie.FromFaces(['UP', currentFace]).colorFace('UP', 'U').colorFace(currentFace, color)
       let solveMoves = this._solveCase1(edge)
       return { edge, solveMoves }
     })
@@ -176,18 +177,18 @@ class CrossSolver extends BaseSolver {
 
   testCase2() {
     let tests = [
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F' },
-      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B' },
-      { position: [0, -1, -1], currentFace: 'BACK', color: 'L' }
+      { currentFace: 'FRONT', color: 'F' },
+      { currentFace: 'FRONT', color: 'L' },
+      { currentFace: 'FRONT', color: 'R' },
+      { currentFace: 'FRONT', color: 'B' },
+      { currentFace: 'RIGHT', color: 'L' },
+      { currentFace: 'RIGHT', color: 'F' },
+      { currentFace: 'LEFT', color: 'B' },
+      { currentFace: 'BACK', color: 'L' }
     ]
 
-    this._test('Case2', tests, ({ position, currentFace, color }) => {
-      let edge = new Cubie(position).colorFace('DOWN', 'U').colorFace(currentFace, color)
+    this._test('Case2', tests, ({ currentFace, color }) => {
+      let edge = Cubie.FromFaces(['DOWN', currentFace]).colorFace('DOWN', 'U').colorFace(currentFace, color)
       let solveMoves = this._solveCase2(edge)
       return { edge, solveMoves }
     })
@@ -195,18 +196,18 @@ class CrossSolver extends BaseSolver {
 
   testCase5() {
     let tests = [
-      { position: [-1, 0, 1], face1: 'LEFT', face2: 'FRONT', color: 'R' },
-      { position: [-1, 0, 1], face1: 'LEFT', face2: 'FRONT', color: 'L' },
-      { position: [-1, 0, -1], face1: 'BACK', face2: 'LEFT', color: 'R' },
-      { position: [-1, 0, -1], face1: 'BACK', face2: 'LEFT', color: 'L' },
-      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', color: 'R' },
-      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', color: 'F' },
-      { position: [1, 0, 1], face1: 'FRONT', face2: 'RIGHT', color: 'R' },
-      { position: [1, 0, 1], face1: 'FRONT', face2: 'RIGHT', color: 'F' }
+      { face1: 'LEFT', face2: 'FRONT', color: 'R' },
+      { face1: 'LEFT', face2: 'FRONT', color: 'L' },
+      { face1: 'BACK', face2: 'LEFT', color: 'R' },
+      { face1: 'BACK', face2: 'LEFT', color: 'L' },
+      { face1: 'RIGHT', face2: 'BACK', color: 'R' },
+      { face1: 'RIGHT', face2: 'BACK', color: 'F' },
+      { face1: 'FRONT', face2: 'RIGHT', color: 'R' },
+      { face1: 'FRONT', face2: 'RIGHT', color: 'F' }
     ]
 
-    this._test('Case5', tests, ({ position, face1, face2, color }) => {
-      let edge = new Cubie(position).colorFace(face1, 'U').colorFace(face2, color)
+    this._test('Case5', tests, ({ face1, face2, color }) => {
+      let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, color)
       let solveMoves = this._solveCase5(edge)
       return { edge, solveMoves }
     })
