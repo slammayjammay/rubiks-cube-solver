@@ -18,7 +18,7 @@ class Face {
    */
   static FromNormal(normal) {
     if (typeof normal === 'string') {
-      normal = Vector.fromString(normal).toArray()
+      normal = Vector.FromString(normal).toArray()
     }
 
     return new Face(Face.getFace(normal))
@@ -29,7 +29,7 @@ class Face {
    * @return {array}
    */
   static getNormal(face) {
-    return Vector.fromString(faceToNormal[face]).toArray()
+    return Vector.FromString(faceToNormal[face]).toArray()
   }
 
   /**
@@ -38,7 +38,7 @@ class Face {
    */
   static getFace(normal) {
     if (typeof normal === 'string') {
-      normal = Vector.fromString(normal).toArray()
+      normal = Vector.FromString(normal).toArray()
     }
 
     for (let face of Object.keys(faceToNormal)) {
@@ -53,7 +53,7 @@ class Face {
    */
   constructor(face) {
     face = face.toUpperCase()
-    this.vector = Vector.fromString(faceToNormal[face])
+    this.vector = Vector.FromString(faceToNormal[face])
   }
 
   /**
