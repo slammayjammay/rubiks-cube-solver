@@ -68,19 +68,25 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase1(edge) {
-    return this._case1And2Helper(edge, 1)
+    let solveMoves = this._case1And2Helper(edge, 1)
+    this.move(solveMoves)
   }
 
   _solveCase2(edge) {
-    return this._case1And2Helper(edge, 2)
+    let solveMoves = this._case1And2Helper(edge, 2)
+    this.move(solveMoves)
   }
 
   _solveCase3(edge) {
-    return this._case3And4Helper(edge, 3)
+    let prepMove = this._case3And4Helper(edge, 3)
+    this.move(prepMove)
+    this._solveCase5(edge)
   }
 
   _solveCase4(edge) {
-    return this._case3And4Helper(edge, 4)
+    let prepMove =  this._case3And4Helper(edge, 4)
+    this.move(prepMove)
+    this._solveCase5(edge)
   }
 
   _solveCase5(edge) {
@@ -92,7 +98,7 @@ class CrossSolver extends BaseSolver {
     let edgeToCrossFace = utils.getMoveOfFace(currentFace)
     let solveMoves = `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
 
-    return solveMoves
+    this.move(solveMoves)
   }
 
   _case1And2Helper(edge, caseNum) {
@@ -113,12 +119,12 @@ class CrossSolver extends BaseSolver {
   _case3And4Helper(edge, caseNum) {
     let face = edge.faces().find(face => face !== 'UP')
     let prepMove = utils.getMoveOfFace(face)
-    let solveMoves = this._solveCase5(edge)
 
-    if (caseNum === 4) {
+    if (caseNum === 3) {
       prepMove += 'Prime'
     }
-    return `${prepMove} ${solveMoves}`
+
+    return prepMove
   }
 
   testAll() {
@@ -170,8 +176,8 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case1', tests, ({ currentFace, color }) => {
       let edge = Cubie.FromFaces(['UP', currentFace]).colorFace('UP', 'U').colorFace(currentFace, color)
-      let solveMoves = this._solveCase1(edge)
-      return { edge, solveMoves }
+      // let solveMoves = this._solveCase1(edge)
+      return { edge, runTest: () => this._solveCase1(edge) }
     })
   }
 
@@ -189,8 +195,25 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case2', tests, ({ currentFace, color }) => {
       let edge = Cubie.FromFaces(['DOWN', currentFace]).colorFace('DOWN', 'U').colorFace(currentFace, color)
-      let solveMoves = this._solveCase2(edge)
-      return { edge, solveMoves }
+      // let solveMoves = this._solveCase2(edge)
+      return { edge, runTest: () => this._solveCase2(edge) }
+    })
+  }
+
+  testCase3() {
+    let tests = [
+      { crossColorFace: 'FRONT', otherColor: 'F' },
+      { crossColorFace: 'FRONT', otherColor: 'R' },
+      { crossColorFace: 'FRONT', otherColor: 'L' },
+      { crossColorFace: 'FRONT', otherColor: 'B' },
+      { crossColorFace: 'LEFT', otherColor: 'B' },
+      { crossColorFace: 'BACK', otherColor: 'L' },
+      { crossColorFace: 'RIGHT', otherColor: 'R' }
+    ]
+
+    this._test('Case3', tests, ({ crossColorFace, otherColor }) => {
+      let edge = Cubie.FromFaces(['UP', crossColorFace]).colorFace(crossColorFace, otherColor)
+      return { edge, runTest: () => this._solveCase3(edge) }
     })
   }
 
@@ -208,25 +231,27 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case5', tests, ({ face1, face2, color }) => {
       let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, color)
-      let solveMoves = this._solveCase5(edge)
-      return { edge, solveMoves }
+      return { edge, runTest: () => this._solveCase5(edge) }
     })
   }
 
   /**
    * @param {string} testName - The name of the test.
    * @param {array} tests - The list of tests to run.
-   * @param {function} runTest - The callback to run for each test.
+   * @param {function} testCallback - Callback to get an edge and solveMoves.
    * @return {null}
    */
-  _test(testName, tests, runTest) {
+  _test(testName, tests, testCallback) {
     console.log(`--- TESTING ${testName} ---`)
     for (let test of tests) {
-      let { edge, solveMoves } = runTest(test)
-
-      let fakeCube = RubiksCube.Solved()
-      fakeCube._cubies.push(edge)
-      fakeCube.move(solveMoves)
+      // Some cases rely on first doing a set of moves, then calling another
+      // case with the updated edge object. A hacky way to do this is to have
+      // each test return an edge and the set of moves it needs to do to be
+      // solved. Before the moves are executed, the edge must be attached to a
+      // rubiksCube instance, otherwise it will not be updated in `this.move`
+      let { edge, runTest } = testCallback(test)
+      this.cube._cubies.push(edge)
+      runTest()
 
       let otherColor = edge.colors().find(color => color !== 'U')
       let otherFace = edge.faces().find(face => face !== 'UP')
@@ -236,7 +261,7 @@ class CrossSolver extends BaseSolver {
       if (isOnCrossFace && isMatchingMiddle) {
         console.log(`test SUCCESS`)
       } else {
-        console.log('FAIL: ', edge._normalToColor)
+        console.log('FAIL: ', edge.colorMap)
       }
     }
     console.log()
