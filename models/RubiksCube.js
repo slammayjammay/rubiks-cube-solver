@@ -140,7 +140,7 @@ class RubiksCube {
     */
    move(notations) {
      for (let notation of notations.split(' ')) {
-       let move = notation[0].toUpperCase()
+       let move = notation[0] && notation[0].toUpperCase()
        if (!move) {
          return
        }
