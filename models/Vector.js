@@ -6,7 +6,7 @@ const rotateZ = require('gl-vec3/rotateZ')
 
 class Vector {
   /**
-   * @param {array} vector - Contains x, y, and z values.
+   * @param {array} [vector] - Contains x, y, and z values.
    */
   constructor(vector) {
     this.set(vector)
@@ -23,7 +23,32 @@ class Vector {
    * @param {array} vector - The new vector to store.
    */
   set(vector) {
+    if (typeof vector === 'undefined') {
+      return
+    }
+
     this.vector = vector.map(value => Math.round(value))
+  }
+
+  /**
+   * @param {number} value - The value to store.
+   */
+  setX(value) {
+    this.vector[0] = value
+  }
+
+  /**
+   * @param {number} value - The value to store.
+   */
+  setY(value) {
+    this.vector[1] = value
+  }
+
+  /**
+   * @param {number} value - The value to store.
+   */
+  setZ(value) {
+    this.vector[2] = value
   }
 
   /**
