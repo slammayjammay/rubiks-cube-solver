@@ -6,7 +6,7 @@ const Face = require('./Face')
 
 class Cubie {
   /**
-   * @param {array} vector - The coordinates of this cubie's position.
+   * @param {array} [vector] - The coordinates of this cubie's position.
    * @prop {object} _normalToColor - A map with normals as keys and colors
    * as values. For example: { '0 0 1' : 'F' }
    */
