@@ -24,6 +24,13 @@ class Tester {
     }
   }
 
+  testAll() {
+    this.testAllMoves()
+    this.testOrientations()
+    this.testDirections()
+    this.testRotationFromTo()
+  }
+
   testAllMoves() {
     for (let move of Object.keys(this.states)) {
       this.testMove(move)
