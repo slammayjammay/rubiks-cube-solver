@@ -133,7 +133,6 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case1', tests, ({ position, currentFace, color, expect }) => {
       let edge = new Cubie(position).colorFace('UP', 'UP').colorFace(currentFace, color)
-      this._solveCase1(edge)
       return this._solveCase1(edge) === expect
     })
   }
