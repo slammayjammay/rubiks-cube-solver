@@ -68,10 +68,21 @@ class CrossSolver extends BaseSolver {
   _solveCase1(edge) {
     let currentFace = edge.faces().find(face => face !== 'UP')
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
-    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' }).toUpperCase()
+    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' })
 
     let solveMove = utils.getRotationFromTo('UP', currentFace, targetFace)
     this.move(solveMove)
+    return solveMove
+  }
+
+  _solveCase2(edge) {
+    let currentFace = edge.faces().find(face => face !== 'DOWN')
+    let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
+    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' })
+
+    let solveMove = utils.getRotationFromTo('DOWN', currentFace, targetFace)
+    this.move(solveMove)
+    return solveMove
   }
 
   testCaseNums() {
@@ -97,6 +108,52 @@ class CrossSolver extends BaseSolver {
     // case 6
     edge = new Cubie([1, 0, 1]).colorFace('RIGHT', crossColor).colorFace('FRONT', otherColor)
     console.log(this._getCaseNumber(edge) === 6 ? 'SUCCESS' : 'FAIL')
+  }
+
+  testCase1() {
+    let tests = [
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'F', expect: '' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'L', expect: 'U' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'R', expect: 'UPrime' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'B', expect: 'U U' },
+      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'L', expect: 'U U' },
+      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'F', expect: 'U' },
+      { position: [-1, 1, 0], currentFace: 'LEFT', color: 'B', expect: 'U' },
+      { position: [-1, 1, 0], currentFace: 'BACK', color: 'L', expect: 'UPrime' }
+    ]
+
+    for (let test of tests) {
+      let edge = new Cubie(test.position).colorFace('UP', 'UP').colorFace(test.currentFace, test.color)
+      let result = this._solveCase1(edge)
+      if (result === test.expect) {
+        console.log(`Test SUCCESS`)
+      } else {
+        console.log(`Test FAILED --> expected: ${test.expect} --> got: ${result}`)
+      }
+    }
+  }
+
+  testCase2() {
+    let tests = [
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F', expect: '' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L', expect: 'DPrime' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R', expect: 'D' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B', expect: 'D D' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L', expect: 'D D' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F', expect: 'DPrime' },
+      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B', expect: 'DPrime' },
+      { position: [-1, -1, 0], currentFace: 'BACK', color: 'L', expect: 'D' }
+    ]
+
+    for (let test of tests) {
+      let edge = new Cubie(test.position).colorFace('DOWN', 'DOWN').colorFace(test.currentFace, test.color)
+      let result = this._solveCase2(edge)
+      if (result === test.expect) {
+        console.log(`Test SUCCESS`)
+      } else {
+        console.log(`Test FAILED --> expected: ${test.expect} --> got: ${result}`)
+      }
+    }
   }
 }
 
