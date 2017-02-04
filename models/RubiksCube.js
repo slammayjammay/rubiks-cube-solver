@@ -2,6 +2,13 @@ const Cubie = require('./Cubie')
 const Vector = require('./Vector')
 
 class RubiksCube {
+   /**
+    * Factory method. Returns an instance of a solved Rubiks Cube.
+    */
+   static Solved() {
+     return new RubiksCube('FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB')
+   }
+
   /**
    * @param {string} cubeState - The string representing the Rubik's Cube.
    *
