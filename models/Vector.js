@@ -5,6 +5,68 @@ const rotateY = require('gl-vec3/rotateY')
 const rotateZ = require('gl-vec3/rotateZ')
 
 class Vector {
+
+  /**
+   * Factory method.
+   * @param {string} vector - Space-deliminated x, y, and z values.
+   * @return {Vector}
+   */
+  static FromString(vector) {
+    return new Vector(vector.split(' ').map(value => parseInt(value)))
+  }
+
+  /**
+   * @param {array} vector1 - Vector 1.
+   * @param {array} vector2 - Vector 2.
+   * @return {boolean}
+   */
+  static areEqual(vector1, vector2) {
+    return vector1[0] === vector2[0] && vector1[1] === vector2[1] && vector1[2] === vector2[2]
+  }
+
+  /**
+  * Helper method. gl-vec3's angle function always returns positive but in many
+  * cases we want the angle in the direction from one vector to another. To get
+  * the sign of the angle, cross the two vectors and determine the direction the
+  * crossed vector, um, directs in. For example, the vector [0, -1, 0] would
+  * shoot negatively along the y-axis.
+  *
+  * @param {array} v1 - Vector 1.
+  * @param {array} v2 - Vector 2.
+  * @return {number}
+  */
+  static getAngle(v1, v2) {
+    let _angle = angle(v1, v2)
+    let crossVector = cross([], v1, v2)
+    let sign = new Vector(crossVector).getMagnitude()
+
+    return sign ? _angle * sign : _angle
+  }
+
+  /**
+   * Finds the rotation axis and angle to get from one normal to another.
+   * @param {array} normal1 - The from normal.
+   * @param {array} normal2 - The to normal.
+   * @return {object} - Stores the rotation axis and angle
+   */
+  static getRotationFromNormals(normal1, normal2) {
+    let axis = new Vector(cross([], normal1, normal2)).getAxis()
+    let angle = Vector.getAngle(normal1, normal2)
+
+    // when normal1 is equal to or opposite from normal2, it means 2 things: 1)
+    // the cross axis is undefined and 2) the angle is either 0 or PI. This
+    // means that rotating around the axis parallel to normal1 will not result
+    // in any change, while rotating around either of the other two will work
+    // properly.
+    if (!axis) {
+      let axes = ['x', 'y', 'z']
+      axes.splice(axes.indexOf(new Vector(normal1).getAxis()), 1)
+      axis = axes[0]
+    }
+
+    return { axis, angle }
+  }
+
   /**
    * @param {array} [vector] - Contains x, y, and z values.
    */
@@ -128,66 +190,6 @@ class Vector {
     this.set(rotateFn([], this.vector, [0, 0, 0], angle))
     return this
   }
-}
-
-/**
- * @param {string} vector - Space-deliminated x, y, and z values.
- * @return {Vector}
- */
-Vector.fromString = (vector) => {
-  return new Vector(vector.split(' ').map(value => parseInt(value)))
-}
-
-/**
- * @param {array} vector1 - Vector 1.
- * @param {array} vector2 - Vector 2.
- * @return {boolean}
- */
-Vector.areEqual = (vector1, vector2) => {
-  return vector1[0] === vector2[0] && vector1[1] === vector2[1] && vector1[2] === vector2[2]
-}
-
-/**
-* Helper method. gl-vec3's angle function always returns positive but in many
-* cases we want the angle in the direction from one vector to another. To get
-* the sign of the angle, cross the two vectors and determine the direction the
-* crossed vector, um, directs in. For example, the vector [0, -1, 0] would
-* shoot negatively along the y-axis.
-*
-* @param {array} v1 - Vector 1.
-* @param {array} v2 - Vector 2.
-* @return {number}
-*/
-Vector.getAngle = (v1, v2) => {
-  let _angle = angle(v1, v2)
-  let crossVector = cross([], v1, v2)
-  let sign = new Vector(crossVector).getMagnitude()
-
-  return sign ? _angle * sign : _angle
-}
-
-/**
- * Finds the rotation axis and angle to get from one normal to another.
- * @param {array} normal1 - The from normal.
- * @param {array} normal2 - The to normal.
- * @return {object} - Stores the rotation axis and angle
- */
-Vector.getRotationFromNormals = (normal1, normal2) => {
-  let axis = new Vector(cross([], normal1, normal2)).getAxis()
-  let angle = Vector.getAngle(normal1, normal2)
-
-  // when normal1 is equal to or opposite from normal2, it means 2 things: 1)
-  // the cross axis is undefined and 2) the angle is either 0 or PI. This
-  // means that rotating around the axis parallel to normal1 will not result
-  // in any change, while rotating around either of the other two will work
-  // properly.
-  if (!axis) {
-    let axes = ['x', 'y', 'z']
-    axes.splice(axes.indexOf(new Vector(normal1).getAxis()), 1)
-    axis = axes[0]
-  }
-
-  return { axis, angle }
 }
 
 module.exports = Vector
