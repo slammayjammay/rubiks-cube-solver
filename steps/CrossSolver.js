@@ -66,23 +66,32 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase1(edge) {
-    let currentFace = edge.faces().find(face => face !== 'UP')
-    let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
-    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' })
-
-    let solveMove = utils.getRotationFromTo('UP', currentFace, targetFace)
-    this.move(solveMove)
-    return solveMove
+    let solveMoves = this._case1And2Helper(edge, 1)
+    this.move(solveMoves)
+    return solveMoves
   }
 
   _solveCase2(edge) {
-    let currentFace = edge.faces().find(face => face !== 'DOWN')
+    let solveMoves = this._case1And2Helper(edge, 2)
+    this.move(solveMoves)
+    return solveMoves
+  }
+
+  _case1And2Helper(edge, caseNum) {
+    let crossColorFace = caseNum === 1 ? 'UP' : 'DOWN'
+
+    let currentFace = edge.faces().find(face => face !== crossColorFace)
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
     let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' })
 
-    let solveMove = utils.getRotationFromTo('DOWN', currentFace, targetFace)
-    this.move(solveMove)
-    return solveMove
+    let solveMoves = utils.getRotationFromTo(crossColorFace, currentFace, targetFace)
+
+    if (caseNum === 2) {
+      let edgeToCrossFace = utils.getMoveOfFace(targetFace)
+      solveMoves += ` ${edgeToCrossFace} ${edgeToCrossFace}`
+    }
+
+    return solveMoves
   }
 
   testCaseNums() {
@@ -110,6 +119,13 @@ class CrossSolver extends BaseSolver {
     console.log(this._getCaseNumber(edge) === 6 ? 'SUCCESS' : 'FAIL')
   }
 
+  testAllCases() {
+    let numCases = 2 // since not all cases are defined yet
+    for (let i = 1; i <= numCases; i++) {
+      this[`testCase${i}`]()
+    }
+  }
+
   testCase1() {
     let tests = [
       { position: [0, 1, 1], currentFace: 'FRONT', color: 'F', expect: '' },
@@ -122,38 +138,47 @@ class CrossSolver extends BaseSolver {
       { position: [-1, 1, 0], currentFace: 'BACK', color: 'L', expect: 'UPrime' }
     ]
 
-    for (let test of tests) {
+    this._test('Case1', tests, (test) => {
       let edge = new Cubie(test.position).colorFace('UP', 'UP').colorFace(test.currentFace, test.color)
-      let result = this._solveCase1(edge)
-      if (result === test.expect) {
-        console.log(`Test SUCCESS`)
-      } else {
-        console.log(`Test FAILED --> expected: ${test.expect} --> got: ${result}`)
-      }
-    }
+      this._solveCase1(edge)
+      return this._solveCase1(edge) === test.expect
+    })
   }
 
   testCase2() {
     let tests = [
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F', expect: '' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L', expect: 'DPrime' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R', expect: 'D' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B', expect: 'D D' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L', expect: 'D D' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F', expect: 'DPrime' },
-      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B', expect: 'DPrime' },
-      { position: [-1, -1, 0], currentFace: 'BACK', color: 'L', expect: 'D' }
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F', expect: 'F F' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L', expect: 'DPrime L L' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R', expect: 'D R R' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B', expect: 'D D B B' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L', expect: 'D D L L' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F', expect: 'DPrime F F' },
+      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B', expect: 'DPrime B B' },
+      { position: [-1, -1, 0], currentFace: 'BACK', color: 'L', expect: 'D L L' }
     ]
 
-    for (let test of tests) {
+    this._test('Case2', tests, (test) => {
       let edge = new Cubie(test.position).colorFace('DOWN', 'DOWN').colorFace(test.currentFace, test.color)
-      let result = this._solveCase2(edge)
-      if (result === test.expect) {
+      return this._solveCase2(edge).trim() === test.expect.trim()
+    })
+  }
+
+  /**
+   * @param {string} testName - The name of the test.
+   * @param {array} tests - The list of tests to run.
+   * @param {function} testValueCallback - The callback to run for the test value.
+   * @return {null}
+   */
+  _test(testName, tests, testValueCallback) {
+    console.log(`--- TESTING ${testName} ---`)
+    for (let test of tests) {
+      if (testValueCallback(test) === true) {
         console.log(`Test SUCCESS`)
       } else {
-        console.log(`Test FAILED --> expected: ${test.expect} --> got: ${result}`)
+        console.log(`Test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
       }
     }
+    console.log()
   }
 }
 
