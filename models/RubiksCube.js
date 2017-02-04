@@ -9,6 +9,22 @@ class RubiksCube {
      return new RubiksCube('FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB')
    }
 
+   /**
+    * @param {string} notations - The list of moves to reverse.
+    * @return {string}
+    */
+   static reverseMoves(notations) {
+     let reversedMoves = []
+
+     for (let notation of notations.split(' ').filter(move => move !== '')) {
+       notation = notation.toUpperCase()
+       notation = notation.includes('PRIME') ? notation[0] : `${notation}Prime`
+       reversedMoves.push(notation)
+     }
+
+     return reversedMoves.join(' ')
+   }
+
   /**
    * @param {string} cubeState - The string representing the Rubik's Cube.
    *
