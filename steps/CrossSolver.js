@@ -94,36 +94,29 @@ class CrossSolver extends BaseSolver {
     return solveMoves
   }
 
-  testCaseNums() {
-    let caseNumber, message
-    let edge
-    let [crossColor, otherColor] = ['U', 'R']
+  testAll() {
+    this.testCaseNums()
 
-    // case 1
-    edge = new Cubie([0, 1, 1]).colorFace('UP', crossColor).colorFace('FRONT', otherColor)
-    console.log(this._getCaseNumber(edge) === 1 ? 'SUCCESS' : 'FAIL')
-    // case 2
-    edge = new Cubie([0, -1, 1]).colorFace('DOWN', crossColor).colorFace('FRONT', otherColor)
-    console.log(this._getCaseNumber(edge) === 2 ? 'SUCCESS' : 'FAIL')
-    // case 3
-    edge = new Cubie([1, 1, 0]).colorFace('RIGHT', crossColor).colorFace('UP', otherColor)
-    console.log(this._getCaseNumber(edge) === 3 ? 'SUCCESS' : 'FAIL')
-    // case 4
-    edge = new Cubie([1, -1, 0]).colorFace('RIGHT', crossColor).colorFace('DOWN', otherColor)
-    console.log(this._getCaseNumber(edge) === 4 ? 'SUCCESS' : 'FAIL')
-    // case 5
-    edge = new Cubie([1, 0, -1]).colorFace('RIGHT', crossColor).colorFace('BACK', otherColor)
-    console.log(this._getCaseNumber(edge) === 5 ? 'SUCCESS' : 'FAIL')
-    // case 6
-    edge = new Cubie([1, 0, 1]).colorFace('RIGHT', crossColor).colorFace('FRONT', otherColor)
-    console.log(this._getCaseNumber(edge) === 6 ? 'SUCCESS' : 'FAIL')
-  }
-
-  testAllCases() {
     let numCases = 2 // since not all cases are defined yet
     for (let i = 1; i <= numCases; i++) {
       this[`testCase${i}`]()
     }
+  }
+
+  testCaseNums() {
+    let tests = [
+      { position: [0, 1, 1], face1: 'UP', face2: 'FRONT', expect: 1 },
+      { position: [0, -1, 1], face1: 'DOWN', face2: 'FRONT', expect: 2 },
+      { position: [1, 1, 0], face1: 'RIGHT', face2: 'UP', expect: 3 },
+      { position: [1, -1, 0], face1: 'RIGHT', face2: 'DOWN', expect: 4 },
+      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', expect: 5 },
+      { position: [1, 0, 1], face1: 'RIGHT', face2: 'FRONT', expect: 6 }
+    ]
+
+    this._test('Case Numbers', tests, ({ face1, face2, expect }) => {
+      let edge = new Cubie([0, 1, 1]).colorFace(face1, 'U').colorFace(face2, 'R')
+      return this._getCaseNumber(edge) === expect
+    })
   }
 
   testCase1() {
@@ -138,10 +131,10 @@ class CrossSolver extends BaseSolver {
       { position: [-1, 1, 0], currentFace: 'BACK', color: 'L', expect: 'UPrime' }
     ]
 
-    this._test('Case1', tests, (test) => {
-      let edge = new Cubie(test.position).colorFace('UP', 'UP').colorFace(test.currentFace, test.color)
+    this._test('Case1', tests, ({ position, currentFace, color, expect }) => {
+      let edge = new Cubie(position).colorFace('UP', 'UP').colorFace(currentFace, color)
       this._solveCase1(edge)
-      return this._solveCase1(edge) === test.expect
+      return this._solveCase1(edge) === expect
     })
   }
 
@@ -157,9 +150,9 @@ class CrossSolver extends BaseSolver {
       { position: [-1, -1, 0], currentFace: 'BACK', color: 'L', expect: 'D L L' }
     ]
 
-    this._test('Case2', tests, (test) => {
-      let edge = new Cubie(test.position).colorFace('DOWN', 'DOWN').colorFace(test.currentFace, test.color)
-      return this._solveCase2(edge).trim() === test.expect.trim()
+    this._test('Case2', tests, ({ position, currentFace, color, expect }) => {
+      let edge = new Cubie(position).colorFace('DOWN', 'DOWN').colorFace(currentFace, color)
+      return this._solveCase2(edge).trim() === expect.trim()
     })
   }
 
@@ -172,7 +165,8 @@ class CrossSolver extends BaseSolver {
   _test(testName, tests, testValueCallback) {
     console.log(`--- TESTING ${testName} ---`)
     for (let test of tests) {
-      if (testValueCallback(test) === true) {
+      let result = testValueCallback(test)
+      if (result === true) {
         console.log(`Test SUCCESS`)
       } else {
         console.log(`Test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
