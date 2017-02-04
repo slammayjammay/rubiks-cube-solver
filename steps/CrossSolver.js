@@ -167,9 +167,9 @@ class CrossSolver extends BaseSolver {
     for (let test of tests) {
       let result = testValueCallback(test)
       if (result === true) {
-        console.log(`Test SUCCESS`)
+        console.log(`test SUCCESS`)
       } else {
-        console.log(`Test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
+        console.log(`test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
       }
     }
     console.log()
