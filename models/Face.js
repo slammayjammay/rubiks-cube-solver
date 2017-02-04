@@ -12,6 +12,43 @@ const faceToNormal = {
 
 class Face {
   /**
+   * Factory method.
+   * @param {string|array} normal - The normal that identifies this face.
+   * @return {Face}
+   */
+  static FromNormal(normal) {
+    if (typeof normal === 'string') {
+      normal = Vector.fromString(normal).toArray()
+    }
+
+    return new Face(Face.getFace(normal))
+  }
+
+  /**
+   * @param {string} face - A string that identifies a face.
+   * @return {array}
+   */
+  static getNormal(face) {
+    return Vector.fromString(faceToNormal[face]).toArray()
+  }
+
+  /**
+   * @param {string|array} normal - The normal that identifies a face.
+   * @return {string}
+   */
+  static getFace(normal) {
+    if (typeof normal === 'string') {
+      normal = Vector.fromString(normal).toArray()
+    }
+
+    for (let face of Object.keys(faceToNormal)) {
+      if (normal.join(' ') === faceToNormal[face]) {
+        return face
+      }
+    }
+  }
+
+  /**
    * @param {string} face - The string of a face, e.g. 'RIGHT'.
    */
   constructor(face) {
@@ -59,42 +96,6 @@ class Face {
     this.vector.rotate(axis, angle)
     return this
   }
-}
-
-/**
- * @param {string} face - A string that identifies a face.
- * @return {array}
- */
-Face.getNormal = (face) => {
-  return Vector.fromString(faceToNormal[face]).toArray()
-}
-
-/**
- * @param {string|array} normal - The normal that identifies a face.
- * @return {string}
- */
-Face.getFace = (normal) => {
-  if (typeof normal === 'string') {
-    normal = Vector.fromString(normal).toArray()
-  }
-
-  for (let face of Object.keys(faceToNormal)) {
-    if (normal.join(' ') === faceToNormal[face]) {
-      return face
-    }
-  }
-}
-
-/**
- * @param {string|array} normal - The normal that identifies this face.
- * @return {Face}
- */
-Face.fromNormal = (normal) => {
-  if (typeof normal === 'string') {
-    normal = Vector.fromString(normal).toArray()
-  }
-
-  return new Face(Face.getFace(normal))
 }
 
 Face.FRONT = new Face('FRONT')
