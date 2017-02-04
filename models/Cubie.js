@@ -187,7 +187,7 @@ class Cubie {
     // go through each normal, rotate it, and assign the new normal the old color
     for (let normal of Object.keys(this.colorMap)) {
       let color = this.colorMap[normal]
-      let face = Face.fromNormal(normal)
+      let face = Face.FromNormal(normal)
 
       let newNormal = face.rotate(axis, angle).normal().join(' ')
       newMap[newNormal] = color
