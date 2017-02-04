@@ -6,26 +6,51 @@ const Face = require('./Face')
 
 class Cubie {
   /**
-   * @param {array} [vector] - The coordinates of this cubie's position.
-   * @prop {object} _normalToColor - A map with normals as keys and colors
-   * as values. For example: { '0 0 1' : 'F' }
+   * Factory method. Returns an instance of a cubie identified by the faces it
+   * sits on.
+   * @param {array} faces - A list of all the faces this cubie sits on.
    */
-  constructor(vector) {
-    this._normalToColor = {}
-    this.position(vector)
+  static FromFaces(faces) {
+    let position = new Vector([0, 0, 0])
+    let colorMap = {}
+
+    for (let face of faces) {
+      if (!face) {
+        continue
+      }
+
+      let temp = new Face(face)
+      let axis = temp.vector.getAxis().toUpperCase()
+      position[`set${axis}`](temp.vector.getMagnitude())
+
+      colorMap[temp.normal().join(' ')] = temp.toString()[0].toUpperCase()
+    }
+
+    return new Cubie({ position: position.toArray(), colorMap })
+  }
+
+  /**
+   * @param {object} [options]
+   * @param {object} options.position - The cubie's position.
+   * @param {object} options.colorMap - A map with normals as keys and colors
+   * as values. For example: { '0 0 1' : 'F' }.
+   */
+  constructor({ position, colorMap }) {
+    this.position(position)
+    this.colorMap = colorMap || {}
   }
 
   /**
    * Getter/setter for the vector position.
-   * @param {array} [vector] - The new position to store.
+   * @param {array} [position] - The new position to store.
    * @return {array}
    */
-  position(vector) {
-    if (typeof vector === 'undefined') {
+  position(position) {
+    if (typeof position === 'undefined') {
       return this.vector.toArray()
     }
 
-    this.vector = new Vector(vector)
+    this.vector = new Vector(position)
   }
 
   /**
@@ -53,35 +78,35 @@ class Cubie {
    * @return {boolean}
    */
   isCorner() {
-    return Object.keys(this._normalToColor).length === 3
+    return Object.keys(this.colorMap).length === 3
   }
 
   /**
    * @return {boolean}
    */
   isEdge() {
-    return Object.keys(this._normalToColor).length === 2
+    return Object.keys(this.colorMap).length === 2
   }
 
   /**
    * @return {boolean}
    */
   isMiddle() {
-    return Object.keys(this._normalToColor).length === 1
+    return Object.keys(this.colorMap).length === 1
   }
 
   /**
    * @return {array}
    */
   colors() {
-    return Object.keys(this._normalToColor).map(normal => this._normalToColor[normal])
+    return Object.keys(this.colorMap).map(normal => this.colorMap[normal])
   }
 
   /**
    * @return {array}
    */
   faces() {
-    return Object.keys(this._normalToColor)
+    return Object.keys(this.colorMap)
   }
 
   /**
@@ -89,8 +114,8 @@ class Cubie {
    * @return {boolean}
    */
   hasColor(color) {
-    for (let normal of Object.keys(this._normalToColor)) {
-      if (this._normalToColor[normal] === color) {
+    for (let normal of Object.keys(this.colorMap)) {
+      if (this.colorMap[normal] === color) {
         return true
       }
     }
@@ -106,7 +131,7 @@ class Cubie {
    */
   colorFace(face, color) {
     let normal = Face.getNormal(face).join(' ')
-    this._normalToColor[normal] = color
+    this.colorMap[normal] = color
     return this
   }
 
@@ -116,7 +141,7 @@ class Cubie {
    */
   getColorOfFace(face) {
     let normal = Face.getNormal(face).join(' ')
-    return this._normalToColor[normal]
+    return this.colorMap[normal]
   }
 
   /**
@@ -124,8 +149,8 @@ class Cubie {
    * @return {string}
    */
   getFaceOfColor(color) {
-    let normal = Object.keys(this._normalToColor).find(cubieColor => {
-      return this._normalToColor[cubieColor] === color
+    let normal = Object.keys(this.colorMap).find(cubieColor => {
+      return this.colorMap[cubieColor] === color
     })
 
     return Face.getFace(normal)
@@ -138,7 +163,7 @@ class Cubie {
   faces() {
     let faces = []
 
-    for (let normal of Object.keys(this._normalToColor)) {
+    for (let normal of Object.keys(this.colorMap)) {
       faces.push(Face.getFace(normal))
     }
 
@@ -160,15 +185,15 @@ class Cubie {
     let newMap = {} // need to completely overwrite the old one
 
     // go through each normal, rotate it, and assign the new normal the old color
-    for (let normal of Object.keys(this._normalToColor)) {
-      let color = this._normalToColor[normal]
+    for (let normal of Object.keys(this.colorMap)) {
+      let color = this.colorMap[normal]
       let face = Face.fromNormal(normal)
 
       let newNormal = face.rotate(axis, angle).normal().join(' ')
       newMap[newNormal] = color
     }
 
-    this._normalToColor = newMap
+    this.colorMap = newMap
   }
 }
 
