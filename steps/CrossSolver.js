@@ -78,6 +78,27 @@ class CrossSolver extends BaseSolver {
     return solveMoves
   }
 
+  _solveCase3(edge) {
+    // to come
+  }
+
+  _solveCase4(edge) {
+    // to come
+  }
+
+  _solveCase5(edge) {
+    let otherColor = edge.colors().find(color => color !== 'U')
+    let currentFace = edge.getFaceOfColor(otherColor)
+    let targetFace = utils.getFaceOfMove(otherColor)
+
+    let prepMove = utils.getRotationFromTo('UP', currentFace, targetFace)
+    let edgeToCrossFace = utils.getMoveOfFace(currentFace)
+    let solveMoves = `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
+
+    this.move(solveMoves)
+    return solveMoves
+  }
+
   _case1And2Helper(edge, caseNum) {
     let crossColorFace = caseNum === 1 ? 'UP' : 'DOWN'
     let currentFace = edge.faces().find(face => face !== crossColorFace)
@@ -96,9 +117,9 @@ class CrossSolver extends BaseSolver {
   testAll() {
     this.testCaseNums()
 
-    let numCases = 2 // since not all cases are defined yet
+    let numCases = 6
     for (let i = 1; i <= numCases; i++) {
-      this[`testCase${i}`]()
+      this[`testCase${i}`] && this[`testCase${i}`]()
     }
   }
 
@@ -162,6 +183,25 @@ class CrossSolver extends BaseSolver {
     this._test('Case2', tests, ({ position, currentFace, color }) => {
       let edge = new Cubie(position).colorFace('DOWN', 'U').colorFace(currentFace, color)
       let solveMoves = this._solveCase2(edge)
+      return { edge, solveMoves }
+    })
+  }
+
+  testCase5() {
+    let tests = [
+      { position: [-1, 0, 1], face1: 'LEFT', face2: 'FRONT', color: 'R' },
+      { position: [-1, 0, 1], face1: 'LEFT', face2: 'FRONT', color: 'L' },
+      { position: [-1, 0, -1], face1: 'BACK', face2: 'LEFT', color: 'R' },
+      { position: [-1, 0, -1], face1: 'BACK', face2: 'LEFT', color: 'L' },
+      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', color: 'R' },
+      { position: [1, 0, -1], face1: 'RIGHT', face2: 'BACK', color: 'F' },
+      { position: [1, 0, 1], face1: 'FRONT', face2: 'RIGHT', color: 'R' },
+      { position: [1, 0, 1], face1: 'FRONT', face2: 'RIGHT', color: 'F' }
+    ]
+
+    this._test('Case5', tests, ({ position, face1, face2, color }) => {
+      let edge = new Cubie(position).colorFace(face1, 'U').colorFace(face2, color)
+      let solveMoves = this._solveCase5(edge)
       return { edge, solveMoves }
     })
   }
