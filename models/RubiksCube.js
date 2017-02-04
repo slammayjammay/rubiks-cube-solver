@@ -142,13 +142,13 @@ class RubiksCube {
      for (let notation of notations.split(' ')) {
        let move = notation[0] && notation[0].toUpperCase()
        if (!move) {
-         return
+         continue
        }
 
        let axis = this._notationToRotation[move].axis
        let mag = this._notationToRotation[move].mag * Math.PI / 2
 
-       if (['Prime', 'prime'].includes(notation)) {
+       if (['Prime', 'prime'].includes(notation.slice(1))) {
          mag *= -1
        }
 
