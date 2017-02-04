@@ -28,7 +28,7 @@ class CrossSolver extends BaseSolver {
    */
   _solveEdge(edge) {
     let caseNumber = this._getCaseNumber(edge)
-    this[`_solveCase${caseNumber}`](edge)
+    let solveMoves = this[`_solveCase${caseNumber}`](edge)
   }
 
   /**
@@ -67,23 +67,19 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase1(edge) {
-    let solveMoves = this._case1And2Helper(edge, 1)
-    this.move(solveMoves)
-    return solveMoves
+    return this._case1And2Helper(edge, 1)
   }
 
   _solveCase2(edge) {
-    let solveMoves = this._case1And2Helper(edge, 2)
-    this.move(solveMoves)
-    return solveMoves
+    return this._case1And2Helper(edge, 2)
   }
 
   _solveCase3(edge) {
-    // to come
+    return this._case3And4Helper(edge, 3)
   }
 
   _solveCase4(edge) {
-    // to come
+    return this._case3And4Helper(edge, 4)
   }
 
   _solveCase5(edge) {
@@ -95,7 +91,6 @@ class CrossSolver extends BaseSolver {
     let edgeToCrossFace = utils.getMoveOfFace(currentFace)
     let solveMoves = `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
 
-    this.move(solveMoves)
     return solveMoves
   }
 
@@ -112,6 +107,17 @@ class CrossSolver extends BaseSolver {
     }
 
     return solveMoves
+  }
+
+  _case3And4Helper(edge, caseNum) {
+    let face = edge.faces().find(face => face !== 'UP')
+    let prepMove = utils.getMoveOfFace(face)
+    let solveMoves = this._solveCase5(edge)
+
+    if (caseNum === 4) {
+      prepMove += 'Prime'
+    }
+    return `${prepMove} ${solveMoves}`
   }
 
   testAll() {
