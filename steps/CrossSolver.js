@@ -1,4 +1,5 @@
 const BaseSolver = require('./BaseSolver')
+const RubiksCube = require('../models/RubiksCube')
 const Cubie = require('../models/Cubie')
 const utils = require('../utils')
 
@@ -113,62 +114,84 @@ class CrossSolver extends BaseSolver {
       { position: [1, 0, 1], face1: 'RIGHT', face2: 'FRONT', expect: 6 }
     ]
 
-    this._test('Case Numbers', tests, ({ face1, face2, expect }) => {
+    console.log(`--- TESTING Case Numbers ---`)
+
+    tests.forEach(({ face1, face2, expect }) => {
       let edge = new Cubie([0, 1, 1]).colorFace(face1, 'U').colorFace(face2, 'R')
-      return this._getCaseNumber(edge) === expect
+      let result = this._getCaseNumber(edge) === expect
+
+      if (result) {
+        console.log(`test SUCCESS`)
+      } else {
+        console.log(`test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
+      }
     })
+
+    console.log()
   }
 
   testCase1() {
     let tests = [
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'F', expect: '' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'L', expect: 'U' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'R', expect: 'UPrime' },
-      { position: [0, 1, 1], currentFace: 'FRONT', color: 'B', expect: 'U U' },
-      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'L', expect: 'U U' },
-      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'F', expect: 'U' },
-      { position: [-1, 1, 0], currentFace: 'LEFT', color: 'B', expect: 'U' },
-      { position: [-1, 1, 0], currentFace: 'BACK', color: 'L', expect: 'UPrime' }
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'F' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'L' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'R' },
+      { position: [0, 1, 1], currentFace: 'FRONT', color: 'B' },
+      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'L' },
+      { position: [1, 1, 0], currentFace: 'RIGHT', color: 'F' },
+      { position: [-1, 1, 0], currentFace: 'LEFT', color: 'B' },
+      { position: [-1, 1, 0], currentFace: 'BACK', color: 'L' }
     ]
 
-    this._test('Case1', tests, ({ position, currentFace, color, expect }) => {
-      let edge = new Cubie(position).colorFace('UP', 'UP').colorFace(currentFace, color)
-      return this._solveCase1(edge) === expect
+    this._test('Case1', tests, ({ position, currentFace, color }) => {
+      let edge = new Cubie(position).colorFace('UP', 'U').colorFace(currentFace, color)
+      let solveMoves = this._solveCase1(edge)
+      return { edge, solveMoves }
     })
   }
 
   testCase2() {
     let tests = [
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F', expect: 'F F' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L', expect: 'DPrime L L' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R', expect: 'D R R' },
-      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B', expect: 'D D B B' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L', expect: 'D D L L' },
-      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F', expect: 'DPrime F F' },
-      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B', expect: 'DPrime B B' },
-      { position: [-1, -1, 0], currentFace: 'BACK', color: 'L', expect: 'D L L' }
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'F' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'L' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'R' },
+      { position: [0, -1, 1], currentFace: 'FRONT', color: 'B' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'L' },
+      { position: [1, -1, 0], currentFace: 'RIGHT', color: 'F' },
+      { position: [-1, -1, 0], currentFace: 'LEFT', color: 'B' },
+      { position: [0, -1, -1], currentFace: 'BACK', color: 'L' }
     ]
 
-    this._test('Case2', tests, ({ position, currentFace, color, expect }) => {
-      let edge = new Cubie(position).colorFace('DOWN', 'DOWN').colorFace(currentFace, color)
-      return this._solveCase2(edge).trim() === expect.trim()
+    this._test('Case2', tests, ({ position, currentFace, color }) => {
+      let edge = new Cubie(position).colorFace('DOWN', 'U').colorFace(currentFace, color)
+      let solveMoves = this._solveCase2(edge)
+      return { edge, solveMoves }
     })
   }
 
   /**
    * @param {string} testName - The name of the test.
    * @param {array} tests - The list of tests to run.
-   * @param {function} testValueCallback - The callback to run for the test value.
+   * @param {function} runTest - The callback to run for each test.
    * @return {null}
    */
-  _test(testName, tests, testValueCallback) {
+  _test(testName, tests, runTest) {
     console.log(`--- TESTING ${testName} ---`)
     for (let test of tests) {
-      let result = testValueCallback(test)
-      if (result === true) {
+      let { edge, solveMoves } = runTest(test)
+
+      let fakeCube = RubiksCube.Solved()
+      fakeCube._cubies.push(edge)
+      fakeCube.move(solveMoves)
+
+      let otherColor = edge.colors().find(color => color !== 'U')
+      let otherFace = edge.faces().find(face => face !== 'UP')
+      const isMatchingMiddle = otherFace[0] === otherColor
+      const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
+
+      if (isOnCrossFace && isMatchingMiddle) {
         console.log(`test SUCCESS`)
       } else {
-        console.log(`test FAILED --> expected: "${test.expect}" --> got: "${result}"`)
+        console.log('FAIL: ', edge._normalToColor)
       }
     }
     console.log()
