@@ -80,10 +80,8 @@ class CrossSolver extends BaseSolver {
 
   _case1And2Helper(edge, caseNum) {
     let crossColorFace = caseNum === 1 ? 'UP' : 'DOWN'
-
     let currentFace = edge.faces().find(face => face !== crossColorFace)
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
-    let direction = utils.getFaceDirection(currentFace, targetFace, { UP: 'UP' })
 
     let solveMoves = utils.getRotationFromTo(crossColorFace, currentFace, targetFace)
 
