@@ -1,6 +1,3 @@
-// const rotateX = require('gl-vec3/rotateX')
-// const rotateY = require('gl-vec3/rotateY')
-// const rotateZ = require('gl-vec3/rotateZ')
 const Vector = require('./Vector')
 const Face = require('./Face')
 
