@@ -176,7 +176,6 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case1', tests, ({ currentFace, color }) => {
       let edge = Cubie.FromFaces(['UP', currentFace]).colorFace('UP', 'U').colorFace(currentFace, color)
-      // let solveMoves = this._solveCase1(edge)
       return { edge, runTest: () => this._solveCase1(edge) }
     })
   }
@@ -195,7 +194,6 @@ class CrossSolver extends BaseSolver {
 
     this._test('Case2', tests, ({ currentFace, color }) => {
       let edge = Cubie.FromFaces(['DOWN', currentFace]).colorFace('DOWN', 'U').colorFace(currentFace, color)
-      // let solveMoves = this._solveCase2(edge)
       return { edge, runTest: () => this._solveCase2(edge) }
     })
   }
