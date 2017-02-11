@@ -90,14 +90,12 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase5(edge) {
-    let otherColor = edge.colors().find(color => color !== 'U')
-    let currentFace = edge.getFaceOfColor(otherColor)
-    let targetFace = utils.getFaceOfMove(otherColor)
+    let solveMoves = this._case5And6Helper(edge, 5)
+    this.move(solveMoves)
+  }
 
-    let prepMove = utils.getRotationFromTo('UP', currentFace, targetFace)
-    let edgeToCrossFace = utils.getMoveOfFace(currentFace)
-    let solveMoves = `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
-
+  _solveCase6(edge) {
+    let solveMoves = this._case5And6Helper(edge, 6)
     this.move(solveMoves)
   }
 
@@ -125,6 +123,21 @@ class CrossSolver extends BaseSolver {
     }
 
     return prepMove
+  }
+
+  _case5And6Helper(edge, caseNum) {
+    let otherColor = edge.colors().find(color => color !== 'U')
+    let currentFace = edge.getFaceOfColor(otherColor)
+    let targetFace = utils.getFaceOfMove(otherColor)
+
+    let prepMove = utils.getRotationFromTo('UP', currentFace, targetFace)
+    let edgeToCrossFace = utils.getMoveOfFace(currentFace)
+
+    if (caseNum === 6) {
+      edgeToCrossFace = RubiksCube.reverseMoves(edgeToCrossFace);
+    }
+
+    return `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
   }
 
   testAll() {
@@ -230,6 +243,24 @@ class CrossSolver extends BaseSolver {
     this._test('Case5', tests, ({ face1, face2, color }) => {
       let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, color)
       return { edge, runTest: () => this._solveCase5(edge) }
+    })
+  }
+
+  testCase6() {
+    let tests = [
+      { face1: 'LEFT', face2: 'FRONT', color: 'R' },
+      { face1: 'LEFT', face2: 'FRONT', color: 'L' },
+      { face1: 'BACK', face2: 'LEFT', color: 'R' },
+      { face1: 'BACK', face2: 'LEFT', color: 'L' },
+      { face1: 'RIGHT', face2: 'BACK', color: 'R' },
+      { face1: 'RIGHT', face2: 'BACK', color: 'F' },
+      { face1: 'FRONT', face2: 'RIGHT', color: 'R' },
+      { face1: 'FRONT', face2: 'RIGHT', color: 'F' }
+    ]
+
+    this._test('Case6', tests, ({ face1, face2, color }) => {
+      let edge = Cubie.FromFaces([face1, face2]).colorFace(face2, 'U').colorFace(face1, color)
+      return { edge, runTest: () => this._solveCase6(edge) }
     })
   }
 
