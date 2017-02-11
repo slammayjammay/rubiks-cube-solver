@@ -118,7 +118,7 @@ class CrossSolver extends BaseSolver {
     let face = edge.faces().find(face => face !== 'UP')
     let prepMove = utils.getMoveOfFace(face)
 
-    if (caseNum === 3) {
+    if (caseNum === 4) {
       prepMove += 'Prime'
     }
 
@@ -223,7 +223,7 @@ class CrossSolver extends BaseSolver {
     ]
 
     this._test('Case3', tests, ({ crossColorFace, otherColor }) => {
-      let edge = Cubie.FromFaces(['UP', crossColorFace]).colorFace(crossColorFace, otherColor)
+      let edge = Cubie.FromFaces(['UP', crossColorFace]).colorFace(crossColorFace, 'U').colorFace('UP', otherColor)
       return { edge, runTest: () => this._solveCase3(edge) }
     })
   }
