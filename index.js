@@ -7,7 +7,6 @@ class Solver {
     let totalMoves = []
 
     let cross = new CrossSolver(this.cube)
-    cross.testAll()
 
     // let crossMoves = cross.solve(this.cube)
     // console.log(crossMoves)
