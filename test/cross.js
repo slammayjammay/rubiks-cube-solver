@@ -1,6 +1,6 @@
 const RubiksCube = require('../models/RubiksCube')
 const Cubie = require('../models/Cubie')
-const CrossSolver = require('../steps/CrossSolver')
+const CrossSolver = require('../solvers/CrossSolver')
 
 let case1Tests = [
   { face1: 'UP', face2: 'FRONT', color1: 'U', color2: 'F' },
