@@ -1,5 +1,5 @@
 const RubiksCube = require('./models/RubiksCube')
-const CrossSolver = require('./steps/CrossSolver')
+const CrossSolver = require('./solvers/CrossSolver')
 
 class Solver {
   constructor(cubeState) {
