@@ -83,6 +83,7 @@ class Face {
 
     let { axis, angle } = Vector.getRotationFromNormals(this.normal(), newFace.normal())
     this.vector.rotate(axis, angle)
+    return this
   }
 
   /**
