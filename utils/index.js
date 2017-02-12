@@ -37,50 +37,25 @@ const getMoveOfFace = (face) => {
  *   3) Of all the adjacent faces attached to the DOWN face (which is now the
  *      FRONT face), find the direction that points to 'RIGHT' (the given face).
  *   4) In this case, the function would return 'LEFT'.
- *   5) NOTE: The orientation object's key cannot be 'FRONT' or 'BACK'. `fromFace`
+ *   5) NOTE: The orientation object's key cannot be 'FRONT' or 'BACK'. `origin`
  *      is automatically oriented to become the FRONT face, and FRONT and BACK are not
  *      adjacent faces of FRONT.
  *
- * @param {Face|string} fromFace - The from face.
- * @param {Face|string} toFace - The to face.
+ * @param {string} origin - The origin face.
+ * @param {string} target - The target face.
  * @param {object} orientation - The object that specifies the cube orientation.
  * @return {string|number}
  */
-const getDirectionFromFaces = (fromFace, toFace, orientation) => {
-  let _orientationKey = Object.keys(orientation)[0].toUpperCase()
-
-  // throw error if orientation is not specific enough
-  if (['FRONT', 'BACK'].includes(_orientationKey)) {
-    throw new Error(`${orientation} does not correctly specify an orientation.`)
-  }
-
+const getDirectionFromFaces = (origin, target, orientation) => {
   // parse arguments, sort of
-  fromFace = new Face(fromFace)
-  toFace = new Face(toFace)
+  let _orientationKey = Object.keys(orientation)[0].toUpperCase()
+  const fromFace = new Face(origin)
+  const toFace = new Face(target)
   const orientationFrom = new Face(orientation[_orientationKey])
   const orientationTo = new Face(_orientationKey)
 
-  // rotate fromFace to FRONT, and save the rotation
-  let rotation1 = Vector.getRotationFromNormals(
-    fromFace.normal(),
-    fromFace.orientTo('FRONT').normal()
-  )
-
-  // rotate orientationFrom by rotation1
-  orientationFrom.rotate(rotation1.axis, rotation1.angle)
-
-  // rotate orientationFrom to orientationTo and save the rotation
-  let rotation2 = Vector.getRotationFromNormals(
-    orientationFrom.normal(),
-    orientationFrom.orientTo(orientationTo).normal()
-  )
-
-  // perform rotation2 on fromFace
-  fromFace.rotate(rotation2.axis, rotation2.angle)
-
-  // perform both rotations on toFace
-  toFace.rotate(rotation1.axis, rotation1.angle)
-  toFace.rotate(rotation2.axis, rotation2.angle)
+  let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo)
+  _rotateFacesByRotations([fromFace, toFace], rotations)
 
   let axis = new Vector(cross([], fromFace.normal(), toFace.normal())).getAxis()
   let direction = Vector.getAngle(fromFace.normal(), toFace.normal())
@@ -98,11 +73,41 @@ const getDirectionFromFaces = (fromFace, toFace, orientation) => {
 }
 
 /**
+ * See `getDirectionFromFaces`. Almost identical, but instead of finding a
+ * direction from an origin face and target face, this finds a target face from
+ * an origin face and direction.
+ * @param {string} origin - The origin face.
+ * @param {string} direction - The direction.
+ * @param {object} orientation - The orientation object.
+ * @return {string}
+ */
+const getFaceFromDirection = (origin, direction, orientation) => {
+  // parse arguments, sort of
+  let _orientationKey = Object.keys(orientation)[0].toUpperCase()
+  const fromFace = new Face(origin)
+  const orientationFrom = new Face(orientation[_orientationKey])
+  const orientationTo = new Face(_orientationKey)
+
+  let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo)
+  _rotateFacesByRotations([fromFace], rotations)
+
+  let directionFace = new Face(direction)
+  let { axis, angle } = Vector.getRotationFromNormals(fromFace.normal(), directionFace.normal())
+  fromFace.rotate(axis, angle).toString()
+
+  // at this point fromFace is now the target face, but we still need to revert
+  // the orientation to return the correct string
+  let reversedRotations = rotations.map(rotation => Vector.reverseRotation(rotation)).reverse()
+  _rotateFacesByRotations([fromFace], reversedRotations)
+  return fromFace.toString()
+}
+
+/**
  * Finds a move that rotates the given face around its normal, by the angle
  * described by normal1 -> normal2.
  * @param {string} face - The face to rotate.
- * @param {string} from - The from face.
- * @param {string} to - The to face.
+ * @param {string} from - The origin face.
+ * @param {string} to - The target face.
  * @return {string}
  */
 const getRotationFromTo = (face, from, to) => {
@@ -131,5 +136,63 @@ module.exports = {
   getFaceOfMove,
   getMoveOfFace,
   getDirectionFromFaces,
-  getRotationFromTo
+  getRotationFromTo,
+  getFaceFromDirection
+}
+
+//-----------------
+// Helper functions
+//-----------------
+
+/**
+ * @param {Face} fromFace - The from face.
+ * @param {Face} orientationFrom - The face that will become `orientationTo`.
+ * @param {Face} orientationTo - The face that `orientationFrom` becomes.
+ * @return {array}
+ */
+function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
+  // this is not meant to have any side effects, so clone the face objects.
+  fromFace = new Face(fromFace.toString())
+  orientationFrom = new Face(orientationFrom.toString())
+  orientationTo = new Face(orientationTo.toString())
+
+  // rotate fromFace to FRONT, and save the rotation
+  let rotation1 = Vector.getRotationFromNormals(
+    fromFace.normal(),
+    fromFace.orientTo('FRONT').normal()
+  )
+
+  // rotate orientationFrom by rotation1
+  orientationFrom.rotate(rotation1.axis, rotation1.angle)
+
+  // at this point, the fromFace has already become FRONT. The orientationFrom
+  // face and orientationTo face must be an adjacent face of FRONT. Otherwise,
+  // there are multiple orientations that are possible.
+  let _fromIsNotAjdacent = ['FRONT', 'BACK'].includes(orientationFrom.toString().toUpperCase())
+  let _toIsNotAjdacent = ['FRONT', 'BACK'].includes(orientationTo.toString().toUpperCase())
+
+  if (_fromIsNotAjdacent || _toIsNotAjdacent) {
+    throw new Error(`The provied orientation object does not correctly specify a cube orientation.`)
+  }
+
+  // rotate orientationFrom to orientationTo and save the rotation
+  let rotation2 = Vector.getRotationFromNormals(
+    orientationFrom.normal(),
+    orientationFrom.orientTo(orientationTo).normal()
+  )
+
+  return [rotation1, rotation2]
+}
+
+/**
+ * @param {array} - Array of Face objects to rotate.
+ * @param {array} - Array of rotations to apply to faces.
+ * @return {null}
+ */
+function _rotateFacesByRotations(faces, rotations) {
+  for (let face of faces) {
+    for (let rotation of rotations) {
+      face.rotate(rotation.axis, rotation.angle)
+    }
+  }
 }
