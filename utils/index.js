@@ -60,23 +60,20 @@ const getFaceDirection = (fromFace, toFace, orientation) => {
   const orientationFrom = new Face(orientation[_orientationKey])
   const orientationTo = new Face(_orientationKey)
 
-  let before, after
-  let rotation1, rotation2
-
   // rotate fromFace to FRONT, and save the rotation
-  before = fromFace.normal()
-  fromFace.orientTo('FRONT')
-  after = fromFace.normal()
-  rotation1 = Vector.getRotationFromNormals(before, after)
+  let rotation1 = Vector.getRotationFromNormals(
+    fromFace.normal(),
+    fromFace.orientTo('FRONT').normal()
+  )
 
   // rotate orientationFrom by rotation1
   orientationFrom.rotate(rotation1.axis, rotation1.angle)
 
   // rotate orientationFrom to orientationTo and save the rotation
-  before = orientationFrom.normal()
-  orientationFrom.orientTo(orientationTo)
-  after = orientationFrom.normal()
-  rotation2 = Vector.getRotationFromNormals(before, after)
+  let rotation2 = Vector.getRotationFromNormals(
+    orientationFrom.normal(),
+    orientationFrom.orientTo(orientationTo).normal()
+  )
 
   // perform rotation2 on fromFace
   fromFace.rotate(rotation2.axis, rotation2.angle)
