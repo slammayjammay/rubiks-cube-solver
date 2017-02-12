@@ -68,6 +68,15 @@ class Vector {
   }
 
   /**
+   * @param {object} rotation - The rotation to reverse.
+   * @return {object}
+   */
+  static reverseRotation(rotation) {
+    rotation.angle *= -1
+    return rotation
+  }
+
+  /**
    * @param {array} [vector] - Contains x, y, and z values.
    */
   constructor(vector) {
