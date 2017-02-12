@@ -46,7 +46,7 @@ const getMoveOfFace = (face) => {
  * @param {object} orientation - The object that specifies the cube orientation.
  * @return {string|number}
  */
-const getFaceDirection = (fromFace, toFace, orientation) => {
+const getDirectionFromFaces = (fromFace, toFace, orientation) => {
   let _orientationKey = Object.keys(orientation)[0].toUpperCase()
 
   // throw error if orientation is not specific enough
@@ -130,6 +130,6 @@ const getRotationFromTo = (face, from, to) => {
 module.exports = {
   getFaceOfMove,
   getMoveOfFace,
-  getFaceDirection,
+  getDirectionFromFaces,
   getRotationFromTo
 }

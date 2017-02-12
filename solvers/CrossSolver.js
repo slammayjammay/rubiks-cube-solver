@@ -58,7 +58,7 @@ class CrossSolver extends BaseSolver {
 
     let crossFace = edge.getFaceOfColor(CROSS_COLOR)
     let otherFace = edge.getFaceOfColor(edge.colors().find(color => color !== CROSS_COLOR))
-    let direction = utils.getFaceDirection(crossFace, otherFace, { UP: 'UP' })
+    let direction = utils.getDirectionFromFaces(crossFace, otherFace, { UP: 'UP' })
 
     if (direction === 'RIGHT') {
       return 5
