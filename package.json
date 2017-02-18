@@ -4,7 +4,9 @@
   "description": "Outputs a solution using the Fridrich Method for a given cube state.",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "ava test/*",
+    "test:models": "ava test/models/*",
+    "test:utils": "ava test/utils/*"
   },
   "keywords": [
     "rubiks",
@@ -18,5 +20,8 @@
   "license": "ISC",
   "dependencies": {
     "gl-vec3": "^1.0.3"
+  },
+  "devDependencies": {
+    "ava": "^0.18.1"
   }
 }
