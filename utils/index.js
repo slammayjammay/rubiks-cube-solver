@@ -7,6 +7,10 @@ const Vector = require('../models/Vector')
  * @return {string}
  */
 const getFaceOfMove = (move) => {
+  if (typeof move !== 'string') {
+    throw new TypeError('move must be a string')
+  }
+
   let faceLetter = move[0].toUpperCase()
 
   if (faceLetter === 'F') return 'FRONT'
@@ -23,6 +27,10 @@ const getFaceOfMove = (move) => {
  * @return {string}
  */
 const getMoveOfFace = (face) => {
+  if (!['FRONT', 'RIGHT', 'UP', 'DOWN', 'LEFT', 'BACK'].includes(face.toUpperCase())) {
+    throw new Error(`${face} is not valid face`)
+  }
+
   return face[0].toUpperCase()
 }
 
@@ -48,7 +56,7 @@ const getMoveOfFace = (face) => {
  */
 const getDirectionFromFaces = (origin, target, orientation) => {
   // parse arguments, sort of
-  let _orientationKey = Object.keys(orientation)[0].toUpperCase()
+  let _orientationKey = Object.keys(orientation)[0]
   const fromFace = new Face(origin)
   const toFace = new Face(target)
   const orientationFrom = new Face(orientation[_orientationKey])
@@ -114,6 +122,13 @@ const getRotationFromTo = (face, from, to) => {
   const rotationFace = new Face(face)
   const fromFace = new Face(from)
   const toFace = new Face(to)
+
+  let rotationAxis = rotationFace.vector.getAxis()
+  let [fromAxis, toAxis] = [fromFace.vector.getAxis(), toFace.vector.getAxis()]
+
+  if ([fromAxis.toLowerCase(), toAxis.toLowerCase()].includes(rotationAxis.toLowerCase())) {
+    throw new Error(`moving ${rotationFace} from ${fromFace} to ${toFace} is not possible.`)
+  }
 
   let move = getMoveOfFace(face)
   let angle = Vector.getAngle(fromFace.normal(), toFace.normal())
