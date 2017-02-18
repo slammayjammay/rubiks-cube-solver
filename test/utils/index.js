@@ -1,41 +1,33 @@
-const test = require('ava')
+const { assert, expect } = require('chai')
 const utils = require('../../utils')
 
-// getFaceOfMove
-test('getFaceOfMove works', t => t.is(utils.getFaceOfMove('R'), 'RIGHT'))
-test('getFaceOfMove lower case works', t => t.is(utils.getFaceOfMove('r'), 'RIGHT'))
-test('getFaceOfMove requires a string', t => t.throws(() => utils.getMoveOfFace(['not a string'])))
+describe('Utils', () => {
+  it('correcly returns a face given a move', () => {
+    assert(utils.getFaceOfMove('R') === 'RIGHT')
+    assert(utils.getFaceOfMove('r') === 'RIGHT')
+  })
 
-// getMoveOfFace
-test('getMoveOfFace works', t => t.is(utils.getMoveOfFace('RIGHT'), 'R'))
-test('getMoveOfFace lower case works', t => t.is(utils.getMoveOfFace('right'), 'R'))
-test('getMoveOfFace requires a string', t => t.throws(() => utils.getMoveOfFace(['not a string'])))
+  it('correctly returns a move given a face', () => {
+    assert(utils.getMoveOfFace('RIGHT') === 'R')
+    assert(utils.getMoveOfFace('right') === 'R')
+  })
 
-// getDirectionFromFaces
-let macro1 = (t, from, to, orientation, expected) => {
-  t.is(utils.getDirectionFromFaces(from, to, orientation), expected)
-}
-test('getDirectionFromFaces works', macro1, 'FRONT', 'RIGHT', { UP: 'UP' }, 'RIGHT')
-test('getDirectionFromFaces works', macro1, 'LEFT', 'DOWN', { UP: 'BACK' }, 'LEFT')
-test('getDirectionFromFaces lower case works', macro1, 'front', 'right', { up: 'up' }, 'RIGHT')
+  it('correctly returns the direction of two faces given an orientation', () => {
+    assert(utils.getDirectionFromFaces('FRONT', 'RIGHT', { UP: 'UP' }) === 'RIGHT')
+    assert(utils.getDirectionFromFaces('LEFT', 'DOWN', { UP: 'BACK' }) === 'LEFT')
+    // TODO: more of these
+  })
 
-// getFaceFromDirection
-let macro2 = (t, from, direction, orientation, expected) => {
-  t.is(utils.getFaceFromDirection(from, direction, orientation), expected)
-}
-test('getFaceFromDirection works', macro2, 'FRONT', 'RIGHT', { UP: 'UP' }, 'RIGHT')
-test('getFaceFromDirection works', macro2, 'LEFT', 'DOWN', { UP: 'BACK' }, 'FRONT')
-test('getFaceFromDirection works', macro2, 'BACK', 'RIGHT', { UP: 'DOWN' }, 'RIGHT')
+  it('correctly returns a face given an origin face and direction', () => {
+    assert(utils.getFaceFromDirection('FRONT', 'RIGHT', { UP: 'UP' }) === 'RIGHT')
+    assert(utils.getFaceFromDirection('LEFT', 'DOWN', { UP: 'BACK' }) === 'FRONT')
+    // TODO: more of these
+  })
 
-// getRotationFromTo
-let macro3 = (t, face, from, to, expected) => {
-  t.is(utils.getRotationFromTo(face, from, to), expected)
-}
-test ('getRotationFromTo works', macro3, 'UP', 'FRONT', 'RIGHT', 'UPrime')
-test ('getRotationFromTo lower case works', macro3, 'up', 'front', 'right', 'UPrime')
-test ('getRotationFromTo works', macro3, 'LEFT', 'FRONT', 'BACK', 'L L')
-test ('getRotationFromTo works', macro3, 'DOWN', 'LEFT', 'BACK', 'DPrime')
-test ('getRotationFromTo works', macro3, 'FRONT', 'UP', 'LEFT', 'FPrime')
-test('getRotationFromTo throws an error when given bad input', t => {
-  t.throws(() => utils.getRotationFromTo('UP', 'DOWN', 'LEFT'), Error)
+  it('correctly returns a move of a given face, from an origin face to target face', () => {
+    assert(utils.getRotationFromTo('UP', 'FRONT', 'RIGHT') === 'UPrime')
+    assert(utils.getRotationFromTo('LEFT', 'FRONT', 'BACK') === 'L L')
+    assert(utils.getRotationFromTo('DOWN', 'LEFT', 'BACK') === 'DPrime')
+    assert(utils.getRotationFromTo('FRONT', 'UP', 'LEFT') === 'FPrime')
+  })
 })

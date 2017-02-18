@@ -1,4 +1,4 @@
-const test = require('ava')
+const { assert } = require('chai')
 const RubiksCube = require('../../models/RubiksCube')
 const Cubie = require('../../models/Cubie')
 const CrossSolver = require('../../solvers/CrossSolver')
@@ -80,30 +80,32 @@ let correctCaseNumberTests = [
   { face1: 'RIGHT', face2: 'FRONT', expect: 6 }
 ]
 
-correctCaseNumberTests.forEach(({ face1, face2, expect }) => {
-  let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
-  let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber(edge)
+describe('Cross Solver', () => {
+  it('correctly identifies case numbers', () => {
+    correctCaseNumberTests.forEach(({ face1, face2, expect }) => {
+      let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
+      let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber(edge)
 
-  test('correct case numbers', t => {
-    t.is(result, expect)
-  })
-})
-
-allTests.forEach((caseTest, idx) => {
-  let crossSolver = new CrossSolver(RubiksCube.Solved())
-
-  for (let { face1, face2, color1, color2 } of caseTest) {
-    let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, color1).colorFace(face2, color2)
-    crossSolver.cube._cubies.push(edge)
-    crossSolver[`_solveCase${idx + 1}`](edge)
-
-    let otherColor = edge.colors().find(color => color !== 'U')
-    let otherFace = edge.faces().find(face => face !== 'UP')
-    const isMatchingMiddle = otherFace[0] === otherColor
-    const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
-
-    test(`solve case ${idx + 1}`, t => {
-      t.true(isOnCrossFace && isMatchingMiddle)
+      assert(result === expect)
     })
-  }
+  })
+
+  it ('solves each case correctly', () => {
+    allTests.forEach((caseTest, idx) => {
+      let crossSolver = new CrossSolver(RubiksCube.Solved())
+
+      for (let { face1, face2, color1, color2 } of caseTest) {
+        let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, color1).colorFace(face2, color2)
+        crossSolver.cube._cubies.push(edge)
+        crossSolver[`_solveCase${idx + 1}`](edge)
+
+        let otherColor = edge.colors().find(color => color !== 'U')
+        let otherFace = edge.faces().find(face => face !== 'UP')
+        const isMatchingMiddle = otherFace[0] === otherColor
+        const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
+
+        assert(isOnCrossFace && isMatchingMiddle)
+      }
+    })
+  })
 })

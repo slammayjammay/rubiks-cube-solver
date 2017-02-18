@@ -1,44 +1,61 @@
-const test = require('ava')
+const { assert, expect } = require('chai')
 const Cubie = require('../../models/Cubie')
 
-test.beforeEach(t => {
-  t.context.cubie = new Cubie({
-    position: [1, 1, 1],
-    colorMap: {
-      '0 0 1': 'F',
-      '1 0 0': 'R',
-      '0 1 0': 'U'
-    }
+describe('Cubie Model', () => {
+  let cubie
+  beforeEach(() => {
+    cubie = new Cubie({
+      position: [1, 1, 1],
+      colorMap: {
+        '0 0 1': 'F',
+        '1 0 0': 'R',
+        '0 1 0': 'U'
+      }
+    })
   })
-})
 
-test('getColorOfFace() works', t => {
-  t.plan(3)
+  it('can return the color of a face', () => {
+    assert(cubie.getColorOfFace('FRONT') === 'F')
+    assert(cubie.getColorOfFace('RIGHT') === 'R')
+    assert(cubie.getColorOfFace('UP') === 'U')
+  })
 
-  t.is(t.context.cubie.getColorOfFace('FRONT'), 'F')
-  t.is(t.context.cubie.getColorOfFace('RIGHT'), 'R')
-  t.is(t.context.cubie.getColorOfFace('UP'), 'U')
-})
+  it('can return the face of a color', () => {
+    assert(cubie.getFaceOfColor('F') === 'FRONT')
+    assert(cubie.getFaceOfColor('R') === 'RIGHT')
+    assert(cubie.getFaceOfColor('U') === 'UP')
+  })
 
-test('getFaceOfColor() works', t => {
-  t.plan(3)
+  describe('can rotate around the "x" axis', () => {
+    it('updates its position', () => {
+      cubie.rotate('x', -Math.PI / 2) // R
+      expect(cubie.position()).to.deep.equal([1, 1, -1])
+    })
 
-  t.is(t.context.cubie.getFaceOfColor('F'), 'FRONT')
-  t.is(t.context.cubie.getFaceOfColor('R'), 'RIGHT')
-  t.is(t.context.cubie.getFaceOfColor('U'), 'UP')
-})
+    it('updates its color map', () => {
+      // TODO
+    })
+  })
 
-test('rotateing around "x" updates cubie position correctly', t => {
-  t.context.cubie.rotate('x', -Math.PI / 2) // R
-  t.deepEqual(t.context.cubie.position(), [1, 1, -1])
-})
+  describe('can rotate around the "y" axis', () => {
+    it('updates its position', () => {
+      cubie.rotate('y', -Math.PI / 2) // U
+      expect(cubie.position()).to.deep.equal([-1, 1, 1])
+    })
 
-test('rotateing around "y" updates cubie position correctly', t => {
-  t.context.cubie.rotate('y', -Math.PI / 2) // U
-  t.deepEqual(t.context.cubie.position(), [-1, 1, 1])
-})
+    it('updates its color map', () => {
+      // TODO
+    })
+  })
 
-test('rotateing around "z" updates cubie position correctly', t => {
-  t.context.cubie.rotate('z', -Math.PI / 2) // F
-  t.deepEqual(t.context.cubie.position(), [1, -1, 1])
+  describe('can rotate around the "z" axis', () => {
+    it('updates its position', () => {
+      cubie.rotate('z', -Math.PI / 2) // F
+      expect(cubie.position()).to.deep.equal([1, -1, 1])
+    })
+
+    it('updates its color map', () => {
+      // TODO
+    })
+  })
 })

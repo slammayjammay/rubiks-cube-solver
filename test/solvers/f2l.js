@@ -1,22 +1,49 @@
-const test = require('ava')
+const { assert } = require('chai')
 const RubiksCube = require('../../models/RubiksCube')
 const Cubie = require('../../models/Cubie')
 const F2LSolver = require('../../solvers/F2LSolver')
 
-let f2lSolver = new F2LSolver(RubiksCube.Solved())
+describe('F2L Solver', () => {
+  it('knows if a pair is matching', () => {
+    let solver = new F2LSolver(RubiksCube.Solved())
 
-let color1 = 'R'
-let color2 = 'F'
+    let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
+      .colorFace('FRONT', 'U')
+      .colorFace('DOWN', 'F')
+      .colorFace('RIGHT', 'R')
+    let edge = Cubie.FromFaces(['RIGHT', 'DOWN'])
+      .colorFace('RIGHT', 'R')
+      .colorFace('DOWN', 'F')
 
-let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
-  .colorFace('FRONT', 'U')
-  .colorFace('DOWN', 'F')
-  .colorFace('RIGHT', 'R')
-let edge = Cubie.FromFaces(['RIGHT', 'DOWN'])
-  .colorFace('RIGHT', 'R')
-  .colorFace('DOWN', 'F')
+    // solver.cube._cubies.push(...[corner, edge])
+    // solver.solveMatchedPair({ corner, edge })
 
-f2lSolver.cube._cubies.push(...[corner, edge])
-f2lSolver.solveMatchedPair({ corner, edge })
+    assert(solver.isPairMatched({ corner, edge }))
+  })
+})
 
-test('stops ava from complaining about no tests.', t => t.true(true))
+// test.beforeEach(t => {
+//   let solver = new F2LSolver(RubiksCube.Solved())
+//
+//   let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
+//     .colorFace('FRONT', 'U')
+//     .colorFace('DOWN', 'F')
+//     .colorFace('RIGHT', 'R')
+//   let edge = Cubie.FromFaces(['RIGHT', 'DOWN'])
+//     .colorFace('RIGHT', 'R')
+//     .colorFace('DOWN', 'F')
+//
+//   solver.cube._cubies.push(...[corner, edge])
+//   solver.solveMatchedPair({ corner, edge })
+//
+//   t.context.solver = solver
+//   t.context.corner = corner
+//   t.context.edge = edge
+// })
+//
+// test('it knows if a pair is matching', t => {
+//   t.true(t.context.solver.isPairMatched({
+//     corner: t.context.corner,
+//     edge: t.context.edge
+//   }))
+// })
