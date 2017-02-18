@@ -4,9 +4,10 @@
   "description": "Outputs a solution using the Fridrich Method for a given cube state.",
   "main": "index.js",
   "scripts": {
-    "test": "ava test/*",
-    "test:models": "ava test/models/*",
-    "test:utils": "ava test/utils/*"
+    "test": "mocha test/* || true",
+    "test:models": "mocha test/models/* || true",
+    "test:solvers": "mocha test/solvers/* || true",
+    "test:utils": "mocha test/utils/* || true"
   },
   "keywords": [
     "rubiks",
@@ -22,6 +23,7 @@
     "gl-vec3": "^1.0.3"
   },
   "devDependencies": {
-    "ava": "^0.18.1"
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
   }
 }
