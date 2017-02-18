@@ -44,7 +44,7 @@ class Cubie {
    */
   position(position) {
     if (typeof position === 'undefined') {
-      return this.vector.toArray()
+      return !!this.vector ? this.vector.toArray() : this.vector
     }
 
     this.vector = new Vector(position)
