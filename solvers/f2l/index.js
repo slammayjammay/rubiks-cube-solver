@@ -44,13 +44,3 @@ class F2LSolver extends BaseSolver {
 }
 
 module.exports = F2LSolver
-
-
-
-
-
-
-
-
-
-//
