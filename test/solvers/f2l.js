@@ -1,12 +1,13 @@
 const { assert } = require('chai')
 const RubiksCube = require('../../models/RubiksCube')
 const Cubie = require('../../models/Cubie')
-const F2LSolver = require('../../solvers/F2LSolver')
+const F2LSolver = require('../../solvers/f2l')
+const utils = require('../../utils')
 
 describe('F2L Solver', () => {
-  it('knows if a pair is matching', () => {
-    let solver = new F2LSolver(RubiksCube.Solved())
+  let solver = new F2LSolver(RubiksCube.Solved())
 
+  it('knows if a corner matches an edge', () => {
     let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
       .colorFace('FRONT', 'U')
       .colorFace('DOWN', 'F')
@@ -15,35 +16,42 @@ describe('F2L Solver', () => {
       .colorFace('RIGHT', 'R')
       .colorFace('DOWN', 'F')
 
-    // solver.cube._cubies.push(...[corner, edge])
-    // solver.solveMatchedPair({ corner, edge })
+    assert(solver.colorsMatch({ corner, edge }))
+  })
+
+  it('knows if a pair is matched', () => {
+    let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
+      .colorFace('FRONT', 'U')
+      .colorFace('DOWN', 'F')
+      .colorFace('RIGHT', 'R')
+    let edge = Cubie.FromFaces(['RIGHT', 'DOWN'])
+      .colorFace('RIGHT', 'R')
+      .colorFace('DOWN', 'F')
 
     assert(solver.isPairMatched({ corner, edge }))
   })
-})
 
-// test.beforeEach(t => {
-//   let solver = new F2LSolver(RubiksCube.Solved())
-//
-//   let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
-//     .colorFace('FRONT', 'U')
-//     .colorFace('DOWN', 'F')
-//     .colorFace('RIGHT', 'R')
-//   let edge = Cubie.FromFaces(['RIGHT', 'DOWN'])
-//     .colorFace('RIGHT', 'R')
-//     .colorFace('DOWN', 'F')
-//
-//   solver.cube._cubies.push(...[corner, edge])
-//   solver.solveMatchedPair({ corner, edge })
-//
-//   t.context.solver = solver
-//   t.context.corner = corner
-//   t.context.edge = edge
-// })
-//
-// test('it knows if a pair is matching', t => {
-//   t.true(t.context.solver.isPairMatched({
-//     corner: t.context.corner,
-//     edge: t.context.edge
-//   }))
-// })
+  it('knows if a pair is separated', () => {
+    let corner = Cubie.FromFaces(['FRONT', 'DOWN', 'RIGHT'])
+      .colorFace('FRONT', 'U')
+      .colorFace('DOWN', 'F')
+      .colorFace('RIGHT', 'R')
+    let edge = Cubie.FromFaces(['LEFT', 'DOWN'])
+      .colorFace('LEFT', 'F')
+      .colorFace('DOWN', 'R')
+
+    assert(solver.isPairSeparated({ corner, edge }))
+  })
+
+  it('knows if a pair is solved', () => {
+    let corner = Cubie.FromFaces(['FRONT', 'UP', 'RIGHT'])
+      .colorFace('FRONT', 'F')
+      .colorFace('UP', 'U')
+      .colorFace('RIGHT', 'R')
+    let edge = Cubie.FromFaces(['FRONT', 'RIGHT'])
+      .colorFace('FRONT', 'F')
+      .colorFace('RIGHT', 'R')
+
+    assert(solver.isPairSolved({ corner, edge }))
+  })
+})

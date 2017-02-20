@@ -1,8 +1,8 @@
-const BaseSolver = require('./BaseSolver')
-const RubiksCube = require('../models/RubiksCube')
-const Cubie = require('../models/Cubie')
-const Face = require('../models/Face')
-const utils = require('../utils')
+const BaseSolver = require('../BaseSolver')
+const RubiksCube = require('../../models/RubiksCube')
+const Cubie = require('../../models/Cubie')
+const Face = require('../../models/Face')
+const utils = require('../../utils')
 
 const CROSS_COLOR = 'U'
 
