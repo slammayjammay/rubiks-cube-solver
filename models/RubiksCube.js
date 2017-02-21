@@ -18,7 +18,7 @@ class RubiksCube {
 
      for (let notation of notations.split(' ').filter(move => move !== '')) {
        notation = notation.toUpperCase()
-       notation = notation.includes('PRIME') ? notation[0] : `${notation}Prime`
+       notation = notation.includes('PRIME') ? notation[0] : `${notation[0]}Prime`
        reversedMoves.push(notation)
      }
 
