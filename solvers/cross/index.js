@@ -29,7 +29,7 @@ class CrossSolver extends BaseSolver {
    */
   _solveEdge(edge) {
     let caseNumber = this._getCaseNumber(edge)
-    let solveMoves = this[`_solveCase${caseNumber}`](edge)
+    this[`_solveCase${caseNumber}`](edge)
   }
 
   /**
