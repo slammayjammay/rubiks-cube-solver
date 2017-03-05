@@ -16,6 +16,25 @@ class CrossSolver extends BaseSolver {
     return this.totalMoves.join(' ')
   }
 
+  isSolved() {
+    let edges = this._getCrossEdges()
+    for (let edge of edges) {
+      if (!this.edgeIsSolved(edge)) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  edgeIsSolved(edge) {
+    const isOnCrossFace = edge.getFaceOfColor('U') === 'UP'
+    let otherColor = edge.colors().find(c => c !== 'UP')
+    const matchesMiddle = edge.getFaceOfColor(otherColor) === utils.getFaceOfMove(otherColor)
+
+    return isOnCrossFace && matchesMiddle
+  }
+
   /**
    * Finds all edges that have 'F' as a color.
    * @return {array}
@@ -115,11 +134,11 @@ class CrossSolver extends BaseSolver {
   }
 
   _case3And4Helper(edge, caseNum) {
-    let face = edge.faces().find(face => face !== 'UP')
+    let face = edge.faces().find(face => !['UP', 'DOWN'].includes(face))
     let prepMove = utils.getMoveOfFace(face)
 
-    if (caseNum === 4) {
-      prepMove += 'Prime'
+    if (caseNum === 3) {
+      prepMove = RubiksCube.reverseMoves(prepMove)
     }
 
     return prepMove
