@@ -9,6 +9,32 @@ class RubiksCube {
      return new RubiksCube('FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB')
    }
 
+   static Scrambled() {
+     let cube = RubiksCube.Solved()
+     let scrambleMoves = []
+     let totalMoves = [
+       'F',
+       'FPrime',
+       'R',
+       'RPrime',
+       'U',
+       'UPrime',
+       'D',
+       'DPrime',
+       'L',
+       'LPrime',
+       'B',
+       'BPrime'
+     ]
+
+     for (let i = 0; i < 25; i++) {
+       let idx = ~~(Math.random() * totalMoves.length)
+       cube.move(totalMoves[idx])
+     }
+
+     return cube
+   }
+
    /**
     * @param {string} notations - The list of moves to reverse.
     * @return {string}
