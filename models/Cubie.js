@@ -38,6 +38,16 @@ class Cubie {
   }
 
   /**
+   * @return {Cubie}
+   */
+  clone() {
+    return new Cubie({
+      position: this.position(),
+      colorMap: this.colorMap
+    })
+  }
+
+  /**
    * Getter/setter for the vector position.
    * @param {array} [position] - The new position to store.
    * @return {array}
