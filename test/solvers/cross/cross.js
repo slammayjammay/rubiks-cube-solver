@@ -1,7 +1,7 @@
 const { assert } = require('chai')
-const RubiksCube = require('../../models/RubiksCube')
-const Cubie = require('../../models/Cubie')
-const CrossSolver = require('../../solvers/cross')
+const RubiksCube = require('../../../models/RubiksCube')
+const Cubie = require('../../../models/Cubie')
+const CrossSolver = require('../../../solvers/cross')
 
 let case1Tests = [
   { face1: 'UP', face2: 'FRONT', color1: 'U', color2: 'F' },
@@ -26,17 +26,6 @@ let case2Tests = [
 ]
 
 let case3Tests = [
-  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'F' },
-  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'L' },
-  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'R' },
-  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'B' },
-  { face1: 'RIGHT', face2: 'UP', color1: 'U', color2: 'L' },
-  { face1: 'RIGHT', face2: 'UP', color1: 'U', color2: 'F' },
-  { face1: 'LEFT', face2: 'UP', color1: 'U', color2: 'B' },
-  { face1: 'BACK', face2: 'UP', color1: 'U', color2: 'L' }
-]
-
-let case4Tests = [
   { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'F' },
   { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'L' },
   { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'R' },
@@ -45,6 +34,17 @@ let case4Tests = [
   { face1: 'RIGHT', face2: 'DOWN', color1: 'U', color2: 'F' },
   { face1: 'LEFT', face2: 'DOWN', color1: 'U', color2: 'B' },
   { face1: 'BACK', face2: 'DOWN', color1: 'U', color2: 'L' }
+]
+
+let case4Tests = [
+  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'F' },
+  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'L' },
+  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'R' },
+  { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'B' },
+  { face1: 'RIGHT', face2: 'UP', color1: 'U', color2: 'L' },
+  { face1: 'RIGHT', face2: 'UP', color1: 'U', color2: 'F' },
+  { face1: 'LEFT', face2: 'UP', color1: 'U', color2: 'B' },
+  { face1: 'BACK', face2: 'UP', color1: 'U', color2: 'L' }
 ]
 
 let case5Tests = [
@@ -81,20 +81,19 @@ let correctCaseNumberTests = [
 ]
 
 describe('Cross Solver', () => {
-  it('correctly identifies case numbers', () => {
-    correctCaseNumberTests.forEach(({ face1, face2, expect }) => {
-      let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
-      let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber(edge)
-
-      assert(result === expect)
-    })
+  correctCaseNumberTests.forEach(({ face1, face2, expect }, caseNum) => {
+		it(`identifies case ${caseNum + 1}`, () => {
+    	let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
+    	let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber(edge)
+    	assert(result === expect)
+		})
   })
 
-  it ('solves each case correctly', () => {
-    allTests.forEach((caseTest, idx) => {
-      let crossSolver = new CrossSolver(RubiksCube.Solved())
+  allTests.forEach((caseTest, idx) => {
+    let crossSolver = new CrossSolver(RubiksCube.Solved())
 
-      for (let { face1, face2, color1, color2 } of caseTest) {
+  	it (`solves case ${idx + 1}`, () => {
+    	for (let { face1, face2, color1, color2 } of caseTest) {
         let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, color1).colorFace(face2, color2)
         crossSolver.cube._cubies.push(edge)
         crossSolver[`_solveCase${idx + 1}`](edge)
@@ -105,7 +104,7 @@ describe('Cross Solver', () => {
         const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
 
         assert(isOnCrossFace && isMatchingMiddle)
-      }
+    	}
     })
   })
 })

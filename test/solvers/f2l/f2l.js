@@ -1,8 +1,8 @@
 const { assert } = require('chai')
-const RubiksCube = require('../../models/RubiksCube')
-const Cubie = require('../../models/Cubie')
-const F2LSolver = require('../../solvers/f2l')
-const utils = require('../../utils')
+const RubiksCube = require('../../../models/RubiksCube')
+const Cubie = require('../../../models/Cubie')
+const F2LSolver = require('../../../solvers/f2l')
+const utils = require('../../../utils')
 
 describe('F2L Solver', () => {
   let solver = new F2LSolver(RubiksCube.Solved())
