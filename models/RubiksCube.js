@@ -149,7 +149,7 @@ class RubiksCube {
    /**
     * @param {array} pos - The x, y, and z value of the cubie.
     */
-   getCubieAtPosition(pos) {
+   pieceAt(pos) {
      for (let cubie of this._cubies) {
       if (Vector.areEqual(cubie.position(), pos)) {
          return cubie
