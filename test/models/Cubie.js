@@ -7,9 +7,9 @@ describe('Cubie Model', () => {
     cubie = new Cubie({
       position: [1, 1, 1],
       colorMap: {
-        '0 0 1': 'F',
-        '1 0 0': 'R',
-        '0 1 0': 'U'
+        'FRONT': 'F',
+        'RIGHT': 'R',
+        'UP': 'U'
       }
     })
   })
