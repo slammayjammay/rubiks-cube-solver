@@ -31,81 +31,52 @@ class case1Solver extends BaseSolver {
    * TODO: refactor
    */
   _getCaseNumber({ corner, edge }) {
-    if (corner.faces().includes('DOWN')) {
-      return this._getGroup1Case({ corner, edge })
+    if (this.isPairMatched({ corner, edge })) {
+      return 1
+    }
+    if (this.isPairSeparated({ corner, edge })) {
+      return 2
     }
 
-    let primaryColor = edge.colors().find(color => {
-      return edge.getFaceOfColor(color) !== 'DOWN'
+    let sharedFace
+    edge.faces().forEach(face => {
+      if (corner.faces().includes(face) && face !== 'DOWN') {
+        sharedFace = face
+      }
     })
     let otherColor = corner.colors().find(color => {
-      return color !== 'U' && corner.getFaceOfColor(color) !== 'DOWN'
+      return color !== 'U' && color !== corner.getColorOfFace('DOWN')
     })
+    let primaryColor = edge.colors().find(c => edge.getFaceOfColor(c) !== 'DOWN')
 
-    if (primaryColor === otherColor) {
-      return this._getGroup2Case({ corner, edge })
-    } else {
-      return this._getGroup3Case({ corner, edge })
-    }
-  }
-
-  _getGroup1Case({ corner, edge }) {
-    let sharedFace = false
-    for (let face of edge.faces()) {
-      if (corner.faces().includes(face)) {
-        sharedFace = face
-        break
-      }
-    }
-
-    if (sharedFace) {
-      if (corner.getColorOfFace(sharedFace) === edge.getColorOfFace(sharedFace)) {
-        return 1
+    // Group 1
+    if (corner.getFaceOfColor('U') === 'DOWN') {
+      if (sharedFace) {
+        if (corner.getColorOfFace(sharedFace) === edge.getColorOfFace(sharedFace)) {
+          return 3
+        } else {
+          return 4
+        }
       } else {
-        return 2
+        return 5
       }
     }
 
-    let edgePrimaryColor = edge.colors().filter(color => edge.getFaceOfColor(color) !== 'DOWN')
-    let faces = corner.faces().filter(face => face !== 'DOWN')
 
-    let cornerRightColor
-    if (utils.getFaceFromDirection(faces[0], 'RIGHT', { UP: 'UP' }) === faces[1]) {
-      cornerRightColor = faces[1]
-    } else if (utils.getFaceFromDirection(faces[1], 'RIGHT', { UP: 'UP' }) === faces[0]) {
-      cornerRightColor = faces[0]
+    // Group 2
+    if (otherColor === primaryColor) {
+      if (sharedFace) {
+        return 6
+      } else {
+        return 7
+      }
     }
 
-    if (cornerRightColor === edgePrimaryColor) {
-      return 3
-    } else {
-      return 4
-    }
-  }
-
-  _getGroup2Case({ corner, edge }) {
-    if (this.isPairMatched({ corner, edge })) {
-      return 5
-    }
-
-    // corner and edge share a face
-    if (corner.faces().includes(edge.faces().find(face => face !== 'DOWN'))) {
-      return 6
-    } else {
-      return 7
-    }
-  }
-
-  _getGroup3Case({ corner, edge }) {
-    if (this.isPairSeparated({ corner, edge })) {
+    // Group 3
+    if (sharedFace) {
       return 8
-    }
-
-    // corner and edge share a face
-    if (corner.faces().includes(edge.faces().find(face => face !== 'DOWN'))) {
-      return 9
     } else {
-      return 10
+      return 9
     }
   }
 
@@ -120,18 +91,21 @@ class case1Solver extends BaseSolver {
   _solveCase3({ corner, edge }) {
     // calculate which side the corner is on, the position, etc.
     let currentFace = edge.faces().find(face => face !== 'DOWN')
-    let targetFace = utils.getMoveOfColor(edge.getColorOfFace('DOWN'))
+    let targetFace = utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
     let prepFace = utils.getFaceFromDirection(targetFace, 'BACK', { DOWN: 'DOWN'})
-    let otherFace = corner.faces().find(face => !edge.faces().includes(face))
-    let isLeft = utils.getFaceFromDirection(targetFace, otherFace, { DOWN: 'DOWN' }) === 'LEFT'
+    let otherFace = utils.getFaceOfMove(edge.faces().find(face => face !== 'DOWN'))
+    let isLeft = utils.getFaceFromDirection(currentFace, otherFace, { DOWN: 'DOWN' }) === 'LEFT'
 
     // the moves
-    let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
+    let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
     let moveFace = utils.getMoveOfFace(otherFace)
     let dir = isLeft ? 'D' : 'DPrime'
 
-    let solveMoves = `${prep} ${moveFace} ${moveFace} D D`
+    moveFace = isLeft ? moveFace : R(moveFace)
+
+    let solveMoves = `${prep} ${moveFace} ${moveFace} D D `
     solveMoves += `${moveFace} ${dir} ${R(moveFace)} ${dir} ${moveFace} ${moveFace}`
+    console.log(solveMoves);
     this.move(solveMoves)
   }
 
