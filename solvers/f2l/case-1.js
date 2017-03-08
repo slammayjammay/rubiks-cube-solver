@@ -105,7 +105,6 @@ class case1Solver extends BaseSolver {
 
     let solveMoves = `${prep} ${moveFace} ${moveFace} D D `
     solveMoves += `${moveFace} ${dir} ${R(moveFace)} ${dir} ${moveFace} ${moveFace}`
-    console.log(solveMoves);
     this.move(solveMoves)
   }
 
