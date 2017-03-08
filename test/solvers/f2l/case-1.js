@@ -1,0 +1,44 @@
+const { assert, expect } = require('chai')
+const RubiksCube = require('../../../models/RubiksCube')
+const Cubie = require('../../../models/Cubie')
+const Case1Solver = require('../../../solvers/f2l/case-1')
+
+let case1 = {
+  cornerMap: { FRONT: 'U', RIGHT: 'R', DOWN: 'F' },
+  edgeMap: { RIGHT: 'R', DOWN: 'F' },
+  cornerPos: [1, -1, 1],
+  edgePos: [1, -1, 0]
+}
+let case2 = {
+  cornerMap: { LEFT: 'F', FRONT: 'U', DOWN: 'R' },
+  edgeMap: { RIGHT: 'R', DOWN: 'F' },
+  cornerPos: [-1, -1, 1],
+  edgePos: [1, -1, 0]
+}
+let case3 = {
+  cornerMap: { LEFT: 'R', FRONT: 'F', DOWN: 'U' },
+  edgeMap: { FRONT:'F', DOWN: 'R' },
+  cornerPos: [-1, -1, 1],
+  edgePos: [0, -1, 1]
+}
+let allCases = [case1, case2, case3]
+
+describe('F2L case 1 solver', () => {
+  allCases.forEach(({ cornerMap, edgeMap, cornerPos, edgePos }, caseNum) => {
+    let cube = RubiksCube.Solved()
+    let corner = new Cubie({ position: cornerPos, colorMap: cornerMap })
+    let edge = new Cubie({ position: edgePos, colorMap: edgeMap })
+    cube._cubies.push(...[corner, edge])
+
+    let solver = new Case1Solver(cube)
+
+    it(`identifies case ${caseNum + 1}`, () => {
+      assert(solver._getCaseNumber({ corner, edge }))
+    })
+
+    it(`solves case ${caseNum + 1}`, () => {
+      solver.solve({ corner, edge })
+      assert(solver.isPairSolved({ corner, edge }))
+    })
+  })
+})
