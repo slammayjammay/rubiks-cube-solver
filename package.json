@@ -4,7 +4,8 @@
   "description": "Outputs a solution using the Fridrich Method for a given cube state.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/* || true",
+    "test": "mocha test/**/* || true",
+    "test:dynamic": "mocha test/dynamic.js || true",
     "test:models": "mocha test/models/* || true",
     "test:solvers": "mocha test/solvers/* || true",
     "test:utils": "mocha test/utils/* || true"
