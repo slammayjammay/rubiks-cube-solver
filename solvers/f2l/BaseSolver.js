@@ -133,17 +133,18 @@ class F2LBaseSolver extends BaseSolver {
     let isLeft = utils.getDirectionFromFaces(
       corner.getFaceOfColor('U'),
       edge.getFaceOfColor(matchedColor),
-      { UP: 'UP' }
-    ).toUpperCase() === 'RIGHT' // may be counter-intuitive. The cross face is on UP
+      { UP: 'DOWN' }
+    ).toUpperCase() === 'LEFT'
 
     let currentFace = corner.getFaceOfColor('U')
     let prepFace = utils.getFaceOfMove(matchedColor)
 
     let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
-    let match = `${utils.getMoveOfFace(prepFace)}${isLeft ? 'Prime' : ''}`
+    let match = utils.getMoveOfFace(prepFace)
+    match = isLeft ? R(match) : match
     let insert = isLeft ? 'DPrime' : 'D'
 
-    this.move(`${prep} ${match} ${insert} ${RubiksCube.reverseMoves(match)}`)
+    this.move(`${prep} ${match} ${insert} ${R(match)}`)
   }
 }
 
