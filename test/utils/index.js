@@ -21,6 +21,7 @@ describe('Utils', () => {
   it('correctly returns a face given an origin face and direction', () => {
     assert(utils.getFaceFromDirection('FRONT', 'RIGHT', { UP: 'UP' }) === 'RIGHT')
     assert(utils.getFaceFromDirection('LEFT', 'DOWN', { UP: 'BACK' }) === 'FRONT')
+    assert(utils.getFaceFromDirection('RIGHT', 'BACK', { UP: 'DOWN' }) === 'LEFT')
     // TODO: more of these
   })
 
