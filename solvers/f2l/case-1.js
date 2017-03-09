@@ -184,7 +184,6 @@ class case1Solver extends BaseSolver {
 
     let cornerPrep = utils.getRotationFromTo('DOWN', cornerCurrent, cornerTarget)
     this.move(cornerPrep)
-    console.log(cornerPrep)
 
     let edgeCurrent = edge.getFaceOfColor(primary)
     let edgeTarget = corner.getFaceOfColor(primary)
@@ -192,7 +191,6 @@ class case1Solver extends BaseSolver {
     let open = isLeft ? corner.getFaceOfColor('U') : R(corner.getFaceOfColor('U'))
     let edgeMatch = utils.getRotationFromTo('DOWN', edgeCurrent, edgeTarget)
     this.move(`${open} ${edgeMatch} ${R(open)}`)
-    console.log(`${open} ${edgeMatch} ${R(open)}`)
 
     this.solveMatchedPair({ corner, edge })
   }
