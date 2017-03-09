@@ -2,6 +2,8 @@ const BaseSolver = require('../BaseSolver')
 const RubiksCube = require('../../models/RubiksCube')
 const utils = require('../../utils')
 
+const R = (moves) => RubiksCube.reverseMoves(moves)
+
 /**
  * NOTE: Solving this step is done when the cube is oriented so that the cross
  * face is on UP.
@@ -108,17 +110,18 @@ class F2LBaseSolver extends BaseSolver {
     let isLeft = utils.getDirectionFromFaces(
       edge.getFaceOfColor(matchedColor),
       corner.getFaceOfColor('U'),
-      { UP: 'UP' }
-    ).toUpperCase() === 'RIGHT' // may be counter-intuitive. The cross face is on UP
+      { UP: 'DOWN' }
+    ).toUpperCase() === 'LEFT'
 
     let matchingFace = utils.getFaceOfMove(matchedColor)
+    let currentFace = corner.getFaceOfColor(matchedColor)
     let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'RIGHT' : 'LEFT', { UP: 'UP' })
 
-    let prep = utils.getRotationFromTo('DOWN', matchingFace, prepFace)
-    let open = `${utils.getMoveOfFace(matchingFace)}${isLeft ? '' : 'Prime'}`
+    let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
+    let open = isLeft ? matchingFace : R(matchingFace)
     let insert = isLeft ? 'DPrime' : 'D'
 
-    this.move(`${prep} ${open} ${insert} ${RubiksCube.reverseMoves(open)}`)
+    this.move(`${prep} ${open} ${insert} ${R(open)}`)
   }
 
   solveSeparatedPair({ corner, edge }) {
