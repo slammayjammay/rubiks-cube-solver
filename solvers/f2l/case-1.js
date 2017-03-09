@@ -111,9 +111,9 @@ class case1Solver extends BaseSolver {
   _solveCase4({ corner, edge }) {
     // calculate which side the corner is on, the position, etc.
     let currentFace = edge.faces().find(face => face !== 'DOWN')
-    let targetFace = utils.getMoveOfColor(edge.getColorOfFace(currentFace))
+    let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
     let otherFace = corner.faces().find(face => !edge.faces().includes(face))
-    let isLeft = utils.getFaceFromDirection(otherFace, current, { DOWN: 'DOWN' }) === 'LEFT'
+    let isLeft = utils.getFaceFromDirection(otherFace, currentFace, { DOWN: 'DOWN' }) === 'LEFT'
 
     // the moves
     let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
@@ -129,8 +129,8 @@ class case1Solver extends BaseSolver {
     let secondary = edge.colors().find(color => edge.getFaceOfColor(color) === 'DOWN')
 
     let isLeft = utils.getFaceFromDirection(
-      utils.getMoveOfFace(edge.getFaceOfColor(primary)),
-      utils.getMoveOfFace(edge.getFaceOfColor(secondary)),
+      utils.getFaceOfMove(primary),
+      utils.getFaceOfMove(secondary),
       { DOWN: 'DOWN' }
     ) === 'RIGHT'
 
@@ -148,9 +148,8 @@ class case1Solver extends BaseSolver {
     // the moves
     let cornerPrep = utils.getRotationFromTo('DOWN', cornerCurrent, cornerTarget)
     let open = isLeft ? R(edgeTarget) : edgeTarget
-    let dir = isLeft ? 'DPrime' : 'D'
 
-    this.move(`${open} ${cornerPrep} ${dir} ${R(open)}`)
+    this.move(`${open} ${cornerPrep} ${R(open)}`)
     this.solveMatchedPair({ corner, edge })
   }
 
@@ -160,8 +159,8 @@ class case1Solver extends BaseSolver {
     let currentFace = edge.getFaceOfColor(primary)
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
     let isLeft = utils.getDirectionFromFaces(
-      corner.getFaceOfColor(primary),
       currentFace,
+      corner.getFaceOfColor(primary),
       { DOWN: 'DOWN' }
     ) === 'LEFT'
 
@@ -180,18 +179,20 @@ class case1Solver extends BaseSolver {
     let isLeft = utils.getDirectionFromFaces(
       corner.getFaceOfColor(primary),
       corner.getFaceOfColor('U'),
-      { DOWN: 'DOWN' }
+      { UP: 'DOWN' }
     ) === 'LEFT'
 
     let cornerPrep = utils.getRotationFromTo('DOWN', cornerCurrent, cornerTarget)
     this.move(cornerPrep)
+    console.log(cornerPrep)
 
     let edgeCurrent = edge.getFaceOfColor(primary)
     let edgeTarget = corner.getFaceOfColor(primary)
 
+    let open = isLeft ? corner.getFaceOfColor('U') : R(corner.getFaceOfColor('U'))
     let edgeMatch = utils.getRotationFromTo('DOWN', edgeCurrent, edgeTarget)
-    let open = isLeft ? corner.getFaceOfColor(primary) : R(corner.getFaceOfColor(primary))
-    this.move(`${open} ${edgeMatch}`)
+    this.move(`${open} ${edgeMatch} ${R(open)}`)
+    console.log(`${open} ${edgeMatch} ${R(open)}`)
 
     this.solveMatchedPair({ corner, edge })
   }
