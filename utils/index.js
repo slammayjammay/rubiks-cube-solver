@@ -97,11 +97,15 @@ const getFaceFromDirection = (origin, direction, orientation) => {
   const orientationTo = new Face(_orientationKey)
 
   let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo)
+  // kinda hacky...but there should be at most two rotations. The second
+  // rotation must be around 'z', otherwise the origin face will not stay on
+  // FRONT.
+  rotations[1].axis = 'z'
   _rotateFacesByRotations([fromFace], rotations)
 
   let directionFace = new Face(direction)
   let { axis, angle } = Vector.getRotationFromNormals(fromFace.normal(), directionFace.normal())
-  fromFace.rotate(axis, angle).toString()
+  fromFace.rotate(axis, angle)
 
   // at this point fromFace is now the target face, but we still need to revert
   // the orientation to return the correct string
