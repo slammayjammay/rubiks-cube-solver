@@ -54,6 +54,20 @@ tests.push({
   cornerPos: [-1, -1, 1],
   edgePos: [1, -1, 0]
 })
+// case 8
+tests.push({
+  cornerMap: { FRONT: 'F', RIGHT: 'U', DOWN: 'R' },
+  edgeMap: { RIGHT: 'R', DOWN: 'F' },
+  cornerPos: [1, -1, 1],
+  edgePos: [1, -1, 0]
+})
+// case 9
+tests.push({
+  cornerMap: { FRONT: 'F', RIGHT: 'U', DOWN: 'R' },
+  edgeMap: { LEFT: 'R', DOWN: 'F' },
+  cornerPos: [1, -1, 1],
+  edgePos: [-1, -1, 0]
+})
 
 describe('F2L case 1 solver', () => {
   tests.forEach(({ cornerMap, edgeMap, cornerPos, edgePos }, caseNum) => {
