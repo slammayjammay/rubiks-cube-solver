@@ -64,6 +64,13 @@ tests.push({
 // case 9
 tests.push({
   cornerMap: { FRONT: 'F', RIGHT: 'U', DOWN: 'R' },
+  edgeMap: { FRONT: 'R', DOWN: 'F' },
+  cornerPos: [1, -1, 1],
+  edgePos: [0, -1, 1]
+})
+// case 10
+tests.push({
+  cornerMap: { FRONT: 'F', RIGHT: 'U', DOWN: 'R' },
   edgeMap: { LEFT: 'R', DOWN: 'F' },
   cornerPos: [1, -1, 1],
   edgePos: [-1, -1, 0]

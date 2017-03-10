@@ -25,8 +25,9 @@ class case1Solver extends BaseSolver {
    * 7) Corner does not share a face with edge.
    *
    * ---- Group 3: Corner's "other" color doesn't match edge's "primary" color ----
-   * 8) Corner shares a face with edge.
-   * 9) Corner does not share a face with edge.
+   * 8) Edge shares a face with corner's cross color's face.
+   * 9) Edge shares a face with corner's other color's face.
+   * 10) Corner does not share a face with edge.
    *
    * TODO: refactor
    */
@@ -74,9 +75,13 @@ class case1Solver extends BaseSolver {
 
     // Group 3
     if (sharedFace) {
-      return 8
+      if (sharedFace === corner.getFaceOfColor('U')) {
+        return 8
+      } else {
+        return 9
+      }
     } else {
-      return 9
+      return 10
     }
   }
 
@@ -216,6 +221,24 @@ class case1Solver extends BaseSolver {
   }
 
   _solveCase9({ corner, edge }) {
+    let otherColor = edge.colors().find(c => edge.getFaceOfColor(c) === 'DOWN')
+    let currentFace = corner.getFaceOfColor('U')
+    let targetFace = utils.getFaceOfMove(otherColor)
+
+    let isLeft = utils.getDirectionFromFaces(
+      corner.getFaceOfColor(otherColor),
+      currentFace,
+      { UP: 'DOWN' }
+    )
+
+    let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
+    let moveFace = isLeft ? targetFace : R(targetFace)
+
+    this.move(`${prep} ${moveFace} D D ${R(moveFace)}`)
+    this.solveSeparatedPair({ corner, edge })
+  }
+
+  _solveCase10({ corner, edge }) {
     let primary = edge.colors().find(c => edge.getFaceOfColor(c) !== 'DOWN')
     let secondary = edge.colors().find(c => edge.getFaceOfColor(c) === 'DOWN')
     let cornerCurrent = corner.getFaceOfColor('U')
