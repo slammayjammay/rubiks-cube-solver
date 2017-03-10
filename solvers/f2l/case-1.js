@@ -4,6 +4,10 @@ const utils = require('../../utils')
 
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
+/**
+ * Top level case 1:
+ * Both corner and edge are on the DOWN face.
+ */
 class case1Solver extends BaseSolver {
   solve({ corner, edge }) {
     let caseNum = this._getCaseNumber({ corner, edge })
