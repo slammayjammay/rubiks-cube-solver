@@ -86,7 +86,7 @@ describe('F2L case 1 solver', () => {
     let solver = new Case1Solver(cube)
 
     it(`identifies case ${caseNum + 1}`, () => {
-      assert(solver._getCaseNumber({ corner, edge }))
+      assert(solver._getCaseNumber({ corner, edge }) === caseNum + 1)
     })
 
     it(`solves case ${caseNum + 1}`, () => {
