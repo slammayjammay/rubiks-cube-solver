@@ -137,7 +137,7 @@ class CrossSolver extends BaseSolver {
     let face = edge.faces().find(face => !['UP', 'DOWN'].includes(face))
     let prepMove = utils.getMoveOfFace(face)
 
-    if (caseNum === 3) {
+    if (caseNum === 4) {
       prepMove = RubiksCube.reverseMoves(prepMove)
     }
 

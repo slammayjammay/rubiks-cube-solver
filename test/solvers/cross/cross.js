@@ -26,17 +26,6 @@ let case2Tests = [
 ]
 
 let case3Tests = [
-  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'F' },
-  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'L' },
-  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'R' },
-  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'B' },
-  { face1: 'RIGHT', face2: 'DOWN', color1: 'U', color2: 'L' },
-  { face1: 'RIGHT', face2: 'DOWN', color1: 'U', color2: 'F' },
-  { face1: 'LEFT', face2: 'DOWN', color1: 'U', color2: 'B' },
-  { face1: 'BACK', face2: 'DOWN', color1: 'U', color2: 'L' }
-]
-
-let case4Tests = [
   { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'F' },
   { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'L' },
   { face1: 'FRONT', face2: 'UP', color1: 'U', color2: 'R' },
@@ -45,6 +34,17 @@ let case4Tests = [
   { face1: 'RIGHT', face2: 'UP', color1: 'U', color2: 'F' },
   { face1: 'LEFT', face2: 'UP', color1: 'U', color2: 'B' },
   { face1: 'BACK', face2: 'UP', color1: 'U', color2: 'L' }
+]
+
+let case4Tests = [
+  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'F' },
+  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'L' },
+  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'R' },
+  { face1: 'FRONT', face2: 'DOWN', color1: 'U', color2: 'B' },
+  { face1: 'RIGHT', face2: 'DOWN', color1: 'U', color2: 'L' },
+  { face1: 'RIGHT', face2: 'DOWN', color1: 'U', color2: 'F' },
+  { face1: 'LEFT', face2: 'DOWN', color1: 'U', color2: 'B' },
+  { face1: 'BACK', face2: 'DOWN', color1: 'U', color2: 'L' }
 ]
 
 let case5Tests = [
