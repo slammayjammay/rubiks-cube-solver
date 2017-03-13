@@ -4,10 +4,6 @@ const utils = require('../../utils')
 
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
-/**
- * NOTE: Solving this step is done when the cube is oriented so that the cross
- * face is on UP.
- */
 class F2LBaseSolver extends BaseSolver {
   colorsMatch({ corner, edge }) {
     let colors = edge.colors()
@@ -102,6 +98,10 @@ class F2LBaseSolver extends BaseSolver {
   }
 
   solveMatchedPair({ corner, edge }) {
+    if (!this.isPairMatched({ corner, edge })) {
+      throw new Error('Pair is not matched')
+    }
+
     // get the color that is not on the down face and is not the crossColor
     let matchedColor = edge.colors().find(color => {
       return edge.getFaceOfColor(color) !== 'DOWN'
@@ -125,6 +125,10 @@ class F2LBaseSolver extends BaseSolver {
   }
 
   solveSeparatedPair({ corner, edge }) {
+    if (!this.isPairSeparated({ corner, edge })) {
+      throw new Error('Pair is not separated')
+    }
+
     // get the color that is not on the down face and is not the crossColor
     let matchedColor = edge.colors().find(color => {
       return edge.getFaceOfColor(color) !== 'DOWN'
