@@ -1,10 +1,14 @@
-const BaseSolver = require('./BaseSolver')
-const case1Solver = require('./case-1')
 const RubiksCube = require('../../models/RubiksCube')
 const Cubie = require('../../models/Cubie')
+const BaseSolver = require('./BaseSolver')
+const Case1Solver = require('./case-1')
+const Case2Solver = require('./case-2')
+const Case3Solver = require('./case-3')
 
 class F2LSolver extends BaseSolver {
-  solve() {
+  solve(options) {
+    this.options = options
+
     let pairs = this.getAllPairs()
     pairs.forEach(pair => this.solvePair(pair))
   }
@@ -21,7 +25,9 @@ class F2LSolver extends BaseSolver {
   }
 
   getAllPairs() {
-    let corners = this.cube.corners()
+    let corners = this.cube.corners().filter(corner => {
+      return corner.hasColor('U')
+    })
     let edges = this.cube.edges().filter(edge => {
       return !edge.hasColor('U') && !edge.hasColor('D')
     })
@@ -47,22 +53,50 @@ class F2LSolver extends BaseSolver {
   }
 
   /**
-   * 5 top level cases:
-   * 1) corner and edge are both on the DOWN face
-   * 2)
-   * 3)
-   * 4)
-   * 5)
+   * 4 top level cases:
+   *
+   * 1) Corner and edge are both on the DOWN face.
+   * 2) Corner is on the DOWN face and edge is not on DOWN face.
+   * 3) Corner is on UP face and edge is on DOWN face.
+   * 4) Corner is on UP face and edge is not on DOWN face.
    */
   _getCaseNumber({ corner, edge }) {
-    if (corner.faces().includes('DOWN') && edge.faces().includes('DOWN')) {
-      return 1
+    if (corner.faces().includes('DOWN')) {
+      if (edge.faces().includes('DOWN')) {
+        return 1
+      }
+      if (!edge.faces().includes('DOWN') && !edge.faces().includes('UP')) {
+        return 2
+      }
     }
+
+    if (corner.faces().includes('UP')) {
+      if (edge.faces().includes('DOWN')) {
+        return 3
+      }
+      if (!edge.faces().includes('DOWN') && !edge.faces().includes('UP')) {
+        return 4
+      }
+    }
+
+    throw new Error('Could not find a top level F2L case')
   }
 
   _solveCase1({ corner, edge }) {
-    let solveMoves = new case1Solver({ corner, edge })
-    this.move(solveMoves)
+    new Case1Solver(this.cube, this.options).solve({ corner, edge })
+  }
+
+  _solveCase2({ corner, edge }) {
+    new Case2Solver(this.cube, this.options).solve({ corner, edge })
+  }
+
+  _solveCase3({ corner, edge }) {
+    new Case3Solver(this.cube, this.options).solve({ corner, edge })
+  }
+
+  _solveCase4({ corner, edge }) {
+    this.move('R U RPrime')
+    new Case2Solver(this.cube, this.options).solve({ corner, edge })
   }
 }
 
