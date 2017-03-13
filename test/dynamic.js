@@ -1,21 +1,28 @@
-const { expect } = require('chai')
+const { assert } = require('chai')
 const RubiksCube = require('../models/RubiksCube')
 const CrossSolver = require('../solvers/cross')
 const F2LSolver = require('../solvers/f2l')
+const utils = require('../utils')
 
-const NUM_RUNS = 100
-describe('Solving cross', () => {
-  it('solves edges correctly', () => {
-    for (let i = 0; i < NUM_RUNS; i++) {
-      let cube = RubiksCube.Scrambled()
-      let cross = new CrossSolver(cube)
-      let f2l = new F2LSolver(cube)
+const NUM_RUNS = 1
 
-      cross.solve(cube)
-      expect(cross.isSolved)
+describe('Dynamic Solving', () => {
+  for (let i = 0; i < NUM_RUNS; i++) {
+    let cube = RubiksCube.Solved()
 
-      f2l.solve(cube)
-      expect(f2l.isSolved)
+    // get access to the scrambled state
+    let scrambleMoves = RubiksCube.getRandomMoves(25)
+    for (let move of scrambleMoves) {
+      cube.move(move)
     }
-  })
+
+    it('solves the cross', () => {
+      let cross = new CrossSolver(cube)
+
+      // get access to the moves that solve the cross
+      let moves = cross.solve()
+
+      assert(cross.isSolved())
+    })
+  }
 })
