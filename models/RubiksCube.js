@@ -12,10 +12,7 @@ class RubiksCube {
    static Scrambled() {
      let cube = RubiksCube.Solved()
      let randomMoves = RubiksCube.getRandomMoves()
-
-     for (let move of randomMoves) {
-       cube.move(move)
-     }
+     cube.move(randomMoves)
 
      return cube
    }
@@ -42,7 +39,7 @@ class RubiksCube {
       randomMoves.push(totalMoves[idx])
     }
 
-    return randomMoves
+    return randomMoves.join(' ')
   }
 
    /**
