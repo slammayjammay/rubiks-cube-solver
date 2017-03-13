@@ -5,6 +5,7 @@ const Face = require('../../models/Face')
 const utils = require('../../utils')
 
 const CROSS_COLOR = 'U'
+const R = (moves) => RubiksCube.reverseMoves(moves)
 
 class CrossSolver extends BaseSolver {
   solve() {
@@ -87,8 +88,9 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase1(edge) {
-    let solveMoves = this._case1And2Helper(edge, 1)
-    this.move(solveMoves)
+    let face = edge.faces().find(face => face !== 'UP')
+    this.move(`${face} ${face}`)
+    this._solveCase2(edge)
   }
 
   _solveCase2(edge) {
@@ -103,8 +105,16 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase4(edge) {
-    let prepMove =  this._case3And4Helper(edge, 4)
+    let prepMove = utils.getRotationFromTo(
+      'DOWN',
+      edge.getFaceOfColor('U'),
+      utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
+    )
     this.move(prepMove)
+
+    let edgeToMiddle = R(edge.getFaceOfColor('U'))
+
+    this.move(edgeToMiddle)
     this._solveCase5(edge)
   }
 
@@ -134,11 +144,10 @@ class CrossSolver extends BaseSolver {
   }
 
   _case3And4Helper(edge, caseNum) {
-    let face = edge.faces().find(face => !['UP', 'DOWN'].includes(face))
-    let prepMove = utils.getMoveOfFace(face)
+    let prepMove = edge.faces().find(face => !['UP', 'DOWN'].includes(face))
 
     if (caseNum === 4) {
-      prepMove = RubiksCube.reverseMoves(prepMove)
+      prepMove = R(prepMove)
     }
 
     return prepMove
@@ -153,10 +162,10 @@ class CrossSolver extends BaseSolver {
     let edgeToCrossFace = utils.getMoveOfFace(currentFace)
 
     if (caseNum === 6) {
-      edgeToCrossFace = RubiksCube.reverseMoves(edgeToCrossFace);
+      edgeToCrossFace = R(edgeToCrossFace);
     }
 
-    return `${RubiksCube.reverseMoves(prepMove)} ${edgeToCrossFace} ${prepMove}`
+    return `${R(prepMove)} ${edgeToCrossFace} ${prepMove}`
   }
 }
 
