@@ -192,9 +192,13 @@ class RubiksCube {
     * Gets the rotation axis and magnitude of rotation based on notation.
     * Then finds all cubes on the correct face, and rotates them around the
     * rotation axis.
-    * @param {string} notation - The move notation.
+    * @param {string|array} notation - The move notation.
     */
    move(notations) {
+     if (notations instanceof Array) {
+       notations = notations.join(' ')
+     }
+
      for (let notation of notations.split(' ')) {
        let move = notation[0] && notation[0].toUpperCase()
        if (!move) {

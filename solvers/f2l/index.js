@@ -1,16 +1,31 @@
 const RubiksCube = require('../../models/RubiksCube')
 const Cubie = require('../../models/Cubie')
+const utils = require('../../utils')
 const BaseSolver = require('./BaseSolver')
-const Case1Solver = require('./case-1')
-const Case2Solver = require('./case-2')
-const Case3Solver = require('./case-3')
+const Case1Solver = require('./cases/case-1')
+const Case2Solver = require('./cases/case-2')
+const Case3Solver = require('./cases/case-3')
 
-class F2LSolver extends BaseSolver {
-  solve(options) {
-    this.options = options
+const INDENT_LEVEL = 0
+const R = (moves) => RubiksCube.reverseMoves(moves)
+
+class F2LBaseSolver extends BaseSolver {
+  solve() {
+    let totalMoves = []
 
     let pairs = this.getAllPairs()
-    pairs.forEach(pair => this.solvePair(pair))
+    pairs.forEach(({ corner, edge }) => {
+      this._solve({ corner, edge })
+
+      totalMoves.push(...this.totalMoves)
+      this.totalMoves = []
+
+      // let solveMoves = this.solvePair(pair)
+      // this.totalMoves.push(...solveMoves.split(' '))
+    })
+
+    this.totalMoves = totalMoves
+    return this.totalMoves.join(' ')
   }
 
   isSolved() {
@@ -46,11 +61,10 @@ class F2LSolver extends BaseSolver {
     return pairs
   }
 
-  solvePair({ corner, edge }) {
-    let caseNum = this._getCaseNumber({ corner, edge })
-    if (!caseNum) return
-    this[`_solveCase${caseNum}`]({ corner, edge })
-  }
+  // solvePair({ corner, edge }) {
+  //   let caseNum = this._getCaseNumber({ corner, edge })
+  //   return this[`_solveCase${caseNum}`]({ corner, edge })
+  // }
 
   /**
    * 4 top level cases:
@@ -83,21 +97,39 @@ class F2LSolver extends BaseSolver {
   }
 
   _solveCase1({ corner, edge }) {
-    new Case1Solver(this.cube, this.options).solve({ corner, edge })
+    return new Case1Solver(this.cube, this.options).solve({ corner, edge })
   }
 
   _solveCase2({ corner, edge }) {
-    new Case2Solver(this.cube, this.options).solve({ corner, edge })
+    return new Case2Solver(this.cube, this.options).solve({ corner, edge })
   }
 
   _solveCase3({ corner, edge }) {
-    new Case3Solver(this.cube, this.options).solve({ corner, edge })
+    return new Case3Solver(this.cube, this.options).solve({ corner, edge })
   }
 
   _solveCase4({ corner, edge }) {
-    this.move('R U RPrime')
-    new Case2Solver(this.cube, this.options).solve({ corner, edge })
+    let faces = corner.faces().filter(face => face !== 'UP')
+    let dir = utils.getDirectionFromFaces(faces[0], faces[1], { UP: 'DOWN' })
+    let cornerRightFace = dir === 'RIGHT' ? faces[1] : faces[0]
+
+    this.move(`${cornerRightFace} D ${R(cornerRightFace)}`)
+
+    return new Case2Solver(this.cube, this.options).solve({ corner, edge })
+  }
+
+  logSetup({ corner, edge }) {
+    let info = `${edge.colors()[0]} ${edge.colors()[1]}`
+    this.LOG_SETUP(INDENT_LEVEL, 'pair', info)
+  }
+
+  logCaseNumber(caseNumber) {
+    this.LOG_CASE_NUMBER(INDENT_LEVEL, 'f2l top-level case', caseNumber)
+  }
+
+  logTotalMoves() {
+    // do nothing.
   }
 }
 
-module.exports = F2LSolver
+module.exports = F2LBaseSolver

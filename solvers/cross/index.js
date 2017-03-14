@@ -4,16 +4,25 @@ const Cubie = require('../../models/Cubie')
 const Face = require('../../models/Face')
 const utils = require('../../utils')
 
+const INDENT_LEVEL = 0
 const CROSS_COLOR = 'U'
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
 class CrossSolver extends BaseSolver {
   solve() {
+    // to get the moves done for each step, resetting this.totalMoves after
+    // each iteration is easier. Hold them in a temp variable here.
+    let totalMoves = []
+
     let crossEdges = this._getCrossEdges()
     for (let edge of crossEdges) {
-      this._solveEdge(edge)
+      this._solve({ edge })
+
+      totalMoves.push(...this.totalMoves)
+      this.totalMoves = []
     }
 
+    this.totalMoves = totalMoves
     return this.totalMoves.join(' ')
   }
 
@@ -47,10 +56,10 @@ class CrossSolver extends BaseSolver {
   /**
    * @param {cubie} edge - The edge that will be solved.
    */
-  _solveEdge(edge) {
-    let caseNumber = this._getCaseNumber(edge)
-    this[`_solveCase${caseNumber}`](edge)
-  }
+  // _solveEdge(edge) {
+  //   let caseNumber = this._getCaseNumber({ edge })
+  //   this[`_solveCase${caseNumber}`]({ edge })
+  // }
 
   /**
    * 6 Cases!
@@ -63,7 +72,7 @@ class CrossSolver extends BaseSolver {
    *
    * @param {cubie} edge
    */
-  _getCaseNumber(edge) {
+  _getCaseNumber({ edge }) {
     if (edge.getColorOfFace('UP') === CROSS_COLOR) {
       return 1
     } else if (edge.getColorOfFace('DOWN') === CROSS_COLOR) {
@@ -87,24 +96,24 @@ class CrossSolver extends BaseSolver {
     }
   }
 
-  _solveCase1(edge) {
+  _solveCase1({ edge }) {
     let face = edge.faces().find(face => face !== 'UP')
     this.move(`${face} ${face}`)
-    this._solveCase2(edge)
+    this._solveCase2({ edge })
   }
 
-  _solveCase2(edge) {
-    let solveMoves = this._case1And2Helper(edge, 2)
+  _solveCase2({ edge }) {
+    let solveMoves = this._case1And2Helper({ edge }, 2)
     this.move(solveMoves)
   }
 
-  _solveCase3(edge) {
-    let prepMove = this._case3And4Helper(edge, 3)
+  _solveCase3({ edge }) {
+    let prepMove = this._case3And4Helper({ edge }, 3)
     this.move(prepMove)
-    this._solveCase5(edge)
+    this._solveCase5({ edge })
   }
 
-  _solveCase4(edge) {
+  _solveCase4({ edge }) {
     let prepMove = utils.getRotationFromTo(
       'DOWN',
       edge.getFaceOfColor('U'),
@@ -115,20 +124,20 @@ class CrossSolver extends BaseSolver {
     let edgeToMiddle = R(edge.getFaceOfColor('U'))
 
     this.move(edgeToMiddle)
-    this._solveCase5(edge)
+    this._solveCase5({ edge })
   }
 
-  _solveCase5(edge) {
-    let solveMoves = this._case5And6Helper(edge, 5)
+  _solveCase5({ edge }) {
+    let solveMoves = this._case5And6Helper({ edge }, 5)
     this.move(solveMoves)
   }
 
-  _solveCase6(edge) {
-    let solveMoves = this._case5And6Helper(edge, 6)
+  _solveCase6({ edge }) {
+    let solveMoves = this._case5And6Helper({ edge }, 6)
     this.move(solveMoves)
   }
 
-  _case1And2Helper(edge, caseNum) {
+  _case1And2Helper({ edge }, caseNum) {
     let crossColorFace = caseNum === 1 ? 'UP' : 'DOWN'
     let currentFace = edge.faces().find(face => face !== crossColorFace)
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
@@ -143,7 +152,7 @@ class CrossSolver extends BaseSolver {
     return solveMoves
   }
 
-  _case3And4Helper(edge, caseNum) {
+  _case3And4Helper({ edge }, caseNum) {
     let prepMove = edge.faces().find(face => !['UP', 'DOWN'].includes(face))
 
     if (caseNum === 4) {
@@ -153,7 +162,7 @@ class CrossSolver extends BaseSolver {
     return prepMove
   }
 
-  _case5And6Helper(edge, caseNum) {
+  _case5And6Helper({ edge }, caseNum) {
     let otherColor = edge.colors().find(color => color !== 'U')
     let currentFace = edge.getFaceOfColor(otherColor)
     let targetFace = utils.getFaceOfMove(otherColor)
@@ -166,6 +175,20 @@ class CrossSolver extends BaseSolver {
     }
 
     return `${R(prepMove)} ${edgeToCrossFace} ${prepMove}`
+  }
+
+  logSetup({ edge }) {
+    let info = `${edge.colors()[0]} ${edge.colors()[1]}`
+    this.LOG_SETUP(INDENT_LEVEL, 'edge', info)
+  }
+
+  logCaseNumber(caseNumber) {
+    this.LOG_CASE_NUMBER(INDENT_LEVEL, 'cross case', caseNumber)
+  }
+
+  logTotalMoves() {
+    let totalMoves = this.totalMoves.join(' ')
+    this.LOG_TOTAL_MOVES(INDENT_LEVEL, totalMoves)
   }
 }
 

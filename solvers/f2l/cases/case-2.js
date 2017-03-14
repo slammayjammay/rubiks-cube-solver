@@ -1,6 +1,6 @@
-const RubiksCube = require('../../models/RubiksCube')
+const RubiksCube = require('../../../models/RubiksCube')
 const BaseSolver = require('./BaseSolver')
-const utils = require('../../utils')
+const utils = require('../../../utils')
 
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
@@ -9,11 +9,6 @@ const R = (moves) => RubiksCube.reverseMoves(moves)
  * Corner is on the DOWN face and edge is not on DOWN or UP face.
  */
 class case2Solver extends BaseSolver {
-  solve({ corner, edge }) {
-    let caseNum = this._getCaseNumber({ corner, edge })
-    this[`_solveCase${caseNum}`]({ corner, edge })
-  }
-
   /**
    * 4 cases:
    *

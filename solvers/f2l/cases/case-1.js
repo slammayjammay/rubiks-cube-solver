@@ -1,6 +1,6 @@
-const RubiksCube = require('../../models/RubiksCube')
+const RubiksCube = require('../../../models/RubiksCube')
 const BaseSolver = require('./BaseSolver')
-const utils = require('../../utils')
+const utils = require('../../../utils')
 
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
@@ -8,12 +8,7 @@ const R = (moves) => RubiksCube.reverseMoves(moves)
  * Top level case 1:
  * Both corner and edge are on the DOWN face.
  */
-class case1Solver extends BaseSolver {
-  solve({ corner, edge }) {
-    let caseNum = this._getCaseNumber({ corner, edge })
-    this[`_solveCase${caseNum}`]({ corner, edge })
-  }
-
+class Case1Solver extends BaseSolver {
   /**
    * 9 Cases:
    * 1) Pair is matched.
@@ -67,7 +62,6 @@ class case1Solver extends BaseSolver {
       }
     }
 
-
     // Group 2
     if (otherColor === primaryColor) {
       if (sharedFace) {
@@ -90,11 +84,11 @@ class case1Solver extends BaseSolver {
   }
 
   _solveCase1({ corner, edge }) {
-    this.solveMatchedPair({ corner, edge })
+    return this.solveMatchedPair({ corner, edge })
   }
 
   _solveCase2({ corner, edge }) {
-    this.solveSeparatedPair({ corner, edge })
+    return this.solveSeparatedPair({ corner, edge })
   }
 
   _solveCase3({ corner, edge }) {
@@ -267,4 +261,4 @@ class case1Solver extends BaseSolver {
   }
 }
 
-module.exports = case1Solver
+module.exports = Case1Solver

@@ -121,7 +121,9 @@ class F2LBaseSolver extends BaseSolver {
     let open = isLeft ? matchingFace : R(matchingFace)
     let insert = isLeft ? 'DPrime' : 'D'
 
-    this.move(`${prep} ${open} ${insert} ${R(open)}`)
+    let solveMoves = [prep, open, insert, R(open)].join(' ')
+    this.move(solveMoves)
+    return solveMoves
   }
 
   solveSeparatedPair({ corner, edge }) {
@@ -148,7 +150,9 @@ class F2LBaseSolver extends BaseSolver {
     match = isLeft ? R(match) : match
     let insert = isLeft ? 'DPrime' : 'D'
 
-    this.move(`${prep} ${match} ${insert} ${R(match)}`)
+    let solveMoves = [prep, match, insert, R(match)].join(' ')
+    this.move(solveMoves)
+    return solveMoves
   }
 }
 
