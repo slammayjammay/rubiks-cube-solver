@@ -84,7 +84,7 @@ describe('Cross Solver', () => {
   correctCaseNumberTests.forEach(({ face1, face2, expect }, caseNum) => {
 		it(`identifies case ${caseNum + 1}`, () => {
     	let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, 'U').colorFace(face2, 'R')
-    	let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber(edge)
+    	let result = new CrossSolver(RubiksCube.Solved())._getCaseNumber({ edge })
     	assert(result === expect)
 		})
   })
@@ -96,14 +96,9 @@ describe('Cross Solver', () => {
     	for (let { face1, face2, color1, color2 } of caseTest) {
         let edge = Cubie.FromFaces([face1, face2]).colorFace(face1, color1).colorFace(face2, color2)
         crossSolver.cube._cubies.push(edge)
-        crossSolver[`_solveCase${idx + 1}`](edge)
+        crossSolver[`_solveCase${idx + 1}`]({ edge })
 
-        let otherColor = edge.colors().find(color => color !== 'U')
-        let otherFace = edge.faces().find(face => face !== 'UP')
-        const isMatchingMiddle = otherFace[0] === otherColor
-        const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
-
-        assert(isOnCrossFace && isMatchingMiddle)
+        assert(crossSolver.isEdgeSolved(edge))
     	}
     })
   })
