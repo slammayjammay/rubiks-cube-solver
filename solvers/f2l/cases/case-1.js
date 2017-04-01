@@ -10,7 +10,7 @@ const R = (moves) => RubiksCube.reverseMoves(moves)
  */
 class Case1Solver extends BaseSolver {
   /**
-   * 9 Cases:
+   * 10 Cases:
    * 1) Pair is matched.
    * 2) Pair is separated.
    *
@@ -96,7 +96,7 @@ class Case1Solver extends BaseSolver {
     let currentFace = edge.faces().find(face => face !== 'DOWN')
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
     let prepFace = utils.getFaceFromDirection(targetFace, 'BACK', { UP: 'DOWN'})
-    let otherFace = utils.getFaceOfMove(edge.faces().find(face => face !== 'DOWN'))
+    let otherFace = corner.getFaceOfColor(edge.getColorOfFace(currentFace))
     let isLeft = utils.getFaceFromDirection(currentFace, otherFace, { UP: 'DOWN' }) === 'LEFT'
 
     // the moves
@@ -227,7 +227,7 @@ class Case1Solver extends BaseSolver {
       corner.getFaceOfColor(otherColor),
       currentFace,
       { UP: 'DOWN' }
-    )
+    ) === 'LEFT'
 
     let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
     let moveFace = isLeft ? targetFace : R(targetFace)
@@ -245,7 +245,7 @@ class Case1Solver extends BaseSolver {
       corner.getFaceOfColor(secondary),
       corner.getFaceOfColor('U'),
       { UP: 'DOWN' }
-    )
+    ) === 'LEFT'
 
     let cornerPrep = utils.getRotationFromTo('DOWN', cornerCurrent, cornerTarget)
     this.move(cornerPrep)
