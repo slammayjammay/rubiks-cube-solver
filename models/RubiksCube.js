@@ -1,17 +1,19 @@
 const Cubie = require('./Cubie')
 const Vector = require('./Vector')
 
+const SOLVED_STATE = 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB'
+
 class RubiksCube {
    /**
     * Factory method. Returns an instance of a solved Rubiks Cube.
     */
    static Solved() {
-     return new RubiksCube('FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB')
+     return new RubiksCube(SOLVED_STATE)
    }
 
    static Scrambled() {
      let cube = RubiksCube.Solved()
-     let randomMoves = RubiksCube.getRandomMoves()
+     let randomMoves = RubiksCube.getRandomMoves(25)
      cube.move(randomMoves)
 
      return cube
@@ -218,6 +220,10 @@ class RubiksCube {
        }
      }
    }
+
+  isSolved() {
+    return this.toString() === SOLVED_STATE
+  }
 
    /**
     * @return {string}
