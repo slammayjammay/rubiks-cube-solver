@@ -13,6 +13,10 @@ class BaseSolver {
     this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube
     this.options = options
 
+    this.afterEach = options.afterEach || function() {}
+
+    this.partition = {}
+    this.partitions = []
     this.totalMoves = []
   }
 
@@ -28,23 +32,85 @@ class BaseSolver {
     this.cube.move(notations)
   }
 
+  /**
+   * Solves the edge and/or corner and returns information about the state
+   * about them right before they are solved. It's important to construct the
+   * object in steps for debugging, so that we can still have access to e.g.
+   * the case number if the solve method fails.
+   */
   _solve({ corner, edge }) {
-    // every subclass of BaseSolver follows the same formula.
-    // it's important to log each step when they're being done, as any on step
-    // can throw an error and we could lose important information.
+    /**
+     *
+     * Many problems. Instead, every "solve" function returns a local variable.
+     * Store the current partition in an instance variable: this.debug or
+     * something.
+     *
+     */
 
-    this.options.debug && this.logSetup({ corner, edge })
+    this.partition.initial = {
+      corner: corner && corner.clone(),
+      edge: edge && edge.clone()
+    }
 
-    let caseNumber = this._getCaseNumber({ corner, edge })
-    this.options.debug && this.logCaseNumber(caseNumber)
+    this.partition.caseNumber = this._getCaseNumber({ corner, edge })
 
-    this[`_solveCase${caseNumber}`]({ corner, edge })
-    this.options.debug && this.logTotalMoves()
+    this[`_solveCase${this.partition.caseNumber}`]({ corner, edge })
+    this.partition.moves = this.totalMoves
 
-    return this.totalMoves.join(' ')
+    this.totalMoves = [];
+
+    this.afterEach(this.phase, this.partition)
+    return this.partition
   }
 
+
+  /**
+   * Returns a string of move notations from an array of partitions. Each
+   * partition contains information about a set of moves, most likely the solve
+   * moves for specific case number. If { partition: true } is set, the array
+   * is returned. Otherwise, we need to combine and return all the moves from
+   * each partition.
+   *
+   * @param {array} partitions - An array of data about a particular move set.
+   * @return {string}
+   */
+  // returnMoves(partitions) {
+  //   if (this.partition) {
+  //     return partitions
+  //   }
+
+  //   let moves = []
+
+  //   partitions.forEach(partition => moves.push(...partition.moves))
+
+  //   return moves.join(' ')
+  // }
+
+  // _solve({ corner, edge }) {
+  //   // every subclass of BaseSolver follows the same formula.
+  //   // it's important to log each step when they're being done, as any on step
+  //   // can throw an error and we could lose important information.
+
+  //   // this is useful for debugging. when an error is thrown (inside a try /
+  //   // catch) we have access to the pieces that failed.
+  //   this.currentCubies = {
+  //     corner: corner && corner.clone(),
+  //     edge: edge && edge.clone()
+  //   };
+
+  //   this.options.debug && this.logSetup({ corner, edge })
+
+  //   let caseNumber = this._getCaseNumber({ corner, edge })
+  //   this.options.debug && this.logCaseNumber(caseNumber)
+
+  //   this[`_solveCase${caseNumber}`]({ corner, edge })
+  //   this.options.debug && this.logTotalMoves()
+
+  //   return this.options.partition ? this.totalMoves : this.totalMoves.join(' ')
+  // }
+
   LOG(indentLevel, string) {
+    return
     for (let i = 0; i < indentLevel; i++) {
       process.stdout.write(' ')
       process.stdout.write(' ')
@@ -54,14 +120,17 @@ class BaseSolver {
   }
 
   LOG_SETUP(indentLevel, word, info) {
+    return
     this.LOG(indentLevel, `  --> Working on ${word} [${info}]`)
   }
 
   LOG_CASE_NUMBER(indentLevel, step, caseNumber) {
+    return
     this.LOG(indentLevel, `  --> Identified ${step} ${caseNumber}`)
   }
 
   LOG_TOTAL_MOVES(indentLevel, totalMoves) {
+    return
     this.LOG(indentLevel, `  --> Total Moves: `)
     this.LOG(indentLevel, `  ${chalk.green(totalMoves)}`)
     console.log()

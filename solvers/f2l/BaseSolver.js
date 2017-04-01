@@ -5,6 +5,12 @@ const utils = require('../../utils')
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
 class F2LBaseSolver extends BaseSolver {
+  constructor(...args) {
+    super(...args)
+
+    this.phase = 'f2l'
+  }
+
   colorsMatch({ corner, edge }) {
     let colors = edge.colors()
 

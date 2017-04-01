@@ -9,27 +9,26 @@ const CROSS_COLOR = 'U'
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
 class CrossSolver extends BaseSolver {
-  solve() {
-    // to get the moves done for each step, resetting this.totalMoves after
-    // each iteration is easier. Hold them in a temp variable here.
-    let totalMoves = []
+  constructor(...args) {
+    super(...args)
 
+    this.phase = 'cross'
+  }
+
+  solve() {
     let crossEdges = this._getCrossEdges()
     for (let edge of crossEdges) {
       this._solve({ edge })
-
-      totalMoves.push(...this.totalMoves)
-      this.totalMoves = []
+      this.partitions.push(this.partition)
     }
 
-    this.totalMoves = totalMoves
-    return this.totalMoves.join(' ')
+    return this.partitions
   }
 
   isSolved() {
     let edges = this._getCrossEdges()
     for (let edge of edges) {
-      if (!this.edgeIsSolved(edge)) {
+      if (!this.isEdgeSolved(edge)) {
         return false
       }
     }
@@ -37,10 +36,11 @@ class CrossSolver extends BaseSolver {
     return true
   }
 
-  edgeIsSolved(edge) {
-    const isOnCrossFace = edge.getFaceOfColor('U') === 'UP'
-    let otherColor = edge.colors().find(c => c !== 'UP')
-    const matchesMiddle = edge.getFaceOfColor(otherColor) === utils.getFaceOfMove(otherColor)
+  isEdgeSolved(edge) {
+    let otherColor = edge.colors().find(color => color !== 'U')
+    let otherFace = edge.faces().find(face => face !== 'UP')
+    const matchesMiddle = otherFace[0] === otherColor
+    const isOnCrossFace = edge.getColorOfFace('UP') === 'U'
 
     return isOnCrossFace && matchesMiddle
   }
@@ -52,14 +52,6 @@ class CrossSolver extends BaseSolver {
   _getCrossEdges() {
     return this.cube.edges().filter(edge => edge.hasColor(CROSS_COLOR))
   }
-
-  /**
-   * @param {cubie} edge - The edge that will be solved.
-   */
-  // _solveEdge(edge) {
-  //   let caseNumber = this._getCaseNumber({ edge })
-  //   this[`_solveCase${caseNumber}`]({ edge })
-  // }
 
   /**
    * 6 Cases!
@@ -97,6 +89,10 @@ class CrossSolver extends BaseSolver {
   }
 
   _solveCase1({ edge }) {
+    if (this.isEdgeSolved(edge)) {
+      return
+    }
+
     let face = edge.faces().find(face => face !== 'UP')
     this.move(`${face} ${face}`)
     this._solveCase2({ edge })

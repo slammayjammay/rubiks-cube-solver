@@ -5,27 +5,33 @@ const BaseSolver = require('./BaseSolver')
 const Case1Solver = require('./cases/case-1')
 const Case2Solver = require('./cases/case-2')
 const Case3Solver = require('./cases/case-3')
+const Case4Solver = require('./cases/case-4')
 
 const INDENT_LEVEL = 0
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
-class F2LBaseSolver extends BaseSolver {
+class F2LSolver extends BaseSolver {
+  constructor(...args) {
+    super(...args)
+
+    // the afterEach callback gets executed for this base solver, and for any
+    // sub-case solvers created. Avoid this duplication
+    this.subCaseOptions = Object.assign({}, this.options, {
+      afterEach: null
+    })
+  }
+
   solve() {
-    let totalMoves = []
+    this.partitions = []
 
     let pairs = this.getAllPairs()
     pairs.forEach(({ corner, edge }) => {
-      this._solve({ corner, edge })
+      let partition = this._solve({ corner, edge })
 
-      totalMoves.push(...this.totalMoves)
-      this.totalMoves = []
-
-      // let solveMoves = this.solvePair(pair)
-      // this.totalMoves.push(...solveMoves.split(' '))
+      this.partitions.push(partition)
     })
 
-    this.totalMoves = totalMoves
-    return this.totalMoves.join(' ')
+    return this.partitions
   }
 
   isSolved() {
@@ -61,11 +67,6 @@ class F2LBaseSolver extends BaseSolver {
     return pairs
   }
 
-  // solvePair({ corner, edge }) {
-  //   let caseNum = this._getCaseNumber({ corner, edge })
-  //   return this[`_solveCase${caseNum}`]({ corner, edge })
-  // }
-
   /**
    * 4 top level cases:
    *
@@ -97,15 +98,30 @@ class F2LBaseSolver extends BaseSolver {
   }
 
   _solveCase1({ corner, edge }) {
-    return new Case1Solver(this.cube, this.options).solve({ corner, edge })
+    let solver = new Case1Solver(this.cube, this.subCaseOptions)
+    let partition = solver.solve({ corner, edge })
+
+    this.totalMoves = partition.moves
+    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
+
+    return this.partition
+    // return new Case1Solver(this.cube, this.options).solve({ corner, edge })
   }
 
   _solveCase2({ corner, edge }) {
-    return new Case2Solver(this.cube, this.options).solve({ corner, edge })
+    let solver = new Case2Solver(this.cube, this.subCaseOptions)
+    let partition = solver.solve({ corner, edge })
+
+    this.totalMoves = partition.moves
+    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
   }
 
   _solveCase3({ corner, edge }) {
-    return new Case3Solver(this.cube, this.options).solve({ corner, edge })
+    let solver = new Case3Solver(this.cube, this.subCaseOptions)
+    let partition = solver.solve({ corner, edge })
+
+    this.totalMoves = partition.moves
+    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
   }
 
   _solveCase4({ corner, edge }) {
@@ -115,7 +131,19 @@ class F2LBaseSolver extends BaseSolver {
 
     this.move(`${cornerRightFace} D ${R(cornerRightFace)}`)
 
-    return new Case2Solver(this.cube, this.options).solve({ corner, edge })
+    let solver
+    if (corner.faces().includes(edge.faces()[0] &&
+        corner.faces().includes(edge.faces()[1]))) {
+      solver = new Case1Solver(this.cube, this.subCaseOptions)
+    } else {
+      solver = new Case2Solver(this.cube, this.subCaseOptions)
+    }
+
+    let partition = solver.solve({ corner, edge })
+    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
+    this.partition.moves = [...this.totalMoves, ...partition.moves]
+
+    return this.partition
   }
 
   logSetup({ corner, edge }) {
@@ -132,4 +160,4 @@ class F2LBaseSolver extends BaseSolver {
   }
 }
 
-module.exports = F2LBaseSolver
+module.exports = F2LSolver
