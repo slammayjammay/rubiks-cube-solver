@@ -1,7 +1,7 @@
 const { assert, expect } = require('chai')
 const RubiksCube = require('../../../models/RubiksCube')
 const Cubie = require('../../../models/Cubie')
-const Case2Solver = require('../../../solvers/f2l/case-2')
+const Case2Solver = require('../../../solvers/f2l/cases/case-2')
 
 let tests = []
 
