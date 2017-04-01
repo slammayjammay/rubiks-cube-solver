@@ -5,7 +5,6 @@ const BaseSolver = require('./BaseSolver')
 const Case1Solver = require('./cases/case-1')
 const Case2Solver = require('./cases/case-2')
 const Case3Solver = require('./cases/case-3')
-const Case4Solver = require('./cases/case-4')
 
 const INDENT_LEVEL = 0
 const R = (moves) => RubiksCube.reverseMoves(moves)
