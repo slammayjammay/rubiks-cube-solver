@@ -13,7 +13,7 @@ class BaseSolver {
     this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube
     this.options = options
 
-    this.afterEach = options.afterEach || function() {}
+    this._afterEachCallbacks = []
 
     this.partition = {}
     this.partitions = []
@@ -32,6 +32,18 @@ class BaseSolver {
     this.cube.move(notations)
   }
 
+  afterEach(callback) {
+    if (typeof callback !== 'function') {
+      return
+    }
+
+    this._afterEachCallbacks.push(callback)
+  }
+
+  triggerAfterEach(...args) {
+    this._afterEachCallbacks.forEach(callback => callback(...args));
+  }
+
   /**
    * Solves the edge and/or corner and returns information about the state
    * about them right before they are solved. It's important to construct the
@@ -39,17 +51,16 @@ class BaseSolver {
    * the case number if the solve method fails.
    */
   _solve({ corner, edge }) {
-    /**
-     *
-     * Many problems. Instead, every "solve" function returns a local variable.
-     * Store the current partition in an instance variable: this.debug or
-     * something.
-     *
-     */
+    this.partition = {};
 
-    this.partition.initial = {
+    this.partition.before = {
       corner: corner && corner.clone(),
       edge: edge && edge.clone()
+    }
+
+    this.partition.after = {
+      corner: corner && corner,
+      edge: edge && edge
     }
 
     this.partition.caseNumber = this._getCaseNumber({ corner, edge })
@@ -59,7 +70,10 @@ class BaseSolver {
 
     this.totalMoves = [];
 
-    this.afterEach(this.phase, this.partition)
+    if (!this._overrideAfterEach) {
+      this.triggerAfterEach(this.partition, this.phase)
+    }
+
     return this.partition
   }
 
