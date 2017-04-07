@@ -6,7 +6,6 @@ const Case1Solver = require('./cases/case-1')
 const Case2Solver = require('./cases/case-2')
 const Case3Solver = require('./cases/case-3')
 
-const INDENT_LEVEL = 0
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
 class F2LSolver extends BaseSolver {
@@ -140,19 +139,6 @@ class F2LSolver extends BaseSolver {
 
     this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
     this.totalMoves = [...this.totalMoves, ...partition.moves]
-  }
-
-  logSetup({ corner, edge }) {
-    let info = `${edge.colors()[0]} ${edge.colors()[1]}`
-    this.LOG_SETUP(INDENT_LEVEL, 'pair', info)
-  }
-
-  logCaseNumber(caseNumber) {
-    this.LOG_CASE_NUMBER(INDENT_LEVEL, 'f2l top-level case', caseNumber)
-  }
-
-  logTotalMoves() {
-    // do nothing.
   }
 }
 

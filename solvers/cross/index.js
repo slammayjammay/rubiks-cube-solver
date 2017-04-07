@@ -4,7 +4,6 @@ const Cubie = require('../../models/Cubie')
 const Face = require('../../models/Face')
 const utils = require('../../utils')
 
-const INDENT_LEVEL = 0
 const CROSS_COLOR = 'U'
 const R = (moves) => RubiksCube.reverseMoves(moves)
 
@@ -171,20 +170,6 @@ class CrossSolver extends BaseSolver {
     }
 
     return `${R(prepMove)} ${edgeToCrossFace} ${prepMove}`
-  }
-
-  logSetup({ edge }) {
-    let info = `${edge.colors()[0]} ${edge.colors()[1]}`
-    this.LOG_SETUP(INDENT_LEVEL, 'edge', info)
-  }
-
-  logCaseNumber(caseNumber) {
-    this.LOG_CASE_NUMBER(INDENT_LEVEL, 'cross case', caseNumber)
-  }
-
-  logTotalMoves() {
-    let totalMoves = this.totalMoves.join(' ')
-    this.LOG_TOTAL_MOVES(INDENT_LEVEL, totalMoves)
   }
 }
 
