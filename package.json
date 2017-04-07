@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test/**/* || true",
-    "test:dynamic": "node test/dynamic.js --show-output --num-runs=1",
+    "test:dynamic": "node test/dynamic.js",
     "test:models": "mocha test/models/* || true",
     "test:solvers": "mocha test/solvers/* || true",
     "test:utils": "mocha test/utils/* || true"
