@@ -1,52 +1,94 @@
 const chalk = require('chalk')
+const Solver = require('../').Solver
 const RubiksCube = require('../models/RubiksCube')
 const CrossSolver = require('../solvers/cross')
 const F2LSolver = require('../solvers/f2l')
 const utils = require('../utils')
 
-const NUM_RUNS = 1
+const NUM_RUNS = 100
+
+let currentPhase
+let successes = 0
+
+console.log(chalk.green('Successful solves:'))
 
 for (let i = 0; i < NUM_RUNS; i++) {
-  solveACube()
-}
-
-function solveACube() {
-  let cube = RubiksCube.Solved()
-
   // get access to the scrambled state
+  let cube = RubiksCube.Solved()
   let scrambleMoves = RubiksCube.getRandomMoves(25)
   cube.move(scrambleMoves)
+
+  const afterEach = (partition, phase) => {
+    let { corner, edge } = partition.after
+    let showDebugOutput = false
+
+    if (phase === 'cross' && !solver.isCrossEdgeSolved(edge)) {
+      showDebugOutput = true
+    } else if (phase === 'f2l' && !solver.isF2LPairSolved({ corner, edge })) {
+      showDebugOutput = true
+    } else {
+    }
+
+    if (showDebugOutput) {
+      logSolveData(scrambleMoves, solver)
+
+      console.log(chalk.bold.red(`====== Failed on phase ${phase} ======`))
+      logPartition(solver.currentSolver.partition, 'red')
+
+      process.exit()
+    }
+  }
+
+  let solver = new Solver(cube)
+  solver.afterEach(afterEach)
+
+  try {
+    solver.solve()
+
+    if (successes >= 50) {
+      successes = 0
+      console.log()
+    }
+
+    process.stdout.write(chalk.green('✔'))
+    successes += 1
+  } catch (e) {
+    logSolveData(scrambleMoves, solver)
+
+    console.log(chalk.bold.red(`====== Failed on phase ${currentPhase} ======`))
+    logPartition(solver.currentSolver.partition, 'red')
+
+    throw e
+  }
+
+  if (i === NUM_RUNS - 1) {
+    console.log()
+  }
+}
+
+function logPartition({ before, caseNumber, moves = [] }, color = 'green') {
+  let colors = before.edge.colors()
+  console.log(chalk[color]('Colors:'), colors)
+
+  console.log(chalk[color]('Case Number:'), caseNumber)
+  console.log(chalk[color]('Moves:'), moves.join(' '))
+  console.log()
+}
+
+function logSolveData(scrambleMoves, solver) {
+  console.log()
 
   console.log(chalk.bold('Scramble moves: '))
   console.log(chalk.green(scrambleMoves))
   console.log()
 
-  console.log(chalk.bold('====== Solving the Cross ======'))
-  solveTheCross(cube)
+  Object.keys(solver.progress).forEach(phase => {
+    if (phase !== currentPhase && solver.progress[phase].length > 0) {
+      console.log(chalk.bold(`====== Solving phase ${phase} ======`))
+      currentPhase = phase
+    }
 
-  console.log(chalk.bold('====== Solving the First Two Layers ======'))
-  solveF2L(cube)
-}
-
-function solveTheCross(cube) {
-  let cross = new CrossSolver(cube, { debug: true })
-
-  // get access to the moves that solve the cross
-  let moves = cross.solve()
-
-  // console.log(chalk.green('Cross moves: '));
-  // console.log(moves)
-  // console.log()
-}
-
-function solveF2L(cube) {
-  let f2l = new F2LSolver(cube, { debug: true })
-
-  // console.log(chalk.green('F2L moves: '))
-
-  let moves = f2l.solve()
-
-  if (f2l.isSolved()) {
-    console.log(chalk.green('throw a parade!'))
-  }
+    let partitions = solver.progress[phase]
+    partitions.forEach(partition => logPartition(partition))
+  })
 }
