@@ -1,3 +1,4 @@
+const minimist = require('minimist')
 const chalk = require('chalk')
 const Solver = require('../').Solver
 const RubiksCube = require('../models/RubiksCube')
@@ -5,12 +6,16 @@ const CrossSolver = require('../solvers/cross')
 const F2LSolver = require('../solvers/f2l')
 const utils = require('../utils')
 
-const NUM_RUNS = 100
+const argv = minimist(process.argv.slice(2))
+const NUM_RUNS = argv['num-runs'] || 1
+const SHOW_OUTPUT = argv['show-output']
 
 let currentPhase
 let successes = 0
 
-console.log(chalk.green('Successful solves:'))
+if (!SHOW_OUTPUT) {
+  console.log(chalk.green('Successful solves:'))
+}
 
 for (let i = 0; i < NUM_RUNS; i++) {
   // get access to the scrambled state
@@ -26,7 +31,6 @@ for (let i = 0; i < NUM_RUNS; i++) {
       showDebugOutput = true
     } else if (phase === 'f2l' && !solver.isF2LPairSolved({ corner, edge })) {
       showDebugOutput = true
-    } else {
     }
 
     if (showDebugOutput) {
@@ -50,7 +54,12 @@ for (let i = 0; i < NUM_RUNS; i++) {
       console.log()
     }
 
-    process.stdout.write(chalk.green('✔'))
+    if (SHOW_OUTPUT) {
+      logSolveData(scrambleMoves, solver)
+    } else {
+      process.stdout.write(chalk.green('✔'))
+    }
+
     successes += 1
   } catch (e) {
     logSolveData(scrambleMoves, solver)
@@ -75,7 +84,7 @@ function logPartition({ before, caseNumber, moves = [] }, color = 'green') {
   console.log()
 }
 
-function logSolveData(scrambleMoves, solver) {
+  function logSolveData(scrambleMoves, solver) {
   console.log()
 
   console.log(chalk.bold('Scramble moves: '))
