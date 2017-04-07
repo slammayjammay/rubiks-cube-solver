@@ -13,10 +13,8 @@ class F2LSolver extends BaseSolver {
   constructor(...args) {
     super(...args)
 
-    // the afterEach callback gets executed for this base solver, and for any
-    // sub-case solvers created. Avoid this duplication
-    this.subCaseOptions = Object.assign({}, this.options, {
-      afterEach: null
+    this.subCaseOptions = Object.assign(this.options, {
+      _overrideAfterEach: true
     })
   }
 
@@ -26,7 +24,6 @@ class F2LSolver extends BaseSolver {
     let pairs = this.getAllPairs()
     pairs.forEach(({ corner, edge }) => {
       let partition = this._solve({ corner, edge })
-
       this.partitions.push(partition)
     })
 
@@ -67,7 +64,7 @@ class F2LSolver extends BaseSolver {
   }
 
   /**
-   * 4 top level cases:
+   * 4 top level cases: (cross face is UP)
    *
    * 1) Corner and edge are both on the DOWN face.
    * 2) Corner is on the DOWN face and edge is not on DOWN face.
@@ -102,9 +99,6 @@ class F2LSolver extends BaseSolver {
 
     this.totalMoves = partition.moves
     this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
-
-    return this.partition
-    // return new Case1Solver(this.cube, this.options).solve({ corner, edge })
   }
 
   _solveCase2({ corner, edge }) {
@@ -124,25 +118,28 @@ class F2LSolver extends BaseSolver {
   }
 
   _solveCase4({ corner, edge }) {
+    if (this.isPairSolved({ corner, edge })) {
+      return
+    }
+
+    let solver
+    if (corner.faces().includes(edge.faces()[0]) &&
+        corner.faces().includes(edge.faces()[1])) {
+      solver = new Case1Solver(this.cube, this.subCaseOptions)
+    } else {
+      solver = new Case2Solver(this.cube, this.subCaseOptions)
+    }
+
     let faces = corner.faces().filter(face => face !== 'UP')
     let dir = utils.getDirectionFromFaces(faces[0], faces[1], { UP: 'DOWN' })
     let cornerRightFace = dir === 'RIGHT' ? faces[1] : faces[0]
 
     this.move(`${cornerRightFace} D ${R(cornerRightFace)}`)
 
-    let solver
-    if (corner.faces().includes(edge.faces()[0] &&
-        corner.faces().includes(edge.faces()[1]))) {
-      solver = new Case1Solver(this.cube, this.subCaseOptions)
-    } else {
-      solver = new Case2Solver(this.cube, this.subCaseOptions)
-    }
-
     let partition = solver.solve({ corner, edge })
-    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
-    this.partition.moves = [...this.totalMoves, ...partition.moves]
 
-    return this.partition
+    this.partition.caseNumber = [this.partition.caseNumber, partition.caseNumber]
+    this.totalMoves = [...this.totalMoves, ...partition.moves]
   }
 
   logSetup({ corner, edge }) {
