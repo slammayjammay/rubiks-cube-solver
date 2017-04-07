@@ -18,8 +18,8 @@ class CrossSolver extends BaseSolver {
   solve() {
     let crossEdges = this._getCrossEdges()
     for (let edge of crossEdges) {
-      this._solve({ edge })
-      this.partitions.push(this.partition)
+      let partition = this._solve({ edge })
+      this.partitions.push(partition)
     }
 
     return this.partitions
