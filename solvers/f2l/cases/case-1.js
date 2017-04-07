@@ -96,12 +96,12 @@ class Case1Solver extends BaseSolver {
     let currentFace = edge.faces().find(face => face !== 'DOWN')
     let targetFace = utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
     let prepFace = utils.getFaceFromDirection(targetFace, 'BACK', { UP: 'DOWN'})
-    let otherFace = corner.getFaceOfColor(edge.getColorOfFace(currentFace))
+    let otherFace = corner.getFaceOfColor(edge.getColorOfFace('DOWN'))
     let isLeft = utils.getFaceFromDirection(currentFace, otherFace, { UP: 'DOWN' }) === 'LEFT'
 
     // the moves
     let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
-    let moveFace = utils.getMoveOfFace(otherFace)
+    let moveFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace))
     let dir = isLeft ? 'D' : 'DPrime'
 
     moveFace = isLeft ? moveFace : R(moveFace)
@@ -200,15 +200,16 @@ class Case1Solver extends BaseSolver {
 
   _solveCase8({ corner, edge }) {
     let primary = edge.colors().find(c => edge.getFaceOfColor(c) !== 'DOWN')
-    let currentFace = corner.getFaceOfColor(
-      edge.colors().find(c => !['U', primary].includes(c))
-    )
+    let secondary = edge.colors().find(c => edge.getFaceOfColor(c) === 'DOWN')
+
+    let currentFace = corner.getFaceOfColor(secondary)
     let targetFace = utils.getFaceOfMove(primary)
+
     let isLeft = utils.getDirectionFromFaces(
       currentFace,
       corner.getFaceOfColor('U'),
       { UP: 'DOWN' }
-    )
+    ) === 'LEFT'
 
     let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
     let open = isLeft ? R(targetFace) : targetFace
