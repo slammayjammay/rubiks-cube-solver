@@ -21,7 +21,8 @@
   "author": "Scott McKenzie",
   "license": "ISC",
   "dependencies": {
-    "gl-vec3": "^1.0.3"
+    "gl-vec3": "^1.0.3",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
