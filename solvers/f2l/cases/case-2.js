@@ -64,8 +64,9 @@ class case2Solver extends BaseSolver {
     let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace)
     this.move(prep)
 
-    let dir = utils.getDirectionFromFaces(edge.faces()[0] , edge.faces()[1], { UP: 'DOWN' })
-    let rightFace = edge.faces()[dir === 'RIGHT' ? 1 : 0]
+    let [face1, face2] = edge.faces()
+    let dir = utils.getDirectionFromFaces(face1 , face2, { UP: 'DOWN' })
+    let rightFace = dir === 'RIGHT' ? face2 : face1
 
     this.move(`${rightFace} DPrime ${R(rightFace)}`)
     this.solveMatchedPair({ corner, edge })
