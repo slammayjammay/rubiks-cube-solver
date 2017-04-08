@@ -160,7 +160,7 @@ class RubiksCube {
    */
   pieceAt(pos) {
     for (let cubie of this._cubies) {
-     if (Vector.areEqual(cubie.position(), pos)) {
+      if (Vector.areEqual(cubie.position(), pos)) {
         return cubie
       }
     }
