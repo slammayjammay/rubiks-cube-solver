@@ -73,12 +73,8 @@ class BaseSolver {
    * object in steps for debugging, so that we can still have access to e.g.
    * the case number if the solve method fails.
    */
-  _solve(cubies) {
-    let corner, edge
-    if (cubies !== undefined) {
-      corner = cubies.corner
-      edge = cubies.edge
-    }
+  _solve(cubies = {}) {
+    let { corner, edge } = cubies
 
     this.partition = {};
 
@@ -94,7 +90,7 @@ class BaseSolver {
 
     this.partition.caseNumber = this._getCaseNumber({ corner, edge })
 
-    this[`_solveCase${this.partition.caseNumber}`]({ corner, edge })
+    this._solveCase(this.partition.caseNumber, { corner, edge })
     this.partition.moves = this.totalMoves
 
     this.totalMoves = [];
@@ -104,6 +100,11 @@ class BaseSolver {
     }
 
     return this.partition
+  }
+
+  _solveCase(caseNumber, cubies = {}) {
+    let { corner, edge } = cubies
+    this[`_solveCase${caseNumber}`]({ corner, edge })
   }
 }
 
