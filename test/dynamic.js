@@ -4,6 +4,7 @@ const Solver = require('../').Solver
 const RubiksCube = require('../models/RubiksCube')
 const CrossSolver = require('../solvers/cross')
 const F2LSolver = require('../solvers/f2l')
+const OLLSolver = require('../solvers/oll')
 const utils = require('../utils')
 
 const argv = minimist(process.argv.slice(2))
@@ -44,7 +45,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
   }
 
   let solver = new Solver(cube)
-  solver.afterEach(afterEach)
+  solver.afterEach(afterEach, ['cross', 'f2l'])
 
   try {
     solver.solve()
