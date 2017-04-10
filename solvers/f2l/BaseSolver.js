@@ -1,165 +1,163 @@
-const BaseSolver = require('../BaseSolver')
-const RubiksCube = require('../../models/RubiksCube')
-const utils = require('../../utils')
+const BaseSolver = require('../BaseSolver');
+const RubiksCube = require('../../models/RubiksCube');
+const utils = require('../../utils');
 
-const R = (moves) => RubiksCube.reverseMoves(moves)
+const R = (moves) => RubiksCube.reverseMoves(moves);
 
 class F2LBaseSolver extends BaseSolver {
-  constructor(...args) {
-    super(...args)
+	constructor(...args) {
+		super(...args);
 
-    this.phase = 'f2l'
-  }
+		this.phase = 'f2l';
+	}
 
-  colorsMatch({ corner, edge }) {
-    let colors = edge.colors()
+	colorsMatch({ corner, edge }) {
+		let colors = edge.colors();
 
-    if (corner.colors().includes(colors[0]) && corner.colors().includes(colors[1])) {
-      return true
-    }
+		if (corner.colors().includes(colors[0]) && corner.colors().includes(colors[1])) {
+			return true;
+		}
 
-    return false
-  }
+		return false;
+	}
 
   /**
    * Returns true only if the pair is matched and in the correct slot.
    */
-  isPairSolved({ corner, edge }) {
-    if (!this.isPairMatched({ corner, edge })) {
-      return false
-    }
+	isPairSolved({ corner, edge }) {
+		if (!this.isPairMatched({ corner, edge })) {
+			return false;
+		}
 
     // is the corner on the cross face?
-    if (corner.getFaceOfColor('U') !== 'UP') {
-      return false
-    }
+		if (corner.getFaceOfColor('U') !== 'UP') {
+			return false;
+		}
 
     // are the edge's colors on the correct face? (e.g. is the edge's 'F' color
     // on the 'FRONT' face)?
-    for (let color of edge.colors()) {
-      let edgeFace = edge.getFaceOfColor(color)
+		for (let color of edge.colors()) {
+			if (edge.getFaceOfColor(color) !== utils.getFaceOfMove(color)) {
+				return false;
+			}
+		}
 
-      if (edge.getFaceOfColor(color) !== utils.getFaceOfMove(color)) {
-        return false
-      }
-    }
+		return true;
+	}
 
-    return true
-  }
-
-  isPairMatched({ corner, edge }) {
+	isPairMatched({ corner, edge }) {
     // are the two non-cross colors the same?
-    if (!this.colorsMatch({ corner, edge })) {
-      return false
-    }
+		if (!this.colorsMatch({ corner, edge })) {
+			return false;
+		}
 
     // for each color, do the corner and edge share the same face?
-    for (let color of edge.colors()) {
-      if (corner.getFaceOfColor(color) !== edge.getFaceOfColor(color)) {
-        return false
-      }
-    }
+		for (let color of edge.colors()) {
+			if (corner.getFaceOfColor(color) !== edge.getFaceOfColor(color)) {
+				return false;
+			}
+		}
 
-    return true
-  }
+		return true;
+	}
 
-  isPairSeparated({ corner, edge }) {
+	isPairSeparated({ corner, edge }) {
     // colors must match
-    if (!this.colorsMatch({ corner, edge })) {
-      return false
-    }
+		if (!this.colorsMatch({ corner, edge })) {
+			return false;
+		}
 
     // corner's white face cannot be UP or DOWN
-    if (['UP', 'DOWN'].includes(corner.getFaceOfColor('U'))) {
-      return false
-    }
+		if (['UP', 'DOWN'].includes(corner.getFaceOfColor('U'))) {
+			return false;
+		}
 
     // edge must be on the DOWN face
-    if (!edge.faces().includes('DOWN')) {
-      return false
-    }
+		if (!edge.faces().includes('DOWN')) {
+			return false;
+		}
 
 
-    let otherColor = corner.colors().find(color => {
-      return color !== 'U' && corner.getFaceOfColor(color) !== 'DOWN'
-    })
+		let otherColor = corner.colors().find(color => {
+			return color !== 'U' && corner.getFaceOfColor(color) !== 'DOWN';
+		});
 
     // edge must be oriented properly
-    if (edge.getFaceOfColor(otherColor) !== 'DOWN') {
-      return false
-    }
+		if (edge.getFaceOfColor(otherColor) !== 'DOWN') {
+			return false;
+		}
 
     // corner and edge must be one move away from matching
-    let isOneMoveFromMatched = utils.getDirectionFromFaces(
+		let isOneMoveFromMatched = utils.getDirectionFromFaces(
       corner.getFaceOfColor(otherColor),
       edge.getFaceOfColor(corner.getColorOfFace('DOWN')),
       { UP: 'UP' }
-    )
+    );
 
-    if (isOneMoveFromMatched !== 'BACK') {
-      return false
-    }
+		if (isOneMoveFromMatched !== 'BACK') {
+			return false;
+		}
 
-    return true
-  }
+		return true;
+	}
 
-  solveMatchedPair({ corner, edge }) {
-    if (!this.isPairMatched({ corner, edge })) {
-      throw new Error('Pair is not matched')
-    }
+	solveMatchedPair({ corner, edge }) {
+		if (!this.isPairMatched({ corner, edge })) {
+			throw new Error('Pair is not matched');
+		}
 
     // get the color that is not on the down face and is not the crossColor
-    let matchedColor = edge.colors().find(color => {
-      return edge.getFaceOfColor(color) !== 'DOWN'
-    })
+		let matchedColor = edge.colors().find(color => {
+			return edge.getFaceOfColor(color) !== 'DOWN';
+		});
 
-    let isLeft = utils.getDirectionFromFaces(
+		let isLeft = utils.getDirectionFromFaces(
       edge.getFaceOfColor(matchedColor),
       corner.getFaceOfColor('U'),
       { UP: 'DOWN' }
-    ).toUpperCase() === 'LEFT'
+    ).toUpperCase() === 'LEFT';
 
-    let matchingFace = utils.getFaceOfMove(matchedColor)
-    let currentFace = corner.getFaceOfColor(matchedColor)
-    let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'RIGHT' : 'LEFT', { UP: 'UP' })
+		let matchingFace = utils.getFaceOfMove(matchedColor);
+		let currentFace = corner.getFaceOfColor(matchedColor);
+		let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'RIGHT' : 'LEFT', { UP: 'UP' });
 
-    let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
-    let open = isLeft ? matchingFace : R(matchingFace)
-    let insert = isLeft ? 'DPrime' : 'D'
+		let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace);
+		let open = isLeft ? matchingFace : R(matchingFace);
+		let insert = isLeft ? 'DPrime' : 'D';
 
-    let solveMoves = [prep, open, insert, R(open)].join(' ')
-    this.move(solveMoves)
-    return solveMoves
-  }
+		let solveMoves = [prep, open, insert, R(open)].join(' ');
+		this.move(solveMoves);
+		return solveMoves;
+	}
 
-  solveSeparatedPair({ corner, edge }) {
-    if (!this.isPairSeparated({ corner, edge })) {
-      throw new Error('Pair is not separated')
-    }
+	solveSeparatedPair({ corner, edge }) {
+		if (!this.isPairSeparated({ corner, edge })) {
+			throw new Error('Pair is not separated');
+		}
 
     // get the color that is not on the down face and is not the crossColor
-    let matchedColor = edge.colors().find(color => {
-      return edge.getFaceOfColor(color) !== 'DOWN'
-    })
+		let matchedColor = edge.colors().find(color => {
+			return edge.getFaceOfColor(color) !== 'DOWN';
+		});
 
-    let isLeft = utils.getDirectionFromFaces(
+		let isLeft = utils.getDirectionFromFaces(
       corner.getFaceOfColor('U'),
       edge.getFaceOfColor(matchedColor),
       { UP: 'DOWN' }
-    ).toUpperCase() === 'LEFT'
+    ).toUpperCase() === 'LEFT';
 
-    let currentFace = corner.getFaceOfColor('U')
-    let prepFace = utils.getFaceOfMove(matchedColor)
+		let currentFace = corner.getFaceOfColor('U');
+		let prepFace = utils.getFaceOfMove(matchedColor);
 
-    let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace)
-    let match = utils.getMoveOfFace(prepFace)
-    match = isLeft ? R(match) : match
-    let insert = isLeft ? 'DPrime' : 'D'
+		let prep = utils.getRotationFromTo('DOWN', currentFace, prepFace);
+		let match = utils.getMoveOfFace(prepFace);
+		match = isLeft ? R(match) : match;
+		let insert = isLeft ? 'DPrime' : 'D';
 
-    let solveMoves = [prep, match, insert, R(match)].join(' ')
-    this.move(solveMoves)
-    return solveMoves
-  }
+		let solveMoves = [prep, match, insert, R(match)].join(' ');
+		this.move(solveMoves);
+		return solveMoves;
+	}
 }
 
-module.exports = F2LBaseSolver
+module.exports = F2LBaseSolver;

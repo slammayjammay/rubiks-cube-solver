@@ -1,4 +1,4 @@
-const chalk = require('chalk')
+const RubiksCube = require('../models/RubiksCube');
 
 class BaseSolver {
   /**
@@ -9,54 +9,54 @@ class BaseSolver {
    * long string representing the cube state (in this case it will have to
    * "build" another rubik's Cube), or an already built RubiksCube object.
    */
-  constructor(rubiksCube, options = {}) {
-    this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube
-    this.options = options
+	constructor(rubiksCube, options = {}) {
+		this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube;
+		this.options = options;
 
-    this.phases = ['cross', 'f2l', 'oll', 'pll']
-    this._afterEachCallbacks = {}
-    this.phases.forEach(phase => this._afterEachCallbacks[phase] = [])
+		this.phases = ['cross', 'f2l', 'oll', 'pll'];
+		this._afterEachCallbacks = {};
+		this.phases.forEach(phase => this._afterEachCallbacks[phase] = []);
 
-    this.partition = {}
-    this.partitions = []
-    this.totalMoves = []
-  }
+		this.partition = {};
+		this.partitions = [];
+		this.totalMoves = [];
+	}
 
   /**
    * @param {string} notation - A string of move(s) to execute and store.
    */
-  move(notations) {
-    for (let notation of notations.split(' ')) {
-      if (notation !== '') {
-        this.totalMoves.push(notation)
-      }
-    }
-    this.cube.move(notations)
-  }
+	move(notations) {
+		for (let notation of notations.split(' ')) {
+			if (notation !== '') {
+				this.totalMoves.push(notation);
+			}
+		}
+		this.cube.move(notations);
+	}
 
   /**
    * @param {string|array} phases - The phases during which to fire the callback.
    */
-  afterEach(callback, phases) {
-    if (typeof callback !== 'function') {
-      return
-    }
+	afterEach(callback, phases) {
+		if (typeof callback !== 'function') {
+			return;
+		}
 
     // argument parsing
-    if (typeof phases === 'string') {
-      if (phases === 'all') {
-        phases = this.phases.slice()
-      } else if (!this.phases.includes(phases)) {
-        return
-      }
-    }
+		if (typeof phases === 'string') {
+			if (phases === 'all') {
+				phases = this.phases.slice();
+			} else if (!this.phases.includes(phases)) {
+				return;
+			}
+		}
 
-    phases.forEach(phase => this._afterEachCallbacks[phase].push(callback))
+		phases.forEach(phase => this._afterEachCallbacks[phase].push(callback));
     // this._afterEachCallbacks.push(callback)
-  }
+	}
 
-  triggerAfterEach(phase, callbackArgs) {
-    this._afterEachCallbacks[phase].forEach(fn => fn(...callbackArgs))
+	triggerAfterEach(phase, callbackArgs) {
+		this._afterEachCallbacks[phase].forEach(fn => fn(...callbackArgs));
 
 
     // this._afterEachCallbacks.forEach(callback => callback(partition, phase));
@@ -65,7 +65,7 @@ class BaseSolver {
     //   let phaseCallbacks = this._afterEachCallbacks[thing]
     //   phaseCallbacks.forEach(callback => callback(partition, phase))
     // })
-  }
+	}
 
   /**
    * Solves the edge and/or corner and returns information about the state
@@ -73,39 +73,39 @@ class BaseSolver {
    * object in steps for debugging, so that we can still have access to e.g.
    * the case number if the solve method fails.
    */
-  _solve(cubies = {}) {
-    let { corner, edge } = cubies
+	_solve(cubies = {}) {
+		let { corner, edge } = cubies;
 
-    this.partition = {};
+		this.partition = {};
 
-    this.partition.before = {
-      corner: corner && corner.clone(),
-      edge: edge && edge.clone()
-    }
+		this.partition.before = {
+			corner: corner && corner.clone(),
+			edge: edge && edge.clone()
+		};
 
-    this.partition.after = {
-      corner: corner && corner,
-      edge: edge && edge
-    }
+		this.partition.after = {
+			corner: corner && corner,
+			edge: edge && edge
+		};
 
-    this.partition.caseNumber = this._getCaseNumber({ corner, edge })
+		this.partition.caseNumber = this._getCaseNumber({ corner, edge });
 
-    this._solveCase(this.partition.caseNumber, { corner, edge })
-    this.partition.moves = this.totalMoves
+		this._solveCase(this.partition.caseNumber, { corner, edge });
+		this.partition.moves = this.totalMoves;
 
-    this.totalMoves = [];
+		this.totalMoves = [];
 
-    if (!this._overrideAfterEach) {
-      this.triggerAfterEach(this.phase, [this.partition, this.phase])
-    }
+		if (!this._overrideAfterEach) {
+			this.triggerAfterEach(this.phase, [this.partition, this.phase]);
+		}
 
-    return this.partition
-  }
+		return this.partition;
+	}
 
-  _solveCase(caseNumber, cubies = {}) {
-    let { corner, edge } = cubies
-    this[`_solveCase${caseNumber}`]({ corner, edge })
-  }
+	_solveCase(caseNumber, cubies = {}) {
+		let { corner, edge } = cubies;
+		this[`_solveCase${caseNumber}`]({ corner, edge });
+	}
 }
 
-module.exports = BaseSolver
+module.exports = BaseSolver;
