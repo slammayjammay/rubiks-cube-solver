@@ -18,7 +18,7 @@ class OLLSolver extends BaseSolver {
 			'01112000': 'F U R UPrime RPrime FPrime', // 4
 			'11102120': 'F U R UPrime RPrime U R UPrime RPrime FPrime', // 5
 			'11210000': 'RPrime UPrime FPrime U F R', // 6
-			'11102020': 'FPrime LPrime UPrime L U LPrime UPrime L U F', // 7
+			'11102021': 'FPrime LPrime UPrime L U LPrime UPrime L U F', // 7
 			'10011110': 'R L L BPrime L BPrime LPrime B B L BPrime L RPrime', // 8
 			'00202121': 'LPrime R R B RPrime B R B B RPrime B RPrime L', // 9
 			'01111111': 'F U R UPrime RPrime FPrime L F U FPrime UPrime LPrime', // 10
@@ -35,7 +35,7 @@ class OLLSolver extends BaseSolver {
 			'10000010': 'LPrime BPrime R B L BPrime RPrime B', // 21
 			'20001000': 'B LPrime BPrime R B L BPrime RPrime', // 22
 			'00112001': 'RPrime UPrime RPrime F R FPrime U R', // 23
-			'20112011': 'R U U RPrime RPrime F R FPrime U U RPrime F R FPrime', // 24
+			'21112111': 'R U U RPrime RPrime F R FPrime U U RPrime F R FPrime', // 24
 			'10002101': 'R U U RPrime RPrime F R FPrime R U U RPrime', // 25
 			'21110101': 'M U R U RPrime UPrime MPrime RPrime F R FPrime', // 26
 			'11212010': 'F LPrime U U L U U L F F LPrime F', // 27
@@ -64,7 +64,7 @@ class OLLSolver extends BaseSolver {
 			'10000121': 'R U BPrime UPrime RPrime U R B RPrime', // 50
 			'11000021': 'RPrime UPrime F U R UPrime RPrime FPrime R', // 51
 			'01100120': 'L FPrime LPrime UPrime L U F UPrime LPrime', // 52
-			'11102020': 'RPrime F R R FPrime U U FPrime U U F RPrime', // 53
+			'11112020': 'RPrime F R R FPrime U U FPrime U U F RPrime', // 53
 			'20110100': 'BPrime RPrime B LPrime BPrime R R BPrime RPrime B B L', // 54
 			'20100101': 'B L BPrime R B L L B L B B RPrime', // 55
 			'01101011': 'FPrime UPrime F L FPrime LPrime U L F LPrime', // 56
