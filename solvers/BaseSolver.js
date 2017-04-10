@@ -13,7 +13,9 @@ class BaseSolver {
     this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube
     this.options = options
 
-    this._afterEachCallbacks = []
+    this.phases = ['cross', 'f2l', 'oll', 'pll']
+    this._afterEachCallbacks = {}
+    this.phases.forEach(phase => this._afterEachCallbacks[phase] = [])
 
     this.partition = {}
     this.partitions = []
@@ -32,16 +34,37 @@ class BaseSolver {
     this.cube.move(notations)
   }
 
-  afterEach(callback) {
+  /**
+   * @param {string|array} phases - The phases during which to fire the callback.
+   */
+  afterEach(callback, phases) {
     if (typeof callback !== 'function') {
       return
     }
 
-    this._afterEachCallbacks.push(callback)
+    // argument parsing
+    if (typeof phases === 'string') {
+      if (phases === 'all') {
+        phases = this.phases.slice()
+      } else if (!this.phases.includes(phases)) {
+        return
+      }
+    }
+
+    phases.forEach(phase => this._afterEachCallbacks[phase].push(callback))
+    // this._afterEachCallbacks.push(callback)
   }
 
-  triggerAfterEach(...args) {
-    this._afterEachCallbacks.forEach(callback => callback(...args));
+  triggerAfterEach(phase, callbackArgs) {
+    this._afterEachCallbacks[phase].forEach(fn => fn(...callbackArgs))
+
+
+    // this._afterEachCallbacks.forEach(callback => callback(partition, phase));
+
+    // Object.keys(this._afterEachCallbacks).forEach(thing => {
+    //   let phaseCallbacks = this._afterEachCallbacks[thing]
+    //   phaseCallbacks.forEach(callback => callback(partition, phase))
+    // })
   }
 
   /**
@@ -50,7 +73,13 @@ class BaseSolver {
    * object in steps for debugging, so that we can still have access to e.g.
    * the case number if the solve method fails.
    */
-  _solve({ corner, edge }) {
+  _solve(cubies) {
+    let corner, edge
+    if (cubies !== undefined) {
+      corner = cubies.corner
+      edge = cubies.edge
+    }
+
     this.partition = {};
 
     this.partition.before = {
@@ -71,7 +100,7 @@ class BaseSolver {
     this.totalMoves = [];
 
     if (!this._overrideAfterEach) {
-      this.triggerAfterEach(this.partition, this.phase)
+      this.triggerAfterEach(this.phase, [this.partition, this.phase])
     }
 
     return this.partition
