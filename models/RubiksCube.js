@@ -158,12 +158,31 @@ class RubiksCube {
   /**
    * @param {array} pos - The x, y, and z value of the cubie.
    */
-  pieceAt(pos) {
-    for (let cubie of this._cubies) {
-      if (Vector.areEqual(cubie.position(), pos)) {
-        return cubie
+  // pieceAt(pos) {
+  //   for (let cubie of this._cubies) {
+  //     if (Vector.areEqual(cubie.position(), pos)) {
+  //       return cubie
+  //     }
+  //   }
+  // }
+
+  /**
+   * @param {array} faces - The list of faces the cubie belongs on.
+   */
+  getCubie(faces) {
+    return this._cubies.find(cubie => {
+      if (faces.length != cubie.faces().length) {
+        return false
       }
-    }
+
+      for (let face of faces) {
+        if (!cubie.faces().includes(face)) {
+          return false
+        }
+      }
+
+      return true
+    });
   }
 
   /**
