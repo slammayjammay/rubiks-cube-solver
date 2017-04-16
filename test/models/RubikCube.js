@@ -14,7 +14,7 @@ describe('RubiksCube Model', () => {
 		});
 
 		it('requires a string with only 6 unique colors', () => {
-      // TODO
+			// TODO
 		});
 	});
 });

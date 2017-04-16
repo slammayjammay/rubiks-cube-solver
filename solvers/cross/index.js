@@ -42,25 +42,25 @@ class CrossSolver extends BaseSolver {
 		return isOnCrossFace && matchesMiddle;
 	}
 
-  /**
-   * Finds all edges that have 'F' as a color.
-   * @return {array}
-   */
+	/**
+	 * Finds all edges that have 'F' as a color.
+	 * @return {array}
+	 */
 	_getCrossEdges() {
 		return this.cube.edges().filter(edge => edge.hasColor(CROSS_COLOR));
 	}
 
-  /**
-   * 6 Cases!
-   * 1) The edge's UP color is on the UP face.
-   * 2) the edge's UP color is on the DOWN face.
-   * 3) The edge's UP color is not on the UP or DOWN face and the other color is on the UP face.
-   * 4) The edge's UP color is not on the UP or DOWN face and the other color is on the DOWN face.
-   * 5) The edge's UP color is not on the UP or DOWN face and the other color is on the RELATIVE RIGHT face.
-   * 6) The edge's UP color is not on the UP or DOWN face and the other color is on the RELATIVE LEFT face.
-   *
-   * @param {cubie} edge
-   */
+	/**
+	 * 6 Cases!
+	 * 1) The edge's UP color is on the UP face.
+	 * 2) the edge's UP color is on the DOWN face.
+	 * 3) The edge's UP color is not on the UP or DOWN face and the other color is on the UP face.
+	 * 4) The edge's UP color is not on the UP or DOWN face and the other color is on the DOWN face.
+	 * 5) The edge's UP color is not on the UP or DOWN face and the other color is on the RELATIVE RIGHT face.
+	 * 6) The edge's UP color is not on the UP or DOWN face and the other color is on the RELATIVE LEFT face.
+	 *
+	 * @param {cubie} edge
+	 */
 	_getCaseNumber({ edge }) {
 		if (edge.getColorOfFace('up') === CROSS_COLOR) {
 			return 1;
@@ -108,10 +108,10 @@ class CrossSolver extends BaseSolver {
 
 	_solveCase4({ edge }) {
 		let prepMove = utils.getRotationFromTo(
-      'down',
-      edge.getFaceOfColor('u'),
-      utils.getFaceOfMove(edge.getColorOfFace('down'))
-    );
+			'down',
+			edge.getFaceOfColor('u'),
+			utils.getFaceOfMove(edge.getColorOfFace('down'))
+		);
 		this.move(prepMove);
 
 		let edgeToMiddle = R(edge.getFaceOfColor('u'));

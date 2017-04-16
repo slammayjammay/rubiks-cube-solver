@@ -10,11 +10,11 @@ const faceToNormal = {
 };
 
 class Face {
-  /**
-   * Factory method.
-   * @param {string|array} normal - The normal that identifies this face.
-   * @return {Face}
-   */
+	/**
+	 * Factory method.
+	 * @param {string|array} normal - The normal that identifies this face.
+	 * @return {Face}
+	 */
 	static FromNormal(normal) {
 		if (typeof normal === 'string') {
 			normal = Vector.FromString(normal).toArray();
@@ -23,18 +23,18 @@ class Face {
 		return new Face(Face.getFace(normal));
 	}
 
-  /**
-   * @param {string} face - A string that identifies a face.
-   * @return {array}
-   */
+	/**
+	 * @param {string} face - A string that identifies a face.
+	 * @return {array}
+	 */
 	static getNormal(face) {
 		return Vector.FromString(faceToNormal[face]).toArray();
 	}
 
-  /**
-   * @param {string|array} normal - The normal that identifies a face.
-   * @return {string}
-   */
+	/**
+	 * @param {string|array} normal - The normal that identifies a face.
+	 * @return {string}
+	 */
 	static getFace(normal) {
 		if (typeof normal === 'string') {
 			normal = Vector.FromString(normal).toArray();
@@ -47,9 +47,9 @@ class Face {
 		}
 	}
 
-  /**
-   * @param {string} face - The string of a face, e.g. 'RIGHT'.
-   */
+	/**
+	 * @param {string} face - The string of a face, e.g. 'RIGHT'.
+	 */
 	constructor(face) {
 		if (typeof face !== 'string') {
 			throw new Error(`"face" must be a string (received: ${face})`);
@@ -60,26 +60,26 @@ class Face {
 		this.vector = Vector.FromString(faceToNormal[face]);
 	}
 
-  /**
-   * Method to return the normal as an array.
-   * @return {array}
-   */
+	/**
+	 * Method to return the normal as an array.
+	 * @return {array}
+	 */
 	normal() {
 		return this.vector.toArray();
 	}
 
-  /**
-   * @return {string}
-   */
+	/**
+	 * @return {string}
+	 */
 	toString() {
 		return Face.getFace(this.normal());
 	}
 
-  /**
-   * Simulates an orientation change where this face becomes the new given face.
-   * NOTE: this only changes this face's normals, not any cubies' positions.
-   * @param {string} face - The new face, e.g. 'FRONT'
-   */
+	/**
+	 * Simulates an orientation change where this face becomes the new given face.
+	 * NOTE: this only changes this face's normals, not any cubies' positions.
+	 * @param {string} face - The new face, e.g. 'FRONT'
+	 */
 	orientTo(newFace) {
 		if (typeof newFace === 'string') {
 			newFace = new Face(newFace);
@@ -90,13 +90,13 @@ class Face {
 		return this;
 	}
 
-  /**
-   * Convenience method for rotating this face. NOTE: this only changes this
-   * face's normals, not any cubies' positions.
-   * @param {string} axis - Axis of rotation.
-   * @param {number} angle - Angle of rotation.
-   * @return {Face}
-   */
+	/**
+	 * Convenience method for rotating this face. NOTE: this only changes this
+	 * face's normals, not any cubies' positions.
+	 * @param {string} axis - Axis of rotation.
+	 * @param {number} angle - Angle of rotation.
+	 * @return {Face}
+	 */
 	rotate(axis, angle) {
 		this.vector.rotate(axis, angle);
 		return this;

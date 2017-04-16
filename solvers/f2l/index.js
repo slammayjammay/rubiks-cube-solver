@@ -61,14 +61,14 @@ class F2LSolver extends BaseSolver {
 		return pairs;
 	}
 
-  /**
-   * 4 top level cases: (cross face is UP)
-   *
-   * 1) Corner and edge are both on the DOWN face.
-   * 2) Corner is on the DOWN face and edge is not on DOWN face.
-   * 3) Corner is on UP face and edge is on DOWN face.
-   * 4) Corner is on UP face and edge is not on DOWN face.
-   */
+	/**
+	 * 4 top level cases: (cross face is UP)
+	 *
+	 * 1) Corner and edge are both on the DOWN face.
+	 * 2) Corner is on the DOWN face and edge is not on DOWN face.
+	 * 3) Corner is on UP face and edge is on DOWN face.
+	 * 4) Corner is on UP face and edge is not on DOWN face.
+	 */
 	_getCaseNumber({ corner, edge }) {
 		if (corner.faces().includes('down')) {
 			if (edge.faces().includes('down')) {
@@ -122,7 +122,7 @@ class F2LSolver extends BaseSolver {
 
 		let solver;
 		if (corner.faces().includes(edge.faces()[0]) &&
-        corner.faces().includes(edge.faces()[1])) {
+				corner.faces().includes(edge.faces()[1])) {
 			solver = new Case1Solver(this.cube, this.subCaseOptions);
 		} else {
 			solver = new Case2Solver(this.cube, this.subCaseOptions);

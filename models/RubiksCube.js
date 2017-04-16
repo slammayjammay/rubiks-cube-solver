@@ -3,9 +3,9 @@ const Cubie = require('./Cubie');
 const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
 
 class RubiksCube {
-  /**
-   * Factory method. Returns an instance of a solved Rubiks Cube.
-   */
+	/**
+	 * Factory method. Returns an instance of a solved Rubiks Cube.
+	 */
 	static Solved() {
 		return new RubiksCube(SOLVED_STATE);
 	}
@@ -43,10 +43,10 @@ class RubiksCube {
 		return randomMoves.join(' ');
 	}
 
-  /**
-   * @param {string} notations - The list of moves to reverse.
-   * @return {string}
-   */
+	/**
+	 * @param {string} notations - The list of moves to reverse.
+	 * @return {string}
+	 */
 	static reverseMoves(notations) {
 		let reversedMoves = [];
 
@@ -59,28 +59,28 @@ class RubiksCube {
 		return reversedMoves.join(' ');
 	}
 
-  /**
-   * @param {string} cubeState - The string representing the Rubik's Cube.
-   *
-   * The cube state are represented as:
-   * 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB'
-   *
-   * where:
-   * F stands for the FRONT COLOR
-   * R stands for the RIGHT COLOR
-   * U stands for the UP COLOR
-   * D stands for the DOWN COLOR
-   * L stands for the LEFT COLOR
-   * B stands for the BACK COLOR
-   *
-   * and the faces are given in the order of:
-   * FRONT, RIGHT, UP, DOWN, LEFT, BACK
-   *
-   * The order of each color per face is ordered by starting from the top left
-   * corner and moving to the bottom right, as if reading lines of text.
-   *
-   * See this example: http://2.bp.blogspot.com/_XQ7FznWBAYE/S9Sbric1KNI/AAAAAAAAAFs/wGAb_LcSOwo/s1600/rubik.png
-   */
+	/**
+	 * @param {string} cubeState - The string representing the Rubik's Cube.
+	 *
+	 * The cube state are represented as:
+	 * 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB'
+	 *
+	 * where:
+	 * F stands for the FRONT COLOR
+	 * R stands for the RIGHT COLOR
+	 * U stands for the UP COLOR
+	 * D stands for the DOWN COLOR
+	 * L stands for the LEFT COLOR
+	 * B stands for the BACK COLOR
+	 *
+	 * and the faces are given in the order of:
+	 * FRONT, RIGHT, UP, DOWN, LEFT, BACK
+	 *
+	 * The order of each color per face is ordered by starting from the top left
+	 * corner and moving to the bottom right, as if reading lines of text.
+	 *
+	 * See this example: http://2.bp.blogspot.com/_XQ7FznWBAYE/S9Sbric1KNI/AAAAAAAAAFs/wGAb_LcSOwo/s1600/rubik.png
+	 */
 	constructor(cubeState) {
 		if (cubeState.length !== 9 * 6) {
 			throw new Error('Wrong number of colors provided');
@@ -98,12 +98,12 @@ class RubiksCube {
 		this._build(cubeState);
 	}
 
-  /**
-   * Grab all the cubes on a given face, and return them in order from top left
-   * to bottom right.
-   * @param {string} face - The face to grab.
-   * @return {array}
-   */
+	/**
+	 * Grab all the cubes on a given face, and return them in order from top left
+	 * to bottom right.
+	 * @param {string} face - The face to grab.
+	 * @return {array}
+	 */
 	getFace(face) {
 		if (typeof face !== 'string') {
 			throw new Error(`"face" must be a string (received: ${face})`);
@@ -111,17 +111,17 @@ class RubiksCube {
 
 		face = face.toLowerCase()[0];
 
-    // The 3D position of cubies and the way they're ordered on each face
-    // do not play nicely. Below is a shitty way to reconcile the two.
-    // The way the cubies are sorted depends on the row and column they
-    // occupy on their face. Cubies on a higher row will have a lower sorting
-    // index, but rows are not always denoted by cubies' y position, and
-    // "higher rows" do not always mean "higher axis values".
+		// The 3D position of cubies and the way they're ordered on each face
+		// do not play nicely. Below is a shitty way to reconcile the two.
+		// The way the cubies are sorted depends on the row and column they
+		// occupy on their face. Cubies on a higher row will have a lower sorting
+		// index, but rows are not always denoted by cubies' y position, and
+		// "higher rows" do not always mean "higher axis values".
 
 		let row, col, rowOrder, colOrder;
 		let cubies;
 
-    // grab correct cubies
+		// grab correct cubies
 		if (face === 'f') {
 			[row, col, rowOrder, colOrder] = ['Y', 'X', -1, 1];
 			cubies = this._cubies.filter(cubie => cubie.getZ() === 1);
@@ -142,7 +142,7 @@ class RubiksCube {
 			cubies = this._cubies.filter(cubie => cubie.getZ() === -1);
 		}
 
-    // order cubies from top left to bottom right
+		// order cubies from top left to bottom right
 		return cubies.sort((first, second) => {
 			let firstCubieRow = first[`get${row}`]() * rowOrder;
 			let firstCubieCol = first[`get${col}`]() * colOrder;
@@ -160,9 +160,9 @@ class RubiksCube {
 		});
 	}
 
-  /**
-   * @param {array} faces - The list of faces the cubie belongs on.
-   */
+	/**
+	 * @param {array} faces - The list of faces the cubie belongs on.
+	 */
 	getCubie(faces) {
 		return this._cubies.find(cubie => {
 			if (faces.length != cubie.faces().length) {
@@ -179,36 +179,36 @@ class RubiksCube {
 		});
 	}
 
-  /**
-   * Finds and returns all cubies with three colors.
-   * @return {array}
-   */
+	/**
+	 * Finds and returns all cubies with three colors.
+	 * @return {array}
+	 */
 	corners() {
 		return this._cubies.filter(cubie => cubie.isCorner());
 	}
 
-  /**
-   * Finds and returns all cubies with two colors.
-   * @return {array}
-   */
+	/**
+	 * Finds and returns all cubies with two colors.
+	 * @return {array}
+	 */
 	edges() {
 		return this._cubies.filter(cubie => cubie.isEdge());
 	}
 
-  /**
-   * Finds and returns all cubies with one color.
-   * @return {array}
-   */
+	/**
+	 * Finds and returns all cubies with one color.
+	 * @return {array}
+	 */
 	middles() {
 		return this._cubies.filter(cubie => cubie.isMiddle());
 	}
 
-  /**
-   * Gets the rotation axis and magnitude of rotation based on notation.
-   * Then finds all cubes on the correct face, and rotates them around the
-   * rotation axis.
-   * @param {string|array} notation - The move notation.
-   */
+	/**
+	 * Gets the rotation axis and magnitude of rotation based on notation.
+	 * Then finds all cubes on the correct face, and rotates them around the
+	 * rotation axis.
+	 * @param {string|array} notation - The move notation.
+	 */
 	move(notations) {
 		if (notations instanceof Array) {
 			notations = notations.join(' ');
@@ -237,9 +237,9 @@ class RubiksCube {
 		return this.toString() === SOLVED_STATE;
 	}
 
-  /**
-   * @return {string}
-   */
+	/**
+	 * @return {string}
+	 */
 	toString() {
 		let cubeState = '';
 
@@ -254,10 +254,10 @@ class RubiksCube {
 		return cubeState;
 	}
 
-  /**
-   * Create a "virtual" cube, with individual "cubies" having a 3D coordinate
-   * position and 1 or more colors attached to them.
-   */
+	/**
+	 * Create a "virtual" cube, with individual "cubies" having a 3D coordinate
+	 * position and 1 or more colors attached to them.
+	 */
 	_build(cubeState) {
 		this._cubies = [];
 		this._populateCube();
@@ -270,15 +270,15 @@ class RubiksCube {
 		}
 	}
 
-  /**
-   * Populates the "virtual" cube with 26 "empty" cubies by their position.
-   * @return {null}
-   */
+	/**
+	 * Populates the "virtual" cube with 26 "empty" cubies by their position.
+	 * @return {null}
+	 */
 	_populateCube() {
 		for (let x = -1; x <= 1; x++) {
 			for (let y = -1; y <= 1; y++) {
 				for (let z = -1; z <= 1; z++) {
-          // no cubie in the center of the rubik's cube
+					// no cubie in the center of the rubik's cube
 					if (x === 0 && y === 0 && z === 0) {
 						continue;
 					}
@@ -290,9 +290,9 @@ class RubiksCube {
 		}
 	}
 
-  /**
-   * @return {object} - A map with faces for keys and colors for values
-   */
+	/**
+	 * @return {object} - A map with faces for keys and colors for values
+	 */
 	_parseColors(cubeState) {
 		let faceColors = {
 			front: [],
@@ -328,10 +328,10 @@ class RubiksCube {
 		return faceColors;
 	}
 
-  /**
-   * @param {array} face - An array of the cubies on the given face.
-   * @param {array} colors - An array of the colors on the given face.
-   */
+	/**
+	 * @param {array} face - An array of the cubies on the given face.
+	 * @param {array} colors - An array of the colors on the given face.
+	 */
 	_colorFace(face, colors) {
 		let cubiesToColor = this.getFace(face);
 		for (let i = 0; i < colors.length; i++) {

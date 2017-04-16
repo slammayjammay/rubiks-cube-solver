@@ -15,14 +15,14 @@ describe('Utils', () => {
 	it('correctly returns the direction of two faces given an orientation', () => {
 		assert(utils.getDirectionFromFaces('FRONT', 'RIGHT', { UP: 'UP' }) === 'right');
 		assert(utils.getDirectionFromFaces('LEFT', 'DOWN', { UP: 'BACK' }) === 'left');
-    // TODO: more of these
+		// TODO: more of these
 	});
 
 	it('correctly returns a face given an origin face and direction', () => {
 		assert(utils.getFaceFromDirection('FRONT', 'RIGHT', { UP: 'UP' }) === 'right');
 		assert(utils.getFaceFromDirection('LEFT', 'DOWN', { UP: 'BACK' }) === 'front');
 		assert(utils.getFaceFromDirection('RIGHT', 'BACK', { UP: 'DOWN' }) === 'left');
-    // TODO: more of these
+		// TODO: more of these
 	});
 
 	it('correctly returns a move of a given face, from an origin face to target face', () => {

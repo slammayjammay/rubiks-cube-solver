@@ -61,7 +61,7 @@ const getMoveOfFace = (face) => {
  * @return {string|number}
  */
 const getDirectionFromFaces = (origin, target, orientation) => {
-  // parse arguments, sort of
+	// parse arguments, sort of
 	let _orientationKey = Object.keys(orientation)[0];
 	const fromFace = new Face(origin);
 	const toFace = new Face(target);
@@ -96,16 +96,16 @@ const getDirectionFromFaces = (origin, target, orientation) => {
  * @return {string}
  */
 const getFaceFromDirection = (origin, direction, orientation) => {
-  // parse arguments, sort of
+	// parse arguments, sort of
 	let _orientationKey = Object.keys(orientation)[0];
 	const fromFace = new Face(origin);
 	const orientationFrom = new Face(orientation[_orientationKey]);
 	const orientationTo = new Face(_orientationKey);
 
 	let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo);
-  // kinda hacky...but there should be at most two rotations. The second
-  // rotation must be around 'z', otherwise the origin face will not stay on
-  // FRONT.
+	// kinda hacky...but there should be at most two rotations. The second
+	// rotation must be around 'z', otherwise the origin face will not stay on
+	// FRONT.
 	rotations[1].axis = 'z';
 	_rotateFacesByRotations([fromFace], rotations);
 
@@ -113,8 +113,8 @@ const getFaceFromDirection = (origin, direction, orientation) => {
 	let { axis, angle } = Vector.getRotationFromNormals(fromFace.normal(), directionFace.normal());
 	fromFace.rotate(axis, angle);
 
-  // at this point fromFace is now the target face, but we still need to revert
-  // the orientation to return the correct string
+	// at this point fromFace is now the target face, but we still need to revert
+	// the orientation to return the correct string
 	let reversedRotations = rotations.map(rotation => Vector.reverseRotation(rotation)).reverse();
 	_rotateFacesByRotations([fromFace], reversedRotations);
 	return fromFace.toString();
@@ -176,23 +176,23 @@ module.exports = {
  * @return {array}
  */
 function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
-  // this is not meant to have any side effects, so clone the face objects.
+	// this is not meant to have any side effects, so clone the face objects.
 	fromFace = new Face(fromFace.toString());
 	orientationFrom = new Face(orientationFrom.toString());
 	orientationTo = new Face(orientationTo.toString());
 
-  // rotate fromFace to FRONT, and save the rotation
+	// rotate fromFace to FRONT, and save the rotation
 	let rotation1 = Vector.getRotationFromNormals(
-    fromFace.normal(),
-    fromFace.orientTo('front').normal()
-  );
+		fromFace.normal(),
+		fromFace.orientTo('front').normal()
+	);
 
-  // rotate orientationFrom by rotation1
+	// rotate orientationFrom by rotation1
 	orientationFrom.rotate(rotation1.axis, rotation1.angle);
 
-  // at this point, the fromFace has already become FRONT. The orientationFrom
-  // face and orientationTo face must be an adjacent face of FRONT. Otherwise,
-  // there are multiple orientations that are possible.
+	// at this point, the fromFace has already become FRONT. The orientationFrom
+	// face and orientationTo face must be an adjacent face of FRONT. Otherwise,
+	// there are multiple orientations that are possible.
 	let _fromIsNotAjdacent = ['front', 'back'].includes(orientationFrom.toString().toLowerCase());
 	let _toIsNotAjdacent = ['front', 'back'].includes(orientationTo.toString().toLowerCase());
 
@@ -200,11 +200,11 @@ function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
 		throw new Error('The provied orientation object does not correctly specify a cube orientation.');
 	}
 
-  // rotate orientationFrom to orientationTo and save the rotation
+	// rotate orientationFrom to orientationTo and save the rotation
 	let rotation2 = Vector.getRotationFromNormals(
-    orientationFrom.normal(),
-    orientationFrom.orientTo(orientationTo).normal()
-  );
+		orientationFrom.normal(),
+		orientationFrom.orientTo(orientationTo).normal()
+	);
 
 	return [rotation1, rotation2];
 }

@@ -27,19 +27,19 @@ describe('Cubie Model', () => {
 
 	describe('can rotate around the "x" axis', () => {
 		it('updates its color map', () => {
-      // TODO
+			// TODO
 		});
 	});
 
 	describe('can rotate around the "y" axis', () => {
 		it('updates its color map', () => {
-      // TODO
+			// TODO
 		});
 	});
 
 	describe('can rotate around the "z" axis', () => {
 		it('updates its color map', () => {
-      // TODO
+			// TODO
 		});
 	});
 });

@@ -9,8 +9,8 @@ class OLLSolver extends BaseSolver {
 		super(...args);
 		this.phase = 'oll';
 
-    // orientations in order based on http://badmephisto.com/oll.php, however the
-    // actual algorithms may be different.
+		// orientations in order based on http://badmephisto.com/oll.php, however the
+		// actual algorithms may be different.
 		this.algorithms = {
 			'21000111': 'F R U RPrime UPrime FPrime', // 1
 			'21111010': 'F R U RPrime UPrime FPrime F R U RPrime UPrime FPrime', // 2
@@ -98,31 +98,31 @@ class OLLSolver extends BaseSolver {
 
 	getOllCubies() {
 		let positions = [
-      ['front', 'down', 'right'],
-      ['front', 'down'],
-      ['front', 'down', 'left'],
-      ['left', 'down'],
-      ['left', 'down', 'back'],
-      ['back', 'down'],
-      ['back', 'down', 'right'],
-      ['right', 'down']
+			['front', 'down', 'right'],
+			['front', 'down'],
+			['front', 'down', 'left'],
+			['left', 'down'],
+			['left', 'down', 'back'],
+			['back', 'down'],
+			['back', 'down', 'right'],
+			['right', 'down']
 		];
 
 		return positions.map(pos => this.cube.getCubie(pos));
 	}
 
-  /**
-   * Returns a number indicating the orientation of the cubie.
-   * 0 --> The DOWN color is on the DOWN face.
-   * 1 --> The DOWN color is a clockwise rotation from "solved".
-   * 2 --> The DOWN color is a counter-clockwise rotation from "solved".
-   */
+	/**
+	 * Returns a number indicating the orientation of the cubie.
+	 * 0 --> The DOWN color is on the DOWN face.
+	 * 1 --> The DOWN color is a clockwise rotation from "solved".
+	 * 2 --> The DOWN color is a counter-clockwise rotation from "solved".
+	 */
 	getOrientation(cubie) {
 		if (cubie.getColorOfFace('down') === 'd') {
 			return 0;
 		}
 
-    // if cubie is an edge piece, return 1
+		// if cubie is an edge piece, return 1
 		if (cubie.isEdge()) {
 			return 1;
 		}
