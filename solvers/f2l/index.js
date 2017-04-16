@@ -41,18 +41,18 @@ class F2LSolver extends BaseSolver {
 
 	getAllPairs() {
 		let corners = this.cube.corners().filter(corner => {
-			return corner.hasColor('U');
+			return corner.hasColor('u');
 		});
 		let edges = this.cube.edges().filter(edge => {
-			return !edge.hasColor('U') && !edge.hasColor('D');
+			return !edge.hasColor('u') && !edge.hasColor('d');
 		});
 
 		let pairs = [];
 
 		for (let edge of edges) {
 			let corner = corners.find(corner => {
-				return corner.colors().includes(edge.colors()[0]) &&
-               corner.colors().includes(edge.colors()[1]);
+				let colors = edge.colors();
+				return corner.hasColor(colors[0]) && corner.hasColor(colors[1]);
 			});
 
 			pairs.push({ edge, corner });
@@ -70,20 +70,20 @@ class F2LSolver extends BaseSolver {
    * 4) Corner is on UP face and edge is not on DOWN face.
    */
 	_getCaseNumber({ corner, edge }) {
-		if (corner.faces().includes('DOWN')) {
-			if (edge.faces().includes('DOWN')) {
+		if (corner.faces().includes('down')) {
+			if (edge.faces().includes('down')) {
 				return 1;
 			}
-			if (!edge.faces().includes('DOWN') && !edge.faces().includes('UP')) {
+			if (!edge.faces().includes('down') && !edge.faces().includes('up')) {
 				return 2;
 			}
 		}
 
-		if (corner.faces().includes('UP')) {
-			if (edge.faces().includes('DOWN')) {
+		if (corner.faces().includes('up')) {
+			if (edge.faces().includes('down')) {
 				return 3;
 			}
-			if (!edge.faces().includes('DOWN') && !edge.faces().includes('UP')) {
+			if (!edge.faces().includes('down') && !edge.faces().includes('up')) {
 				return 4;
 			}
 		}
@@ -128,9 +128,9 @@ class F2LSolver extends BaseSolver {
 			solver = new Case2Solver(this.cube, this.subCaseOptions);
 		}
 
-		let faces = corner.faces().filter(face => face !== 'UP');
-		let dir = utils.getDirectionFromFaces(faces[0], faces[1], { UP: 'DOWN' });
-		let cornerRightFace = dir === 'RIGHT' ? faces[1] : faces[0];
+		let faces = corner.faces().filter(face => face !== 'up');
+		let dir = utils.getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
+		let cornerRightFace = dir === 'right' ? faces[1] : faces[0];
 
 		this.move(`${cornerRightFace} D ${R(cornerRightFace)}`);
 

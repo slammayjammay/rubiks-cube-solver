@@ -11,14 +11,14 @@ const getFaceOfMove = (move) => {
 		throw new TypeError('move must be a string');
 	}
 
-	let faceLetter = move[0].toUpperCase();
+	let faceLetter = move[0].toLowerCase();
 
-	if (faceLetter === 'F') return 'FRONT';
-	if (faceLetter === 'R') return 'RIGHT';
-	if (faceLetter === 'U') return 'UP';
-	if (faceLetter === 'D') return 'DOWN';
-	if (faceLetter === 'L') return 'LEFT';
-	if (faceLetter === 'B') return 'BACK';
+	if (faceLetter === 'f') return 'front';
+	if (faceLetter === 'r') return 'right';
+	if (faceLetter === 'u') return 'up';
+	if (faceLetter === 'd') return 'down';
+	if (faceLetter === 'l') return 'left';
+	if (faceLetter === 'b') return 'back';
 };
 
 /**
@@ -27,11 +27,17 @@ const getFaceOfMove = (move) => {
  * @return {string}
  */
 const getMoveOfFace = (face) => {
-	if (!['FRONT', 'RIGHT', 'UP', 'DOWN', 'LEFT', 'BACK'].includes(face.toUpperCase())) {
+	if (typeof face !== 'string') {
+		throw new TypeError('face must be a string');
+	}
+
+	face = face.toLowerCase();
+
+	if (!['front', 'right', 'up', 'down', 'left', 'back'].includes(face)) {
 		throw new Error(`${face} is not valid face`);
 	}
 
-	return face[0].toUpperCase();
+	return face[0];
 };
 
 /**
@@ -39,13 +45,13 @@ const getMoveOfFace = (face) => {
  * adjacent face of from-face that points to to-face when the cube is oriented
  * specified by the orientation object.
  *
- * For example, ('DOWN', 'RIGHT', { TOP: 'BACK' }). This translates to:
+ * For example, ('down', 'right', { TOP: 'back' }). This translates to:
  *   1) Orient the cube such that the DOWN face becomes the FRONT face.
  *   2) Then, orient the cube such that the face that was BACK becomes TOP.
  *   3) Of all the adjacent faces attached to the DOWN face (which is now the
- *      FRONT face), find the direction that points to 'RIGHT' (the given face).
- *   4) In this case, the function would return 'LEFT'.
- *   5) NOTE: The orientation object's key cannot be 'FRONT' or 'BACK'. `origin`
+ *      FRONT face), find the direction that points to 'right' (the given face).
+ *   4) In this case, the function would return 'left'.
+ *   5) NOTE: The orientation object's key cannot be 'front' or 'back'. `origin`
  *      is automatically oriented to become the FRONT face, and FRONT and BACK are not
  *      adjacent faces of FRONT.
  *
@@ -68,15 +74,15 @@ const getDirectionFromFaces = (origin, target, orientation) => {
 	let axis = new Vector(cross([], fromFace.normal(), toFace.normal())).getAxis();
 	let direction = Vector.getAngle(fromFace.normal(), toFace.normal());
 
-	if (axis === 'x' && direction > 0) return 'DOWN';
-	if (axis === 'x' && direction < 0) return 'UP';
-	if (axis === 'y' && direction > 0) return 'RIGHT';
-	if (axis === 'y' && direction < 0) return 'LEFT';
+	if (axis === 'x' && direction > 0) return 'down';
+	if (axis === 'x' && direction < 0) return 'up';
+	if (axis === 'y' && direction > 0) return 'right';
+	if (axis === 'y' && direction < 0) return 'left';
 
 	if (direction === 0) {
-		return 'FRONT';
+		return 'front';
 	} else if (direction === Math.PI) {
-		return 'BACK';
+		return 'back';
 	}
 };
 
@@ -91,7 +97,7 @@ const getDirectionFromFaces = (origin, target, orientation) => {
  */
 const getFaceFromDirection = (origin, direction, orientation) => {
   // parse arguments, sort of
-	let _orientationKey = Object.keys(orientation)[0].toUpperCase();
+	let _orientationKey = Object.keys(orientation)[0];
 	const fromFace = new Face(origin);
 	const orientationFrom = new Face(orientation[_orientationKey]);
 	const orientationTo = new Face(_orientationKey);
@@ -178,7 +184,7 @@ function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
   // rotate fromFace to FRONT, and save the rotation
 	let rotation1 = Vector.getRotationFromNormals(
     fromFace.normal(),
-    fromFace.orientTo('FRONT').normal()
+    fromFace.orientTo('front').normal()
   );
 
   // rotate orientationFrom by rotation1
@@ -187,8 +193,8 @@ function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
   // at this point, the fromFace has already become FRONT. The orientationFrom
   // face and orientationTo face must be an adjacent face of FRONT. Otherwise,
   // there are multiple orientations that are possible.
-	let _fromIsNotAjdacent = ['FRONT', 'BACK'].includes(orientationFrom.toString().toUpperCase());
-	let _toIsNotAjdacent = ['FRONT', 'BACK'].includes(orientationTo.toString().toUpperCase());
+	let _fromIsNotAjdacent = ['front', 'back'].includes(orientationFrom.toString().toLowerCase());
+	let _toIsNotAjdacent = ['front', 'back'].includes(orientationTo.toString().toLowerCase());
 
 	if (_fromIsNotAjdacent || _toIsNotAjdacent) {
 		throw new Error('The provied orientation object does not correctly specify a cube orientation.');

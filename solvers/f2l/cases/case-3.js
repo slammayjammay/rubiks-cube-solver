@@ -16,7 +16,7 @@ class Case3Solver extends BaseSolver {
    * 2) Corner's cross color is not on the cross face.
    */
 	_getCaseNumber({ corner, edge }) {
-		if (corner.getColorOfFace('UP') === 'U') {
+		if (corner.getColorOfFace('up') === 'u') {
 			return 1;
 		} else {
 			return 2;
@@ -24,21 +24,21 @@ class Case3Solver extends BaseSolver {
 	}
 
 	_solveCase1({ corner, edge }) {
-		let faces = corner.faces().filter(face => face !== 'UP');
-		let direction = utils.getDirectionFromFaces(faces[0], faces[1], { UP: 'DOWN' });
-		let [leftFace, rightFace] = direction === 'RIGHT' ? faces : faces.reverse();
+		let faces = corner.faces().filter(face => face !== 'up');
+		let direction = utils.getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
+		let [leftFace, rightFace] = direction === 'right' ? faces : faces.reverse();
 
-		let currentFace = edge.faces().find(face => face !== 'DOWN');
+		let currentFace = edge.faces().find(face => face !== 'down');
 		let primaryColor = edge.getColorOfFace(currentFace);
 
 		let targetFace = utils.getFaceFromDirection(
       corner.getFaceOfColor(primaryColor),
-      primaryColor === corner.getColorOfFace(rightFace) ? 'RIGHT' : 'LEFT',
-      { UP: 'DOWN' }
+      primaryColor === corner.getColorOfFace(rightFace) ? 'right' : 'left',
+      { up: 'down' }
     );
 		let isLeft = primaryColor === corner.getColorOfFace(leftFace);
 
-		let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace);
+		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		let moveFace = isLeft ? rightFace : R(leftFace);
 		let dir = isLeft ? 'DPrime' : 'D';
 
@@ -48,22 +48,22 @@ class Case3Solver extends BaseSolver {
 
 	_solveCase2({ corner, edge }) {
 		let otherColor = corner.colors().find(color => {
-			return color !== 'U' && corner.getFaceOfColor(color) !== 'UP';
+			return color !== 'u' && corner.getFaceOfColor(color) !== 'up';
 		});
-		let currentFace = edge.faces().find(face => face !== 'DOWN');
+		let currentFace = edge.faces().find(face => face !== 'down');
 		let primaryColor = edge.getColorOfFace(currentFace);
 
 		let willBeMatched = otherColor !== primaryColor;
-		let targetFace = corner.getFaceOfColor(willBeMatched ? otherColor : 'U');
+		let targetFace = corner.getFaceOfColor(willBeMatched ? otherColor : 'u');
 
-		let prep = utils.getRotationFromTo('DOWN', currentFace, targetFace);
+		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		let isLeft = utils.getDirectionFromFaces(
       corner.getFaceOfColor(otherColor),
-      corner.getFaceOfColor('U'),
-      { UP: 'DOWN' }
-    ) === 'LEFT';
+      corner.getFaceOfColor('u'),
+      { up: 'down' }
+    ) === 'left';
 		let dir = isLeft ? 'DPrime' : 'D';
-		let moveFace = corner.getFaceOfColor('U');
+		let moveFace = corner.getFaceOfColor('u');
 		moveFace = isLeft ? R(moveFace) : moveFace;
 
 		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`);

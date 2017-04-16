@@ -20,7 +20,7 @@ class Cubie {
 			let axis = temp.vector.getAxis().toUpperCase();
 			position[`set${axis}`](temp.vector.getMagnitude());
 
-			colorMap[face] = temp.toString()[0].toUpperCase();
+			colorMap[face.toLowerCase()] = temp.toString()[0].toLowerCase();
 		}
 
 		return new Cubie({ position: position.toArray(), colorMap });
@@ -30,11 +30,16 @@ class Cubie {
    * @param {object} [options]
    * @param {object} options.position - The cubie's position.
    * @param {object} options.colorMap - A map with faces as keys and colors
-   * as values. For example: { 'FRONT' : 'F' }.
+   * as values. For example: { 'front' : 'f' }.
    */
-	constructor({ position, colorMap }) {
+	constructor({ position, colorMap = {} }) {
 		this.position(position);
-		this.colorMap = colorMap || {};
+		this.colorMap = {};
+
+		Object.keys(colorMap).forEach(face => {
+			let color = colorMap[face];
+			this.colorFace(face, color);
+		});
 	}
 
   /**
@@ -114,6 +119,8 @@ class Cubie {
    * @return {boolean}
    */
 	hasColor(color) {
+		color = color.toLowerCase();
+
 		for (let face of Object.keys(this.colorMap)) {
 			if (this.colorMap[face] === color) {
 				return true;
@@ -123,6 +130,15 @@ class Cubie {
 		return false;
 	}
 
+	/**
+   * @param {string} face - Check if the cubie has this face.
+   * @return {boolean}
+   */
+	hasFace(face) {
+		face = face.toLowerCase();
+		return Object.keys(this.colorMap).includes(face);
+	}
+
   /**
    * Sets a color on a given face or normal of a cubie.
    * @param {string} face - The face of the cubie we want to set the color on.
@@ -130,6 +146,9 @@ class Cubie {
    * @return {Cubie}
    */
 	colorFace(face, color) {
+		face = face.toLowerCase();
+		color = color.toLowerCase();
+
 		this.colorMap[face] = color;
 		return this;
 	}
@@ -139,6 +158,8 @@ class Cubie {
    * @return {string}
    */
 	getColorOfFace(face) {
+		face = face.toLowerCase();
+
 		return this.colorMap[face];
 	}
 
@@ -147,6 +168,8 @@ class Cubie {
    * @return {string}
    */
 	getFaceOfColor(color) {
+		color = color.toLowerCase();
+
 		return Object.keys(this.colorMap).find(cubieColor => {
 			return this.colorMap[cubieColor] === color;
 		});
@@ -176,14 +199,17 @@ class Cubie {
 
     // go through each normal, rotate it, and assign the new normal the old color
 		for (let face of Object.keys(this.colorMap)) {
-			face = new Face(face);
 			let color = this.colorMap[face];
+			let faceModel = new Face(face);
 
-			let newNormal = face.rotate(axis, angle).normal().join(' ');
-			newMap[Face.FromNormal(newNormal)] = color;
+			let newNormal = faceModel.rotate(axis, angle).normal().join(' ');
+			let newFace = Face.FromNormal(newNormal).toString().toLowerCase();
+
+			newMap[newFace] = color;
 		}
 
-		this.colorMap = newMap;
+		this.colorMap = {};
+		Object.keys(newMap).forEach(face => this.colorFace(face, newMap[face]));
 	}
 }
 

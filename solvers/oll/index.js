@@ -98,14 +98,14 @@ class OLLSolver extends BaseSolver {
 
 	getOllCubies() {
 		let positions = [
-      ['FRONT', 'DOWN', 'RIGHT'],
-      ['FRONT', 'DOWN'],
-      ['FRONT', 'DOWN', 'LEFT'],
-      ['LEFT', 'DOWN'],
-      ['LEFT', 'DOWN', 'BACK'],
-      ['BACK', 'DOWN'],
-      ['BACK', 'DOWN', 'RIGHT'],
-      ['RIGHT', 'DOWN']
+      ['front', 'down', 'right'],
+      ['front', 'down'],
+      ['front', 'down', 'left'],
+      ['left', 'down'],
+      ['left', 'down', 'back'],
+      ['back', 'down'],
+      ['back', 'down', 'right'],
+      ['right', 'down']
 		];
 
 		return positions.map(pos => this.cube.getCubie(pos));
@@ -118,7 +118,7 @@ class OLLSolver extends BaseSolver {
    * 2 --> The DOWN color is a counter-clockwise rotation from "solved".
    */
 	getOrientation(cubie) {
-		if (cubie.getColorOfFace('DOWN') === 'D') {
+		if (cubie.getColorOfFace('down') === 'd') {
 			return 0;
 		}
 
@@ -127,11 +127,11 @@ class OLLSolver extends BaseSolver {
 			return 1;
 		}
 
-		let [face1, face2] = cubie.faces().filter(face => face !== 'DOWN');
-		let dir = utils.getDirectionFromFaces(face1, face2, { UP: 'DOWN' });
-		let rightFace = dir === 'RIGHT' ? face2 : face1;
+		let [face1, face2] = cubie.faces().filter(face => face !== 'down');
+		let dir = utils.getDirectionFromFaces(face1, face2, { up: 'down' });
+		let rightFace = dir === 'right' ? face2 : face1;
 
-		return cubie.getColorOfFace(rightFace) === 'D' ? 1 : 2;
+		return cubie.getColorOfFace(rightFace) === 'd' ? 1 : 2;
 	}
 }
 

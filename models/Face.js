@@ -1,12 +1,12 @@
 const Vector = require('./Vector');
 
 const faceToNormal = {
-	FRONT: '0 0 1',
-	RIGHT: '1 0 0',
-	UP: '0 1 0',
-	DOWN: '0 -1 0',
-	LEFT: '-1 0 0',
-	BACK: '0 0 -1'
+	front: '0 0 1',
+	right: '1 0 0',
+	up: '0 1 0',
+	down: '0 -1 0',
+	left: '-1 0 0',
+	back: '0 0 -1'
 };
 
 class Face {
@@ -51,7 +51,12 @@ class Face {
    * @param {string} face - The string of a face, e.g. 'RIGHT'.
    */
 	constructor(face) {
-		face = face.toUpperCase();
+		if (typeof face !== 'string') {
+			throw new Error(`"face" must be a string (received: ${face})`);
+		}
+
+		face = face.toLowerCase();
+
 		this.vector = Vector.FromString(faceToNormal[face]);
 	}
 

@@ -2,7 +2,7 @@ const BaseSolver = require('../BaseSolver');
 const RubiksCube = require('../../models/RubiksCube');
 const utils = require('../../utils');
 
-const CROSS_COLOR = 'U';
+const CROSS_COLOR = 'u';
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
 class CrossSolver extends BaseSolver {
@@ -34,10 +34,10 @@ class CrossSolver extends BaseSolver {
 	}
 
 	isEdgeSolved(edge) {
-		let otherColor = edge.colors().find(color => color !== 'U');
-		let otherFace = edge.faces().find(face => face !== 'UP');
+		let otherColor = edge.colors().find(color => color !== 'u');
+		let otherFace = edge.faces().find(face => face !== 'up');
 		const matchesMiddle = otherFace[0] === otherColor;
-		const isOnCrossFace = edge.getColorOfFace('UP') === 'U';
+		const isOnCrossFace = edge.getColorOfFace('up') === 'u';
 
 		return isOnCrossFace && matchesMiddle;
 	}
@@ -62,25 +62,25 @@ class CrossSolver extends BaseSolver {
    * @param {cubie} edge
    */
 	_getCaseNumber({ edge }) {
-		if (edge.getColorOfFace('UP') === CROSS_COLOR) {
+		if (edge.getColorOfFace('up') === CROSS_COLOR) {
 			return 1;
-		} else if (edge.getColorOfFace('DOWN') === CROSS_COLOR) {
+		} else if (edge.getColorOfFace('down') === CROSS_COLOR) {
 			return 2;
 		}
 
-		if (edge.faces().includes('UP')) {
+		if (edge.faces().includes('up')) {
 			return 3;
-		} else if (edge.faces().includes('DOWN')) {
+		} else if (edge.faces().includes('down')) {
 			return 4;
 		}
 
 		let crossFace = edge.getFaceOfColor(CROSS_COLOR);
 		let otherFace = edge.getFaceOfColor(edge.colors().find(color => color !== CROSS_COLOR));
-		let direction = utils.getDirectionFromFaces(crossFace, otherFace, { UP: 'UP' });
+		let direction = utils.getDirectionFromFaces(crossFace, otherFace, { up: 'up' });
 
-		if (direction === 'RIGHT') {
+		if (direction === 'right') {
 			return 5;
-		} else if (direction === 'LEFT') {
+		} else if (direction === 'left') {
 			return 6;
 		}
 	}
@@ -90,7 +90,7 @@ class CrossSolver extends BaseSolver {
 			return;
 		}
 
-		let face = edge.faces().find(face => face !== 'UP');
+		let face = edge.faces().find(face => face !== 'up');
 		this.move(`${face} ${face}`);
 		this._solveCase2({ edge });
 	}
@@ -108,13 +108,13 @@ class CrossSolver extends BaseSolver {
 
 	_solveCase4({ edge }) {
 		let prepMove = utils.getRotationFromTo(
-      'DOWN',
-      edge.getFaceOfColor('U'),
-      utils.getFaceOfMove(edge.getColorOfFace('DOWN'))
+      'down',
+      edge.getFaceOfColor('u'),
+      utils.getFaceOfMove(edge.getColorOfFace('down'))
     );
 		this.move(prepMove);
 
-		let edgeToMiddle = R(edge.getFaceOfColor('U'));
+		let edgeToMiddle = R(edge.getFaceOfColor('u'));
 
 		this.move(edgeToMiddle);
 		this._solveCase5({ edge });
@@ -131,7 +131,7 @@ class CrossSolver extends BaseSolver {
 	}
 
 	_case1And2Helper({ edge }, caseNum) {
-		let crossColorFace = caseNum === 1 ? 'UP' : 'DOWN';
+		let crossColorFace = caseNum === 1 ? 'up' : 'down';
 		let currentFace = edge.faces().find(face => face !== crossColorFace);
 		let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace));
 
@@ -146,7 +146,7 @@ class CrossSolver extends BaseSolver {
 	}
 
 	_case3And4Helper({ edge }, caseNum) {
-		let prepMove = edge.faces().find(face => !['UP', 'DOWN'].includes(face));
+		let prepMove = edge.faces().find(face => !['up', 'down'].includes(face));
 
 		if (caseNum === 4) {
 			prepMove = R(prepMove);
@@ -156,11 +156,11 @@ class CrossSolver extends BaseSolver {
 	}
 
 	_case5And6Helper({ edge }, caseNum) {
-		let otherColor = edge.colors().find(color => color !== 'U');
+		let otherColor = edge.colors().find(color => color !== 'u');
 		let currentFace = edge.getFaceOfColor(otherColor);
 		let targetFace = utils.getFaceOfMove(otherColor);
 
-		let prepMove = utils.getRotationFromTo('UP', currentFace, targetFace);
+		let prepMove = utils.getRotationFromTo('up', currentFace, targetFace);
 		let edgeToCrossFace = utils.getMoveOfFace(currentFace);
 
 		if (caseNum === 6) {

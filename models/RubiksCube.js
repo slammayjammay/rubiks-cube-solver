@@ -1,6 +1,6 @@
 const Cubie = require('./Cubie');
 
-const SOLVED_STATE = 'FFFFFFFFFRRRRRRRRRUUUUUUUUUDDDDDDDDDLLLLLLLLLBBBBBBBBB';
+const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
 
 class RubiksCube {
   /**
@@ -87,12 +87,12 @@ class RubiksCube {
 		}
 
 		this._notationToRotation = {
-			F: { axis: 'z', mag: -1 },
-			R: { axis: 'x', mag: -1 },
-			U: { axis: 'y', mag: -1 },
-			D: { axis: 'y', mag: 1 },
-			L: { axis: 'x', mag: 1 },
-			B: { axis: 'z', mag: 1 },
+			f: { axis: 'z', mag: -1 },
+			r: { axis: 'x', mag: -1 },
+			u: { axis: 'y', mag: -1 },
+			d: { axis: 'y', mag: 1 },
+			l: { axis: 'x', mag: 1 },
+			b: { axis: 'z', mag: 1 },
 		};
 
 		this._build(cubeState);
@@ -105,6 +105,12 @@ class RubiksCube {
    * @return {array}
    */
 	getFace(face) {
+		if (typeof face !== 'string') {
+			throw new Error(`"face" must be a string (received: ${face})`);
+		}
+
+		face = face.toLowerCase()[0];
+
     // The 3D position of cubies and the way they're ordered on each face
     // do not play nicely. Below is a shitty way to reconcile the two.
     // The way the cubies are sorted depends on the row and column they
@@ -116,22 +122,22 @@ class RubiksCube {
 		let cubies;
 
     // grab correct cubies
-		if (['F', 'FRONT'].includes(face)) {
+		if (face === 'f') {
 			[row, col, rowOrder, colOrder] = ['Y', 'X', -1, 1];
 			cubies = this._cubies.filter(cubie => cubie.getZ() === 1);
-		} else if (['R', 'RIGHT'].includes(face)) {
+		} else if (face === 'r') {
 			[row, col, rowOrder, colOrder] = ['Y', 'Z', -1, -1];
 			cubies = this._cubies.filter(cubie => cubie.getX() === 1);
-		} else if (['U', 'UP'].includes(face)) {
+		} else if (face === 'u') {
 			[row, col, rowOrder, colOrder] = ['Z', 'X', 1, 1];
 			cubies = this._cubies.filter(cubie => cubie.getY() === 1);
-		} else if (['D', 'DOWN'].includes(face)) {
+		} else if (face === 'd') {
 			[row, col, rowOrder, colOrder] = ['Z', 'X', -1, 1];
 			cubies = this._cubies.filter(cubie => cubie.getY() === -1);
-		} else if (['L', 'LEFT'].includes(face)) {
+		} else if (face === 'l') {
 			[row, col, rowOrder, colOrder] = ['Y', 'Z', -1, 1];
 			cubies = this._cubies.filter(cubie => cubie.getX() === -1);
-		} else if (['B', 'BACK'].includes(face)) {
+		} else if (face === 'b') {
 			[row, col, rowOrder, colOrder] = ['Y', 'X', -1, -1];
 			cubies = this._cubies.filter(cubie => cubie.getZ() === -1);
 		}
@@ -214,10 +220,9 @@ class RubiksCube {
 				continue;
 			}
 
-			let axis = this._notationToRotation[move].axis;
-			let mag = this._notationToRotation[move].mag * Math.PI / 2;
+			let { axis, mag } = this._getRotationForFace(move);
 
-			if (['Prime', 'prime'].includes(notation.slice(1))) {
+			if (notation.toLowerCase().includes('prime')) {
 				mag *= -1;
 			}
 
@@ -238,7 +243,7 @@ class RubiksCube {
 	toString() {
 		let cubeState = '';
 
-		let faces = ['FRONT', 'RIGHT', 'UP', 'DOWN', 'LEFT', 'BACK'];
+		let faces = ['front', 'right', 'up', 'down', 'left', 'back'];
 		for (let face of faces) {
 			let cubies = this.getFace(face);
 			for (let cubie of cubies) {
@@ -290,12 +295,12 @@ class RubiksCube {
    */
 	_parseColors(cubeState) {
 		let faceColors = {
-			FRONT: [],
-			RIGHT: [],
-			UP: [],
-			DOWN: [],
-			LEFT: [],
-			BACK: []
+			front: [],
+			right: [],
+			up: [],
+			down: [],
+			left: [],
+			back: []
 		};
 
 		let currentFace;
@@ -304,17 +309,17 @@ class RubiksCube {
 			let color = cubeState[i];
 
 			if (i < 9) {
-				currentFace = 'FRONT';
+				currentFace = 'front';
 			} else if (i < 9 * 2) {
-				currentFace = 'RIGHT';
+				currentFace = 'right';
 			} else if (i < 9 * 3) {
-				currentFace = 'UP';
+				currentFace = 'up';
 			} else if (i < 9 * 4) {
-				currentFace = 'DOWN';
+				currentFace = 'down';
 			} else if (i < 9 * 5) {
-				currentFace = 'LEFT';
+				currentFace = 'left';
 			} else {
-				currentFace = 'BACK';
+				currentFace = 'back';
 			}
 
 			faceColors[currentFace].push(color);
@@ -332,6 +337,22 @@ class RubiksCube {
 		for (let i = 0; i < colors.length; i++) {
 			cubiesToColor[i].colorFace(face, colors[i]);
 		}
+	}
+
+	/**
+	 * @return {object} - The the rotation axis and magnitude for the given face.
+	 */
+	_getRotationForFace(face) {
+		if (typeof face !== 'string') {
+			throw new Error(`"face" must be a string (received: ${face})`);
+		}
+
+		face = face.toLowerCase();
+
+		return {
+			axis: this._notationToRotation[face].axis,
+			mag: this._notationToRotation[face].mag * Math.PI / 2
+		};
 	}
 }
 
