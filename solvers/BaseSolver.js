@@ -34,7 +34,7 @@ class BaseSolver {
 		// this step is also in RubiksCube#move, but it is important we do it here
 		// as well. The notations need to be saved to the partition correctly.
 		notations = RubiksCube.normalizeNotations(notations);
-		notations = RubiksCube.transformNotations(notations);
+		notations = RubiksCube.transformNotations(notations, options);
 
 		for (let notation of notations) {
 			this.totalMoves.push(notation);
