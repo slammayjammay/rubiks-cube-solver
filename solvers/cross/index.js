@@ -169,6 +169,14 @@ class CrossSolver extends BaseSolver {
 
 		return `${R(prepMove)} ${edgeToCrossFace} ${prepMove}`;
 	}
+
+	_getPartitionBefore({ edge }) {
+		return { edge: edge.clone() };
+	}
+
+	_getPartitionAfter({ edge }) {
+		return { edge };
+	}
 }
 
 module.exports = CrossSolver;

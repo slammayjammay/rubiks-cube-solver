@@ -154,6 +154,17 @@ class F2LBaseSolver extends BaseSolver {
 		this.move(solveMoves, { upperCase: true });
 		return solveMoves;
 	}
+
+	_getPartitionBefore({ corner, edge }) {
+		return {
+			corner: corner.clone(),
+			edge: edge.clone()
+		};
+	}
+
+	_getPartitionAfter({ corner, edge }) {
+		return { corner, edge };
+	}
 }
 
 module.exports = F2LBaseSolver;

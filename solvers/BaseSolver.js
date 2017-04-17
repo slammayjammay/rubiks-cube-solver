@@ -79,15 +79,8 @@ class BaseSolver {
 
 		this.partition = {};
 
-		this.partition.before = {
-			corner: corner && corner.clone(),
-			edge: edge && edge.clone()
-		};
-
-		this.partition.after = {
-			corner: corner && corner,
-			edge: edge && edge
-		};
+		this.partition.before = this._getPartitionBefore(cubies);
+		this.partition.after = this._getPartitionAfter(cubies);
 
 		this.partition.caseNumber = this._getCaseNumber({ corner, edge });
 

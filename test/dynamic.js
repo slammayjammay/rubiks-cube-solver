@@ -73,8 +73,12 @@ for (let i = 0; i < NUM_RUNS; i++) {
 }
 
 function logPartition({ before, caseNumber, moves = [] }, color = 'green') {
-	let colors = before.edge.colors();
-	console.log(chalk[color]('Colors:'), colors);
+	if (typeof before === 'string') {
+
+	} else {
+		let colors = before.edge.colors();
+		console.log(chalk[color]('Colors:'), colors);
+	}
 
 	console.log(chalk[color]('Case Number:'), caseNumber);
 	console.log(chalk[color]('Moves:'), moves.join(' '));
