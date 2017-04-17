@@ -274,7 +274,6 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
-		notations = RubiksCube.normalizeNotations(notations);
 		notations = RubiksCube.transformNotations(notations, options);
 
 		for (let notation of notations) {
