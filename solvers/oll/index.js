@@ -28,8 +28,8 @@ class OLLSolver extends BaseSolver {
 			'01101110': 'R B RPrime L U LPrime UPrime R BPrime RPrime', // 14
 			'21002120': 'LPrime BPrime L RPrime UPrime R U LPrime B L', // 15
 			'21001100': 'RPrime F R U RPrime UPrime FPrime U R', // 16
-			'01000100': 'R U RPrime UPrime MPrime U R RDoublePrime', // 17
-			'01010101': 'M U R U RPrime UPrime M M U R UPrime RDoublePrime', // 18
+			'01000100': 'R U RPrime UPrime MPrime U R rPrime', // 17
+			'01010101': 'M U R U RPrime UPrime M M U R UPrime rPrime', // 18
 			'10211021': 'F R U RPrime UPrime R U RPrime UPrime FPrime B U L UPrime LPrime BPrime', // 19
 			'11000120': 'R U RPrime UPrime RPrime F R FPrime', // 20
 			'10000010': 'LPrime BPrime R B L BPrime RPrime B', // 21
@@ -41,21 +41,21 @@ class OLLSolver extends BaseSolver {
 			'11212010': 'F LPrime U U L U U L F F LPrime F', // 27
 			'01110020': 'R U RPrime U R UPrime RPrime UPrime RPrime F R FPrime', // 28
 			'10012100': 'RPrime UPrime R UPrime RPrime U R U R BPrime RPrime B', // 29
-			'10112021': 'RPrime UPrime R UPrime RPrime DDouble RPrime U R B', // 30
+			'10112021': 'RPrime UPrime R UPrime RPrime d RPrime U R B', // 30
 			'01110121': 'F U R UPrime RPrime FPrime F U FPrime UPrime FPrime L F LPrime', // 31
-			'01112101': 'F U R UPrime RPrime FPrime B U BPrime UPrime SPrime U B UPrime BDoublePrime', // 32
-			'21212000': 'LDoublePrime U U L U LPrime U LDouble', // 33
-			'01212020': 'RDouble U RPrime R U U RDoublePrime', // 34
+			'01112101': 'F U R UPrime RPrime FPrime B U BPrime UPrime SPrime U B UPrime bPrime', // 32
+			'21212000': 'lPrime U U L U LPrime U l', // 33
+			'01212020': 'r U RPrime R U U rPrime', // 34
 			'00202020': 'R U RPrime U R U U RPrime', // 35
 			'10101000': 'RPrime UPrime R URprime RPrime U U R', // 36
 			'01001021': 'RPrime U R U U RPrime UPrime FPrime U F U R', // 37
 			'10200101': 'R UPrime RPrime U U R U B UPrime BPrime UPrime RPrime', // 38
-			'21102011': 'RDouble U RPrime U R UPrime RPrime U R U U RDoublePrime', // 39
-			'21112010': 'LDoublePrime UPrime L UPrime LPrime U L UPrime LPrime U U LDouble', // 40
-			'11100011': 'RDouble U U RPrime UPrime R URpime RDoublePrime', // 41
+			'21102011': 'r U RPrime U R UPrime RPrime U R U U rPrime', // 39
+			'21112010': 'lPrime UPrime L UPrime LPrime U L UPrime LPrime U U l', // 40
+			'11100011': 'r U U RPrime UPrime R URpime rPrime', // 41
 			'11012000': 'F R UPrime RPrime UPrime R U RPrime FPrime', // 42
-			'11001011': 'LDoublePrime UPrime L UPrime LPrime U U LDouble', // 43
-			'01010000': 'RDouble U RPrime UPrime M U R UPrime RPrime', // 44
+			'11001011': 'lPrime UPrime L UPrime LPrime U U l', // 43
+			'01010000': 'r U RPrime UPrime M U R UPrime RPrime', // 44
 			'01002110': 'R U RPrime UPrime BPrime RPrime F R FPrime B', // 45
 			'01202120': 'L FPrime LPrime UPrime L F LPrime FPrime U F', // 46
 			'11001110': 'RPrime F R U RPrime FPrime U F UPrime FPrime', // 47
@@ -77,10 +77,10 @@ class OLLSolver extends BaseSolver {
 	}
 
 	_getCaseNumber() {
-		let ollString = this.getOllString();
+		return this.getOllString();
 	}
 
-	_solve(ollString) {
+	_solveCase(ollString) {
 
 	}
 
@@ -132,6 +132,14 @@ class OLLSolver extends BaseSolver {
 		let rightFace = dir === 'right' ? face2 : face1;
 
 		return cubie.getColorOfFace(rightFace) === 'd' ? 1 : 2;
+	}
+
+	_getPartitionBefore() {
+		return this.getOllString();
+	}
+
+	_getPartitionAfter() {
+		return null;
 	}
 }
 
