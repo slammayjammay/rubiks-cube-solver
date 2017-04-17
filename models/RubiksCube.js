@@ -44,19 +44,39 @@ class RubiksCube {
 	}
 
 	/**
-	 * @param {string} notations - The list of moves to reverse.
+	 * @param {string|array} notations - The list of moves to reverse.
 	 * @return {string}
 	 */
 	static reverseMoves(notations) {
+		if (typeof notations === 'string') {
+			notations = notations.split(' ');
+		}
+
+		notations = RubiksCube.normalizeNotations(notations);
+
 		let reversedMoves = [];
 
-		for (let notation of notations.split(' ').filter(move => move !== '')) {
-			notation = notation.toUpperCase();
-			notation = notation.includes('PRIME') ? notation[0] : `${notation[0]}Prime`;
+		for (let notation of notations) {
+			let isPrime = notation.includes('prime');
+			notation = isPrime ? notation[0] : notation[0] + 'prime';
 			reversedMoves.push(notation);
 		}
 
 		return reversedMoves.join(' ');
+	}
+
+	/**
+	 * @param {array} notations - The array of notations to noramlize.
+	 */
+	static normalizeNotations(notations) {
+		notations =  notations.filter(move => move !== '');
+
+		return notations.map(move => {
+			if (move.toLowerCase().includes('prime')) {
+				move = move[0] + 'prime';
+			}
+			return move;
+		});
 	}
 
 	/**
@@ -210,12 +230,14 @@ class RubiksCube {
 	 * @param {string|array} notation - The move notation.
 	 */
 	move(notations) {
-		if (notations instanceof Array) {
-			notations = notations.join(' ');
+		if (typeof notations === 'string') {
+			notations = notations.split(' ');
 		}
 
-		for (let notation of notations.split(' ')) {
-			let move = notation[0] && notation[0].toUpperCase();
+		notations = RubiksCube.normalizeNotations(notations);
+
+		for (let notation of notations) {
+			let move = notation[0];
 			if (!move) {
 				continue;
 			}
