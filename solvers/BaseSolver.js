@@ -23,15 +23,25 @@ class BaseSolver {
 	}
 
   /**
-   * @param {string} notation - A string of move(s) to execute and store.
+   * @param {string|array} notation - A string of move(s) to execute and store.
    * @param {object} options - The options to pass to RubiksCube#move.
    */
 	move(notations, options) {
-		for (let notation of notations.split(' ')) {
-			if (notation !== '') {
-				this.totalMoves.push(notation);
-			}
+		if (typeof notations === 'string') {
+			notations = notations.split(' ');
 		}
+
+		// this step is also in RubiksCube#move, but it is important we do it here
+		// as well. The notations need to be saved to the partition correctly.
+		notations = RubiksCube.normalizeNotations(notations);
+		notations = RubiksCube.transformNotations(notations);
+
+		for (let notation of notations) {
+			this.totalMoves.push(notation);
+		}
+
+		// hmmm, passing options into RubiksCube#move could change the notations for
+		// a second time...
 		this.cube.move(notations, options);
 	}
 

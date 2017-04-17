@@ -66,16 +66,35 @@ class RubiksCube {
 	}
 
 	/**
+	 * @param {string|array} notations - The move notation.
+	 * @param {object} options - Move options.
+	 * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
+	 */
+	static transformNotations(notations, options = {}) {
+		if (typeof notations === 'string') {
+			notations = notations.split(' ');
+		}
+
+		return notations.map(notation => {
+			if (options.upperCase) {
+				notation = notation[0].toUpperCase() + notation.slice(1);
+			}
+
+			return notation
+		});
+	}
+
+	/**
 	 * @param {array} notations - The array of notations to noramlize.
 	 */
 	static normalizeNotations(notations) {
-		notations =  notations.filter(move => move !== '');
+		notations = notations.filter(n => n !== '');
 
-		return notations.map(move => {
-			if (move.toLowerCase().includes('prime')) {
-				move = move[0] + 'prime';
+		return notations.map(notation => {
+			if (notation.toLowerCase().includes('prime')) {
+				notation = notation[0] + 'prime';
 			}
-			return move;
+			return notation;
 		});
 	}
 
@@ -244,7 +263,7 @@ class RubiksCube {
 	 * Gets the rotation axis and magnitude of rotation based on notation.
 	 * Then finds all cubes on the correct face, and rotates them around the
 	 * rotation axis.
-	 * @param {string|array} notation - The move notation.
+	 * @param {string|array} notations - The move notation.
 	 * @param {object} options - Move options.
 	 * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
 	 */
@@ -254,10 +273,7 @@ class RubiksCube {
 		}
 
 		notations = RubiksCube.normalizeNotations(notations);
-
-		if (options.upperCase) {
-			notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
-		}
+		notations = RubiksCube.transformNotations(notations, options);
 
 		for (let notation of notations) {
 			let move = notation[0];
