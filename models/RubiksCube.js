@@ -75,6 +75,8 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
+		notations = RubiksCube.normalizeNotations(notations);
+
 		return notations.map(notation => {
 			if (options.upperCase) {
 				notation = notation[0].toUpperCase() + notation.slice(1);
