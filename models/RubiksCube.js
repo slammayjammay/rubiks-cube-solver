@@ -113,7 +113,22 @@ class RubiksCube {
 			d: { axis: 'y', mag: 1 },
 			l: { axis: 'x', mag: 1 },
 			b: { axis: 'z', mag: 1 },
+			m: { axis: 'x', mag: 1 },
+			e: { axis: 'y', mag: 1 },
+			s: { axis: 'z', mag: -1 }
 		};
+
+		// allows for "double" moves, e.g. move the right face and the middle cubies
+		// next to it.
+		this._middlesMatchingFace = {
+			f: 's',
+			r: 'm',
+			u: 'e',
+			d: 'e',
+			l: 'm',
+			b: 's'
+		};
+
 
 		this._build(cubeState);
 	}
@@ -160,6 +175,8 @@ class RubiksCube {
 		} else if (face === 'b') {
 			[row, col, rowOrder, colOrder] = ['Y', 'X', -1, -1];
 			cubies = this._cubies.filter(cubie => cubie.getZ() === -1);
+		} else if (['m', 'e', 's'].includes(face)) {
+			return this._getMiddlesForMove(face);
 		}
 
 		// order cubies from top left to bottom right
@@ -228,27 +245,42 @@ class RubiksCube {
 	 * Then finds all cubes on the correct face, and rotates them around the
 	 * rotation axis.
 	 * @param {string|array} notation - The move notation.
+	 * @param {object} options - Move options.
+	 * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
 	 */
-	move(notations) {
+	move(notations, options = {}) {
 		if (typeof notations === 'string') {
 			notations = notations.split(' ');
 		}
 
 		notations = RubiksCube.normalizeNotations(notations);
 
+		if (options.upperCase) {
+			notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
+		}
+
 		for (let notation of notations) {
 			let move = notation[0];
+
 			if (!move) {
 				continue;
 			}
 
+			let isPrime = notation.toLowerCase().includes('prime');
+			let isDoubleMove = move === move.toLowerCase();
 			let { axis, mag } = this._getRotationForFace(move);
+			let cubesToRotate = this.getFace(move);
 
-			if (notation.toLowerCase().includes('prime')) {
+			if (isPrime) {
 				mag *= -1;
 			}
 
-			let cubesToRotate = this.getFace(move);
+			if (isDoubleMove) {
+				let middleMove = this._getMiddleForMove(move);
+				let middleCubies = this._getMiddleCubiesForMove(middleMove);
+				cubesToRotate = [...cubesToRotate, ...middleCubies];
+			}
+
 			for (let cubie of cubesToRotate) {
 				cubie.rotate(axis, mag);
 			}
@@ -375,6 +407,28 @@ class RubiksCube {
 			axis: this._notationToRotation[face].axis,
 			mag: this._notationToRotation[face].mag * Math.PI / 2
 		};
+	}
+
+	_getMiddleForMove(move) {
+		move = move.toLowerCase();
+		return this._middlesMatchingFace[move];
+	}
+
+	_getMiddleCubiesForMove(move) {
+		move = move[0].toLowerCase();
+
+		let nonMiddles;
+		if (move === 'm') {
+			nonMiddles = ['left', 'right'];
+		} else if (move === 'e') {
+			nonMiddles = ['up', 'down'];
+		} else if (move === 's') {
+			nonMiddles = ['front', 'back'];
+		}
+
+		return this._cubies.filter(cubie => {
+			return !cubie.hasFace(nonMiddles[0]) && !cubie.hasFace(nonMiddles[1]);
+		});
 	}
 }
 

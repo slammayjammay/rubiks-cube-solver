@@ -24,14 +24,15 @@ class BaseSolver {
 
   /**
    * @param {string} notation - A string of move(s) to execute and store.
+   * @param {object} options - The options to pass to RubiksCube#move.
    */
-	move(notations) {
+	move(notations, options) {
 		for (let notation of notations.split(' ')) {
 			if (notation !== '') {
 				this.totalMoves.push(notation);
 			}
 		}
-		this.cube.move(notations);
+		this.cube.move(notations, options);
 	}
 
   /**

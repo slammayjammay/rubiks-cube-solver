@@ -108,7 +108,7 @@ class Case1Solver extends BaseSolver {
 
 		let solveMoves = `${prep} ${moveFace} ${moveFace} D D `;
 		solveMoves += `${moveFace} ${dir} ${R(moveFace)} ${dir} ${moveFace} ${moveFace}`;
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 	}
 
 	_solveCase4({ corner, edge }) {
@@ -123,7 +123,7 @@ class Case1Solver extends BaseSolver {
 		let moveFace = utils.getMoveOfFace(targetFace);
 		moveFace = isLeft ? R(moveFace) : moveFace;
 
-		this.move(`${prep} ${moveFace} D D ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} D D ${R(moveFace)}`, { upperCase: true });
 		this.solveSeparatedPair({ corner, edge });
 	}
 
@@ -142,7 +142,7 @@ class Case1Solver extends BaseSolver {
 
     // do the prep move now. need to calculate things after this move is done
 		let edgePrep = utils.getRotationFromTo('down', edgeCurrent, edgeTarget);
-		this.move(edgePrep);
+		this.move(edgePrep, { upperCase: true });
 
     // calculate corner stuff
 		let cornerCurrent = corner.getFaceOfColor(primary);
@@ -152,7 +152,7 @@ class Case1Solver extends BaseSolver {
 		let cornerPrep = utils.getRotationFromTo('down', cornerCurrent, cornerTarget);
 		let open = isLeft ? R(edgeTarget) : edgeTarget;
 
-		this.move(`${open} ${cornerPrep} ${R(open)}`);
+		this.move(`${open} ${cornerPrep} ${R(open)}`, { upperCase: true });
 		this.solveMatchedPair({ corner, edge });
 	}
 
@@ -171,7 +171,7 @@ class Case1Solver extends BaseSolver {
 		let moveFace = isLeft ? targetFace : R(targetFace);
 		let dir = isLeft ? 'DPrime' : 'D';
 
-		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`, { upperCase: true });
 		this.solveSeparatedPair({ corner, edge});
 	}
 
@@ -186,14 +186,14 @@ class Case1Solver extends BaseSolver {
     ) === 'left';
 
 		let cornerPrep = utils.getRotationFromTo('down', cornerCurrent, cornerTarget);
-		this.move(cornerPrep);
+		this.move(cornerPrep, { upperCase: true });
 
 		let edgeCurrent = edge.getFaceOfColor(primary);
 		let edgeTarget = corner.getFaceOfColor(primary);
 
 		let open = isLeft ? corner.getFaceOfColor('u') : R(corner.getFaceOfColor('u'));
 		let edgeMatch = utils.getRotationFromTo('down', edgeCurrent, edgeTarget);
-		this.move(`${open} ${edgeMatch} ${R(open)}`);
+		this.move(`${open} ${edgeMatch} ${R(open)}`, { upperCase: true });
 
 		this.solveMatchedPair({ corner, edge });
 	}
@@ -215,7 +215,7 @@ class Case1Solver extends BaseSolver {
 		let open = isLeft ? R(targetFace) : targetFace;
 		let dir = isLeft ? 'D' : 'DPrime';
 
-		this.move(`${prep} ${open} ${dir} ${R(open)}`);
+		this.move(`${prep} ${open} ${dir} ${R(open)}`, { upperCase: true });
 		this.solveSeparatedPair({ corner, edge });
 	}
 
@@ -233,7 +233,7 @@ class Case1Solver extends BaseSolver {
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		let moveFace = isLeft ? targetFace : R(targetFace);
 
-		this.move(`${prep} ${moveFace} D D ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} D D ${R(moveFace)}`, { upperCase: true });
 		this.solveSeparatedPair({ corner, edge });
 	}
 
@@ -249,7 +249,7 @@ class Case1Solver extends BaseSolver {
     ) === 'left';
 
 		let cornerPrep = utils.getRotationFromTo('down', cornerCurrent, cornerTarget);
-		this.move(cornerPrep);
+		this.move(cornerPrep, { upperCase: true });
 
 		let edgeCurrent = edge.getFaceOfColor(primary);
 		let edgeTarget = utils.getFaceOfMove(primary);
@@ -257,7 +257,7 @@ class Case1Solver extends BaseSolver {
 		let open = isLeft ? cornerTarget : R(cornerTarget);
 		let edgePrep = utils.getRotationFromTo('down', edgeCurrent, edgeTarget);
 
-		this.move(`${open} ${edgePrep} ${R(open)}`);
+		this.move(`${open} ${edgePrep} ${R(open)}`, { upperCase: true });
 		this.solveSeparatedPair({ corner, edge });
 	}
 }

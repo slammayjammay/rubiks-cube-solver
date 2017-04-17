@@ -132,7 +132,7 @@ class F2LSolver extends BaseSolver {
 		let dir = utils.getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
 		let cornerRightFace = dir === 'right' ? faces[1] : faces[0];
 
-		this.move(`${cornerRightFace} D ${R(cornerRightFace)}`);
+		this.move(`${cornerRightFace} D ${R(cornerRightFace)}`, { upperCase: true });
 
 		let partition = solver.solve({ corner, edge });
 

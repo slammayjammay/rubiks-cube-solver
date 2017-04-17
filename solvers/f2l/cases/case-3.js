@@ -42,7 +42,7 @@ class Case3Solver extends BaseSolver {
 		let moveFace = isLeft ? rightFace : R(leftFace);
 		let dir = isLeft ? 'DPrime' : 'D';
 
-		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`, { upperCase: true });
 		this.solveMatchedPair({ corner, edge });
 	}
 
@@ -66,7 +66,7 @@ class Case3Solver extends BaseSolver {
 		let moveFace = corner.getFaceOfColor('u');
 		moveFace = isLeft ? R(moveFace) : moveFace;
 
-		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`, { upperCase: true });
 		let solveFn = `solve${willBeMatched ? 'Matched' : 'Separated'}Pair`;
 		this[solveFn]({ corner, edge });
 	}

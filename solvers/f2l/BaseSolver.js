@@ -122,7 +122,7 @@ class F2LBaseSolver extends BaseSolver {
 		let insert = isLeft ? 'DPrime' : 'D';
 
 		let solveMoves = [prep, open, insert, R(open)].join(' ');
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 		return solveMoves;
 	}
 
@@ -151,7 +151,7 @@ class F2LBaseSolver extends BaseSolver {
 		let insert = isLeft ? 'DPrime' : 'D';
 
 		let solveMoves = [prep, match, insert, R(match)].join(' ');
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 		return solveMoves;
 	}
 }

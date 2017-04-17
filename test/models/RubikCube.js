@@ -1,4 +1,4 @@
-const { expect } = require('chai');
+const { expect, assert } = require('chai');
 const RubiksCube = require('../../models/RubiksCube');
 
 describe('RubiksCube Model', () => {
@@ -15,6 +15,27 @@ describe('RubiksCube Model', () => {
 
 		it('requires a string with only 6 unique colors', () => {
 			// TODO
+		});
+	});
+
+	describe('movement', () => {
+		it('moves "r" correctly', () => {
+			let cube = RubiksCube.Solved();
+			cube.move('r');
+			assert(cube.toString() === 'fddfddfddrrrrrrrrruffuffuffdbbdbbdbbllllllllluubuubuub');
+		});
+
+		it('moves "d" correctly', () => {
+			let cube = RubiksCube.Solved();
+			cube.move('d');
+			assert(cube.toString() === 'fffllllllrrrffffffuuuuuuuuudddddddddlllbbbbbbbbbrrrrrr');
+		});
+
+		it('moves "r u" correctly', () => {
+			let cube = RubiksCube.Solved();
+			cube.move('r u');
+			let state = ['rrrrrrfdd', 'uubuubrrr', 'uuuffffff', 'dbbdbbdbb', 'fddfddlll', 'lllllluub'].join('');
+			assert(cube.toString() === state);
 		});
 	});
 });

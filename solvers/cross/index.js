@@ -91,18 +91,18 @@ class CrossSolver extends BaseSolver {
 		}
 
 		let face = edge.faces().find(face => face !== 'up');
-		this.move(`${face} ${face}`);
+		this.move(`${face} ${face}`, { upperCase: true });
 		this._solveCase2({ edge });
 	}
 
 	_solveCase2({ edge }) {
 		let solveMoves = this._case1And2Helper({ edge }, 2);
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 	}
 
 	_solveCase3({ edge }) {
 		let prepMove = this._case3And4Helper({ edge }, 3);
-		this.move(prepMove);
+		this.move(prepMove, { upperCase: true });
 		this._solveCase5({ edge });
 	}
 
@@ -112,22 +112,22 @@ class CrossSolver extends BaseSolver {
 			edge.getFaceOfColor('u'),
 			utils.getFaceOfMove(edge.getColorOfFace('down'))
 		);
-		this.move(prepMove);
+		this.move(prepMove, { upperCase: true });
 
 		let edgeToMiddle = R(edge.getFaceOfColor('u'));
 
-		this.move(edgeToMiddle);
+		this.move(edgeToMiddle, { upperCase: true });
 		this._solveCase5({ edge });
 	}
 
 	_solveCase5({ edge }) {
 		let solveMoves = this._case5And6Helper({ edge }, 5);
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 	}
 
 	_solveCase6({ edge }) {
 		let solveMoves = this._case5And6Helper({ edge }, 6);
-		this.move(solveMoves);
+		this.move(solveMoves, { upperCase: true });
 	}
 
 	_case1And2Helper({ edge }, caseNum) {

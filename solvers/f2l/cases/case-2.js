@@ -62,13 +62,13 @@ class case2Solver extends BaseSolver {
 		let targetFace = edge.getFaceOfColor(color);
 
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
-		this.move(prep);
+		this.move(prep, { upperCase: true });
 
 		let [face1, face2] = edge.faces();
 		let dir = utils.getDirectionFromFaces(face1 , face2, { up: 'down' });
 		let rightFace = dir === 'right' ? face2 : face1;
 
-		this.move(`${rightFace} DPrime ${R(rightFace)}`);
+		this.move(`${rightFace} DPrime ${R(rightFace)}`, { upperCase: true });
 		this.solveMatchedPair({ corner, edge });
 	}
 
@@ -77,13 +77,13 @@ class case2Solver extends BaseSolver {
 		let targetFace = edge.getFaceOfColor(edge.colors()[1]);
 
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
-		this.move(prep);
+		this.move(prep, { upperCase: true });
 
 		let dir = utils.getDirectionFromFaces(edge.faces()[0] , edge.faces()[1], { up: 'down' });
 		let rightFace = edge.faces()[dir === 'right' ? 1 : 0];
 
-		this.move(`${rightFace} D ${R(rightFace)} DPrime`);
-		this.move(`${rightFace} D ${R(rightFace)}`);
+		this.move(`${rightFace} D ${R(rightFace)} DPrime`, { upperCase: true });
+		this.move(`${rightFace} D ${R(rightFace)}`, { upperCase: true });
 
 		this.solveSeparatedPair({ corner, edge });
 	}
@@ -117,7 +117,7 @@ class case2Solver extends BaseSolver {
 		let dir = isLeft ? 'DPrime' : 'D';
 		dir = caseNum === 4 ? R(dir) : dir;
 
-		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`);
+		this.move(`${prep} ${moveFace} ${dir} ${R(moveFace)}`, { upperCase: true });
 
 		let method = `solve${caseNum === 3 ? 'Matched' : 'Separated'}Pair`;
 		this[method]({ corner, edge });
