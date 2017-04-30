@@ -47,7 +47,7 @@ class OLLSolver extends BaseSolver {
 			'01110121': 'F U R UPrime RPrime FPrime F U FPrime UPrime FPrime L F LPrime', // 31
 			'01112101': 'F U R UPrime RPrime FPrime B U BPrime UPrime SPrime U B UPrime bPrime', // 32
 			'21212000': 'lPrime U U L U LPrime U l', // 33
-			'01212020': 'r U RPrime R U U rPrime', // 34
+			'01212020': 'r U RPrime U R U U rPrime', // 34
 			'00202020': 'R U RPrime U R U U RPrime', // 35
 			'10101000': 'RPrime UPrime R URprime RPrime U U R', // 36
 			'01001021': 'RPrime U R U U RPrime UPrime FPrime U F U R', // 37
@@ -145,7 +145,7 @@ class OLLSolver extends BaseSolver {
 	}
 
 	_getFrontFaceForOllString(ollString) {
-		let faceOrder = ['front', 'right', 'back', 'left'];
+		let faceOrder = ['front', 'left', 'back', 'right'];
 
 		for (let i = 0; i < 4; i++) {
 			let algorithm = this.algorithms[ollString];
@@ -158,7 +158,6 @@ class OLLSolver extends BaseSolver {
 			ollString = this._rotateOllStringLeft(ollString);
 		}
 
-		console.log(this.algorithms[ollString]);
 		throw new Error(`No algorithm found for oll string "${ollString}"`);
 	}
 
