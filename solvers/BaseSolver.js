@@ -56,23 +56,16 @@ class BaseSolver {
 				phases = this.phases.slice();
 			} else if (!this.phases.includes(phases)) {
 				return;
+			} else {
+				phases = [phases];
 			}
 		}
 
 		phases.forEach(phase => this._afterEachCallbacks[phase].push(callback));
-    // this._afterEachCallbacks.push(callback)
 	}
 
 	triggerAfterEach(phase, callbackArgs) {
 		this._afterEachCallbacks[phase].forEach(fn => fn(...callbackArgs));
-
-
-    // this._afterEachCallbacks.forEach(callback => callback(partition, phase));
-
-    // Object.keys(this._afterEachCallbacks).forEach(thing => {
-    //   let phaseCallbacks = this._afterEachCallbacks[thing]
-    //   phaseCallbacks.forEach(callback => callback(partition, phase))
-    // })
 	}
 
   /**
@@ -82,12 +75,11 @@ class BaseSolver {
    * the case number if the solve method fails.
    */
 	_solve(cubies = {}) {
-		let { corner, edge } = cubies;
 
 		this.partition = {};
+		this.partition.cubies = cubies;
 
-		this.partition.before = this._getPartitionBefore(cubies);
-		this.partition.after = this._getPartitionAfter(cubies);
+		let { corner, edge } = cubies;
 
 		this.partition.caseNumber = this._getCaseNumber({ corner, edge });
 
