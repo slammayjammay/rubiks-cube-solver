@@ -1,4 +1,5 @@
 const Cubie = require('./Cubie');
+const utils = require('../utils');
 
 const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
 
@@ -77,13 +78,15 @@ class RubiksCube {
 
 		notations = RubiksCube.normalizeNotations(notations);
 
-		return notations.map(notation => {
-			if (options.upperCase) {
-				notation = notation[0].toUpperCase() + notation.slice(1);
-			}
+		if (options.upperCase) {
+			notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
+		}
 
-			return notation
-		});
+		if (options.orientation) {
+			notations = utils.orientMoves(notations, options.orientation);
+		}
+
+		return notations
 	}
 
 	/**
