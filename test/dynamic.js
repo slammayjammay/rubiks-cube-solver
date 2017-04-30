@@ -21,15 +21,16 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	cube.move(scrambleMoves);
 
 	const afterEach = (partition, phase) => {
-		let { corner, edge } = partition.after;
 		let showDebugOutput = false;
 
-		if (phase === 'cross' && !solver.isCrossEdgeSolved(edge)) {
-			showDebugOutput = true;
-		} else if (phase === 'f2l' && !solver.isF2LPairSolved({ corner, edge })) {
-			showDebugOutput = true;
-		} else if (phase === 'oll' && !solver.isOLLSolved()) {
-			showDebugOutput = true;
+		if (phase === 'cross') {
+			let { corner, edge } = partition.after;
+			showDebugOutput = !solver.isCrossEdgeSolved(edge);
+		} else if (phase === 'f2l') {
+			let { corner, edge } = partition.after;
+			showDebugOutput = !solver.isF2LPairSolved({ corner, edge });
+		} else if (phase === 'oll') {
+			showDebugOutput = !solver.isOLLSolved();
 		}
 
 		if (showDebugOutput) {
@@ -43,7 +44,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	};
 
 	let solver = new Solver(cube);
-	solver.afterEach(afterEach, ['cross', 'f2l']);
+	solver.afterEach(afterEach, ['cross', 'f2l', 'oll']);
 
 	try {
 		solver.solve();
@@ -75,9 +76,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 }
 
 function logPartition({ before, caseNumber, moves = [] }, color = 'green') {
-	if (typeof before === 'string') {
-
-	} else {
+	if (before.edge) {
 		let colors = before.edge.colors();
 		console.log(chalk[color]('Colors:'), colors);
 	}
