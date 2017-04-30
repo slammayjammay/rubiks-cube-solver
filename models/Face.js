@@ -78,7 +78,7 @@ class Face {
 	/**
 	 * Simulates an orientation change where this face becomes the new given face.
 	 * NOTE: this only changes this face's normals, not any cubies' positions.
-	 * @param {string} face - The new face, e.g. 'FRONT'
+	 * @param {string|Face} face - The new face, e.g. 'FRONT'
 	 */
 	orientTo(newFace) {
 		if (typeof newFace === 'string') {

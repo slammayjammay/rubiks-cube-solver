@@ -95,7 +95,7 @@ class Case1Solver extends BaseSolver {
     // calculate which side the corner is on, the position, etc.
 		let currentFace = edge.faces().find(face => face !== 'down');
 		let targetFace = utils.getFaceOfMove(edge.getColorOfFace('down'));
-		let prepFace = utils.getFaceFromDirection(targetFace, 'back', { up: 'down'});
+		let prepFace = utils.getFaceFromDirection(targetFace, 'back', { up: 'down' });
 		let otherFace = corner.getFaceOfColor(edge.getColorOfFace('down'));
 		let isLeft = utils.getFaceFromDirection(currentFace, otherFace, { up: 'down' }) === 'left';
 

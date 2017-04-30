@@ -79,7 +79,7 @@ class case2Solver extends BaseSolver {
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		this.move(prep, { upperCase: true });
 
-		let dir = utils.getDirectionFromFaces(edge.faces()[0] , edge.faces()[1], { up: 'down' });
+		let dir = utils.getDirectionFromFaces(edge.faces()[0], edge.faces()[1], { up: 'down' });
 		let rightFace = edge.faces()[dir === 'right' ? 1 : 0];
 
 		this.move(`${rightFace} D ${R(rightFace)} DPrime`, { upperCase: true });
