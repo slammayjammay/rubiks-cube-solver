@@ -31,4 +31,11 @@ describe('Utils', () => {
 		assert(utils.getRotationFromTo('DOWN', 'LEFT', 'BACK').toLowerCase() === 'dprime');
 		assert(utils.getRotationFromTo('FRONT', 'UP', 'LEFT').toLowerCase() === 'fprime');
 	});
+
+	it('correctly transforms moves', () => {
+		let moves = 'R U U RPrime UPrime R U U LPrime U RPrime UPrime L'.split(' ');
+		let orientedMoves = utils.orientMoves(moves, { front: 'back', down: 'right' }).join(' ');
+		assert(orientedMoves.toLowerCase() === 'd l l dprime lprime d l l uprime l dprime lprime u');
+		// TODO: more of these
+	});
 });
