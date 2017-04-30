@@ -28,6 +28,8 @@ for (let i = 0; i < NUM_RUNS; i++) {
 			showDebugOutput = true;
 		} else if (phase === 'f2l' && !solver.isF2LPairSolved({ corner, edge })) {
 			showDebugOutput = true;
+		} else if (phase === 'oll' && !solver.isOLLSolved()) {
+			showDebugOutput = true;
 		}
 
 		if (showDebugOutput) {
