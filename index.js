@@ -50,6 +50,10 @@ class Solver {
 		return this.f2lSolver.isPairSolved({ corner, edge });
 	}
 
+	isOLLSolved() {
+		return this.ollSolver.isSolved();
+	}
+
 	_updateProgress(partition, phase) {
 		this.progress[phase].push(partition);
 	}
