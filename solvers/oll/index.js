@@ -87,7 +87,9 @@ class OLLSolver extends BaseSolver {
 	}
 
 	_solveCase(ollString) {
-		let { frontFace, algorithm } = this._getFrontFaceForOllString(ollString);
+		let pattern = this.findPattern(ollString);
+		let algorithm = this.getAlgorithm(pattern);
+		let frontFace = this._getFrontFace(ollString, pattern);
 
 		this.move(algorithm, {
 			orientation: { up: 'down', front: frontFace }
@@ -97,7 +99,7 @@ class OLLSolver extends BaseSolver {
 	getOllString() {
 		let orientations = [];
 
-		let cubies = this.getOllCubies();
+		let cubies = this._getOllCubies();
 		cubies.forEach(cubie => {
 			let orientation = this._getCubieOrientation(cubie);
 			orientations.push(orientation);
@@ -106,7 +108,44 @@ class OLLSolver extends BaseSolver {
 		return orientations.join('');
 	}
 
-	getOllCubies() {
+	/**
+	 * @param {string} [ollString] - Probably unnecessary. If passed in, it saves
+	 * a step computing the ollString.
+	 */
+	findPattern(ollString) {
+		if (typeof ollString === 'undefined') {
+			ollString = this.getOllString();
+		}
+
+		for (let i = 0; i < 4; i++) {
+			let algorithm = this.algorithms[ollString];
+
+			if (typeof algorithm === 'string') {
+				return ollString;
+			} else {
+				ollString = this._rotateOllStringLeft(ollString);
+			}
+		}
+
+		throw new Error(`No algorithm found for oll string "${ollString}"`);
+	}
+
+	/**
+	 * @param {string} [pattern] - The pattern on this OLL or the ollString.
+	 */
+	getAlgorithm(pattern) {
+		if (typeof pattern === 'undefined') {
+			pattern = this.getPattern(pattern); // pattern can be an ollString
+		}
+
+		if (typeof this.algorithms[pattern] === 'undefined') {
+			throw new Error(`No algorithm found for pattern "${pattern}"`);
+		}
+
+		return this.algorithms[pattern];
+	}
+
+	_getOllCubies() {
 		let positions = [
 			['front', 'down', 'right'],
 			['front', 'down'],
@@ -144,21 +183,18 @@ class OLLSolver extends BaseSolver {
 		return cubie.getColorOfFace(rightFace) === 'd' ? 1 : 2;
 	}
 
-	_getFrontFaceForOllString(ollString) {
-		let faceOrder = ['front', 'left', 'back', 'right'];
+	_getFrontFace(ollString, pattern) {
+		let rotationOrder = ['front', 'left', 'back', 'right'];
 
 		for (let i = 0; i < 4; i++) {
-			let algorithm = this.algorithms[ollString];
-
-			if (typeof algorithm === 'string') {
-				let frontFace = faceOrder[i];
-				return { frontFace, algorithm };
+			if (ollString === pattern) {
+				return rotationOrder[i];
+			} else {
+				ollString = this._rotateOllStringLeft(ollString);
 			}
-
-			ollString = this._rotateOllStringLeft(ollString);
 		}
 
-		throw new Error(`No algorithm found for oll string "${ollString}"`);
+		throw new Error(`OLL string "${ollString}" does not resolve to the pattern "${pattern}"`);
 	}
 
 	_rotateOllStringLeft(ollString) {
