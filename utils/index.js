@@ -41,19 +41,20 @@ const getMoveOfFace = (face) => {
 };
 
 /**
- * Given a from-face, a to-face, and an orientation object, this returns an
- * adjacent face of from-face that points to to-face when the cube is oriented
- * specified by the orientation object.
+ * Finds the direction from an origin face to a target face. The origin face
+ * will be oriented so that it becomes FRONT. An orientation object must be
+ * provided that specifies any of these faces (exclusively): TOP, RIGHT, DOWN,
+ * LEFT.
+ * If FRONT or BACK is provided along with one of those faces, it will be
+ * ignored. If FRONT or BACK is the only face provided, the orientation is
+ * ambiguous and an error will be thrown.
  *
- * For example, ('down', 'right', { TOP: 'back' }). This translates to:
- *   1) Orient the cube such that the DOWN face becomes the FRONT face.
- *   2) Then, orient the cube such that the face that was BACK becomes TOP.
- *   3) Of all the adjacent faces attached to the DOWN face (which is now the
- *      FRONT face), find the direction that points to 'right' (the given face).
- *   4) In this case, the function would return 'left'.
- *   5) NOTE: The orientation object's key cannot be 'front' or 'back'. `origin`
- *      is automatically oriented to become the FRONT face, and FRONT and BACK are not
- *      adjacent faces of FRONT.
+ * Example:
+ * getDirectionFromFaces('back', 'up', { down: 'right' })
+ * Step 1) orient the BACK face so that it becomes FRONT.
+ * Step 2) orient the DOWN face so that it becomes RIGHT.
+ * Step 3) Find the direction from BACK (now FRONT) to UP (now LEFT).
+ * Step 4) Returns 'left'.
  *
  * @param {string} origin - The origin face.
  * @param {string} target - The target face.
@@ -61,14 +62,13 @@ const getMoveOfFace = (face) => {
  * @return {string|number}
  */
 const getDirectionFromFaces = (origin, target, orientation) => {
-	// parse arguments, sort of
-	let _orientationKey = Object.keys(orientation)[0];
-	const fromFace = new Face(origin);
-	const toFace = new Face(target);
-	const orientationFrom = new Face(orientation[_orientationKey]);
-	const orientationTo = new Face(_orientationKey);
+	orientation = _toLowerCase(orientation);
+	orientation = _prepOrientationForDirection(orientation, origin);
 
-	let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo);
+	let fromFace = new Face(origin);
+	let toFace = new Face(target);
+
+	let rotations = _getRotationsForOrientation(orientation);
 	_rotateFacesByRotations([fromFace, toFace], rotations);
 
 	let axis = new Vector(cross([], fromFace.normal(), toFace.normal())).getAxis();
@@ -96,17 +96,12 @@ const getDirectionFromFaces = (origin, target, orientation) => {
  * @return {string}
  */
 const getFaceFromDirection = (origin, direction, orientation) => {
-	// parse arguments, sort of
-	let _orientationKey = Object.keys(orientation)[0];
-	const fromFace = new Face(origin);
-	const orientationFrom = new Face(orientation[_orientationKey]);
-	const orientationTo = new Face(_orientationKey);
+	orientation = _toLowerCase(orientation);
+	orientation = _prepOrientationForDirection(orientation, origin);
 
-	let rotations = _getRotationsForOrientation(fromFace, orientationFrom, orientationTo);
-	// kinda hacky...but there should be at most two rotations. The second
-	// rotation must be around 'z', otherwise the origin face will not stay on
-	// FRONT.
-	rotations[1].axis = 'z';
+	let fromFace = new Face(origin);
+
+	let rotations = _getRotationsForOrientation(orientation);
 	_rotateFacesByRotations([fromFace], rotations);
 
 	let directionFace = new Face(direction);
@@ -157,54 +152,137 @@ const getRotationFromTo = (face, from, to) => {
 	}
 };
 
+/**
+ * Returns an array of transformed notations so that if done when the cube's
+ * orientation is default (FRONT face is FRONT, RIGHT face is RIGHT, etc.), the
+ * moves will have the same effect as performing the given notations on a cube
+ * oriented by the specified orientation.
+ *
+ * Examples:
+ * orientMoves(['R', 'U'], { front: 'front', up: 'up' })      === ['R', 'U']
+ * orientMoves(['R', 'U'], { front: 'front', down: 'right' }) === ['U', 'L']
+ * orientMoves(['R', 'U', 'LPrime', 'D'], { up: 'back', right: 'down' }) === ['D', 'B', 'UPrime', 'F']
+ *
+ * @param {array} notations - An array of notation strings.
+ * @param {object} orientation - The orientation object.
+ */
+const orientMoves = (notations, orientation) => {
+	orientation = _toLowerCase(orientation);
+	let rotations = _getRotationsForOrientation(orientation)
+	rotations.reverse().map(rotation => Vector.reverseRotation(rotation));
+
+	return notations.map(notation => {
+		let isPrime = notation.toLowerCase().includes('prime');
+		let isDouble = notation[0] === notation[0].toLowerCase();
+
+		let faceStr = getFaceOfMove(notation[0]);
+		let face = new Face(faceStr);
+
+		_rotateFacesByRotations([face], rotations);
+
+		let newNotation = face.toString()[0];
+
+		if (!isDouble) newNotation = newNotation.toUpperCase(); // this will always be lower case
+		if (isPrime) newNotation += 'prime'; // I actually think this works.
+
+		return newNotation;
+	});
+};
+
 module.exports = {
 	getFaceOfMove,
 	getMoveOfFace,
 	getDirectionFromFaces,
 	getRotationFromTo,
-	getFaceFromDirection
+	getFaceFromDirection,
+	orientMoves
 };
+
 
 //-----------------
 // Helper functions
 //-----------------
 
 /**
- * @param {Face} fromFace - The from face.
- * @param {Face} orientationFrom - The face that will become `orientationTo`.
- * @param {Face} orientationTo - The face that `orientationFrom` becomes.
- * @return {array}
+ * Returns an object with all keys and values lowercased. Assumes all keys and
+ * values are strings.
+ * @param {object} object - The object to map.
  */
-function _getRotationsForOrientation(fromFace, orientationFrom, orientationTo) {
-	// this is not meant to have any side effects, so clone the face objects.
-	fromFace = new Face(fromFace.toString());
-	orientationFrom = new Face(orientationFrom.toString());
-	orientationTo = new Face(orientationTo.toString());
+function _toLowerCase(object) {
+	let ret = {};
+	Object.keys(object).forEach(key => {
+		ret[key.toLowerCase()] = object[key].toLowerCase();
+	});
+	return ret;
+}
 
-	// rotate fromFace to FRONT, and save the rotation
-	let rotation1 = Vector.getRotationFromNormals(
-		fromFace.normal(),
-		fromFace.orientTo('front').normal()
-	);
+/**
+ * This function is specificly for `getDirectionFromFaces` and
+ * `getFaceFromDirection`. It removes all keys that are either 'front' or 'back'
+ * and sets the given front face to orientation.front.
+ * @param {object} orientation - The orientation object.
+ * @param {string} front - The face to set as front.
+ */
+function _prepOrientationForDirection(orientation, front) {
+	let keys = Object.keys(orientation);
+	let values = keys.map(key => orientation[key]);
 
-	// rotate orientationFrom by rotation1
-	orientationFrom.rotate(rotation1.axis, rotation1.angle);
-
-	// at this point, the fromFace has already become FRONT. The orientationFrom
-	// face and orientationTo face must be an adjacent face of FRONT. Otherwise,
-	// there are multiple orientations that are possible.
-	let _fromIsNotAjdacent = ['front', 'back'].includes(orientationFrom.toString().toLowerCase());
-	let _toIsNotAjdacent = ['front', 'back'].includes(orientationTo.toString().toLowerCase());
-
-	if (_fromIsNotAjdacent || _toIsNotAjdacent) {
-		throw new Error('The provied orientation object does not correctly specify a cube orientation.');
+	if (keys.length <= 1 && ['front', 'back'].includes(keys[0])) {
+		throw new Error(`Orientation object "${orientation}" is ambiguous. Please specify one of these faces: "up", "right", "down", "left"`);
 	}
 
-	// rotate orientationFrom to orientationTo and save the rotation
-	let rotation2 = Vector.getRotationFromNormals(
-		orientationFrom.normal(),
-		orientationFrom.orientTo(orientationTo).normal()
+	// remove "front" and "back" from provided orientation object
+	let temp = orientation;
+	orientation = {};
+
+	keys.forEach(key => {
+		if (['front', 'back'].includes(key)) {
+			return;
+		}
+		orientation[key] = temp[key];
+	});
+
+	orientation.front = front.toLowerCase();
+
+	return orientation;
+}
+
+/**
+ * @param {object} orientation - The orientation object.
+ * @return {array}
+ */
+function _getRotationsForOrientation(orientation) {
+	if (Object.keys(orientation) <= 1) {
+		throw new Error(`Orientation object "${orientation}" is ambiguous. Please specify 2 faces.`);
+	}
+
+	let keys = Object.keys(orientation);
+	let origins = keys.map(key => new Face(orientation[key]));
+	let targets = keys.map(key => new Face(key));
+
+	// perform the first rotation, and save it
+	let rotation1 = Vector.getRotationFromNormals(
+		origins[0].normal(),
+		origins[0].orientTo(targets[0]).normal()
 	);
+
+	// perform the first rotation on the second origin face
+	origins[1].rotate(rotation1.axis, rotation1.angle);
+
+	// peform the second rotation, and save it
+	let rotation2 = Vector.getRotationFromNormals(
+		origins[1].normal(),
+		origins[1].orientTo(targets[1]).normal()
+	);
+
+	// if the rotation angle is PI, there are 3 possible axes that can perform the
+	// rotation. however only one axis will perform the rotation while keeping
+	// the first origin face on the target. this axis is the same as the origin
+	// face's normal.
+	if (Math.abs(rotation2.angle) === Math.PI) {
+		let rotation2Axis = new Face(keys[0]).vector.getAxis();
+		rotation2.axis = rotation2Axis;
+	}
 
 	return [rotation1, rotation2];
 }
