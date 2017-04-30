@@ -2,6 +2,7 @@ const RubiksCube = require('../../models/RubiksCube');
 const BaseSolver = require('../BaseSolver');
 const utils = require('../../utils');
 
+const SOLVED_STATE = '00000000';
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
 class OLLSolver extends BaseSolver {
@@ -12,8 +13,9 @@ class OLLSolver extends BaseSolver {
 		// orientations in order based on http://badmephisto.com/oll.php, however the
 		// actual algorithms may be different.
 		this.algorithms = {
-			'21000111': 'F R U RPrime UPrime FPrime', // 1
-			'21111010': 'F R U RPrime UPrime FPrime F R U RPrime UPrime FPrime', // 2
+			[SOLVED_STATE]: '', // solved state
+			'21000110': 'F R U RPrime UPrime FPrime', // 1
+			'21211010': 'F R U RPrime UPrime FPrime F R U RPrime UPrime FPrime', // 2
 			'10201020': 'R U U RPrime UPrime R U RPrime UPrime R UPrime RPrime', // 3
 			'01112000': 'F U R UPrime RPrime FPrime', // 4
 			'11102120': 'F U R UPrime RPrime U R UPrime RPrime FPrime', // 5
@@ -32,7 +34,7 @@ class OLLSolver extends BaseSolver {
 			'01010101': 'M U R U RPrime UPrime M M U R UPrime rPrime', // 18
 			'10211021': 'F R U RPrime UPrime R U RPrime UPrime FPrime B U L UPrime LPrime BPrime', // 19
 			'11000120': 'R U RPrime UPrime RPrime F R FPrime', // 20
-			'10000010': 'LPrime BPrime R B L BPrime RPrime B', // 21
+			'10000020': 'LPrime BPrime R B L BPrime RPrime B', // 21
 			'20001000': 'B LPrime BPrime R B L BPrime RPrime', // 22
 			'00112001': 'RPrime UPrime RPrime F R FPrime U R', // 23
 			'21112111': 'R U U RPrime RPrime F R FPrime U U RPrime F R FPrime', // 24
@@ -72,6 +74,10 @@ class OLLSolver extends BaseSolver {
 		};
 	}
 
+	isSolved() {
+		return this.getOllString() === SOLVED_STATE;
+	}
+
 	solve() {
 		return this._solve();
 	}
@@ -81,7 +87,11 @@ class OLLSolver extends BaseSolver {
 	}
 
 	_solveCase(ollString) {
+		let { frontFace, algorithm } = this._getFrontFaceForOllString(ollString);
 
+		this.move(algorithm, {
+			orientation: { up: 'down', front: frontFace }
+		});
 	}
 
 	getOllString() {
@@ -89,7 +99,7 @@ class OLLSolver extends BaseSolver {
 
 		let cubies = this.getOllCubies();
 		cubies.forEach(cubie => {
-			let orientation = this.getOrientation(cubie);
+			let orientation = this._getCubieOrientation(cubie);
 			orientations.push(orientation);
 		});
 
@@ -117,7 +127,7 @@ class OLLSolver extends BaseSolver {
 	 * 1 --> The DOWN color is a clockwise rotation from "solved".
 	 * 2 --> The DOWN color is a counter-clockwise rotation from "solved".
 	 */
-	getOrientation(cubie) {
+	_getCubieOrientation(cubie) {
 		if (cubie.getColorOfFace('down') === 'd') {
 			return 0;
 		}
@@ -132,6 +142,28 @@ class OLLSolver extends BaseSolver {
 		let rightFace = dir === 'right' ? face2 : face1;
 
 		return cubie.getColorOfFace(rightFace) === 'd' ? 1 : 2;
+	}
+
+	_getFrontFaceForOllString(ollString) {
+		let faceOrder = ['front', 'right', 'back', 'left'];
+
+		for (let i = 0; i < 4; i++) {
+			let algorithm = this.algorithms[ollString];
+
+			if (typeof algorithm === 'string') {
+				let frontFace = faceOrder[i];
+				return { frontFace, algorithm };
+			}
+
+			ollString = this._rotateOllStringLeft(ollString);
+		}
+
+		console.log(this.algorithms[ollString]);
+		throw new Error(`No algorithm found for oll string "${ollString}"`);
+	}
+
+	_rotateOllStringLeft(ollString) {
+		return ollString.slice(2) + ollString.slice(0, 2);
 	}
 
 	_getPartitionBefore() {
