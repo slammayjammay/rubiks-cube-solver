@@ -2,6 +2,16 @@ const cross = require('gl-vec3/cross');
 const Face = require('../models/Face');
 const Vector = require('../models/Vector');
 
+// maps each face with the notation for their middle moves
+const _middlesMatchingFace = {
+	f: 's',
+	r: 'm',
+	u: 'e',
+	d: 'e',
+	l: 'm',
+	b: 's'
+};
+
 /**
  * @param {string} move - The notation of a move, e.g. rPrime.
  * @return {string}
@@ -39,6 +49,22 @@ const getMoveOfFace = (face) => {
 
 	return face[0];
 };
+
+const getMiddleMatchingFace = (face) => {
+	face = face.toLowerCase()[0];
+	return _middlesMatchingFace[face];
+}
+
+const getFaceMatchingMiddle = (middle) => {
+	middle = middle.toLowerCase()[0];
+
+	for (let face of Object.keys(_middlesMatchingFace)) {
+		let testMiddle = _middlesMatchingFace[face];
+		if (middle === testMiddle) {
+			return face;
+		}
+	}
+}
 
 /**
  * Finds the direction from an origin face to a target face. The origin face
@@ -174,15 +200,37 @@ const orientMoves = (notations, orientation) => {
 	return notations.map(notation => {
 		let isPrime = notation.toLowerCase().includes('prime');
 		let isDouble = notation[0] === notation[0].toLowerCase();
+		let isMiddle = ['m', 'e', 's'].includes(notation[0].toLowerCase());
 
-		let faceStr = getFaceOfMove(notation[0]);
-		let face = new Face(faceStr);
+		let face;
+
+		if (isMiddle) {
+			let faceStr = getFaceOfMove(getFaceMatchingMiddle(notation[0]));
+			face = new Face(faceStr);
+		} else {
+			let faceStr = getFaceOfMove(notation[0]);
+			face = new Face(faceStr);
+		}
+
+		/////////////////////////////////////
+		// Breaks for middle moves.
+		// if it is a middle move:
+		// 1) get the face it matches with
+		// 2) rotate that face
+		// 3) get the middle matching the resulting face
+		/////////////////////////////////////
 
 		_rotateFacesByRotations([face], rotations);
 
-		let newNotation = face.toString()[0];
+		let newNotation; // this will always be lower case
 
-		if (!isDouble) newNotation = newNotation.toUpperCase(); // this will always be lower case
+		if (isMiddle) {
+			newNotation = getMiddleMatchingFace(face.toString());
+		} else {
+			newNotation = face.toString()[0];
+		}
+
+		if (!isDouble) newNotation = newNotation.toUpperCase();
 		if (isPrime) newNotation += 'prime'; // I actually think this works.
 
 		return newNotation;
@@ -192,12 +240,13 @@ const orientMoves = (notations, orientation) => {
 module.exports = {
 	getFaceOfMove,
 	getMoveOfFace,
+	getMiddleMatchingFace,
+	getFaceMatchingMiddle,
 	getDirectionFromFaces,
 	getRotationFromTo,
 	getFaceFromDirection,
 	orientMoves
 };
-
 
 //-----------------
 // Helper functions

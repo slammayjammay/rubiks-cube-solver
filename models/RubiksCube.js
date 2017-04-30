@@ -142,18 +142,6 @@ class RubiksCube {
 			s: { axis: 'z', mag: -1 }
 		};
 
-		// allows for "double" moves, e.g. move the right face and the middle cubies
-		// next to it.
-		this._middlesMatchingFace = {
-			f: 's',
-			r: 'm',
-			u: 'e',
-			d: 'e',
-			l: 'm',
-			b: 's'
-		};
-
-
 		this._build(cubeState);
 	}
 
@@ -200,7 +188,7 @@ class RubiksCube {
 			[row, col, rowOrder, colOrder] = ['Y', 'X', -1, -1];
 			cubies = this._cubies.filter(cubie => cubie.getZ() === -1);
 		} else if (['m', 'e', 's'].includes(face)) {
-			return this._getMiddlesForMove(face);
+			return this._getMiddleCubiesForMove(face);
 		}
 
 		// order cubies from top left to bottom right
@@ -296,7 +284,7 @@ class RubiksCube {
 			}
 
 			if (isDoubleMove) {
-				let middleMove = this._getMiddleForMove(move);
+				let middleMove = utils.getMiddleMatchingFace(move);
 				let middleCubies = this._getMiddleCubiesForMove(middleMove);
 				cubesToRotate = [...cubesToRotate, ...middleCubies];
 			}
@@ -427,11 +415,6 @@ class RubiksCube {
 			axis: this._notationToRotation[face].axis,
 			mag: this._notationToRotation[face].mag * Math.PI / 2
 		};
-	}
-
-	_getMiddleForMove(move) {
-		move = move.toLowerCase();
-		return this._middlesMatchingFace[move];
 	}
 
 	_getMiddleCubiesForMove(move) {
