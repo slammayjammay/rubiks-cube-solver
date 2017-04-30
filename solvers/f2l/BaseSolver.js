@@ -115,7 +115,7 @@ class F2LBaseSolver extends BaseSolver {
 
 		let matchingFace = utils.getFaceOfMove(matchedColor);
 		let currentFace = corner.getFaceOfColor(matchedColor);
-		let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'right' : 'left', { up: 'up' });
+		let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'left' : 'right', { up: 'down' });
 
 		let prep = utils.getRotationFromTo('down', currentFace, prepFace);
 		let open = isLeft ? matchingFace : R(matchingFace);
