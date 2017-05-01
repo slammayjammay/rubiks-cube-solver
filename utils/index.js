@@ -5,11 +5,11 @@ const Vector = require('../models/Vector');
 // maps each face with the notation for their middle moves
 const _middlesMatchingFace = {
 	f: 's',
-	r: 'm',
-	u: 'e',
+	r: 'mprime',
+	u: 'eprime',
 	d: 'e',
 	l: 'm',
-	b: 's'
+	b: 'sprime'
 };
 
 /**
@@ -56,7 +56,7 @@ const getMiddleMatchingFace = (face) => {
 }
 
 const getFaceMatchingMiddle = (middle) => {
-	middle = middle.toLowerCase()[0];
+	middle = middle.toLowerCase();
 
 	for (let face of Object.keys(_middlesMatchingFace)) {
 		let testMiddle = _middlesMatchingFace[face];
@@ -205,20 +205,12 @@ const orientMoves = (notations, orientation) => {
 		let face;
 
 		if (isMiddle) {
-			let faceStr = getFaceOfMove(getFaceMatchingMiddle(notation[0]));
+			let faceStr = getFaceOfMove(getFaceMatchingMiddle(notation));
 			face = new Face(faceStr);
 		} else {
 			let faceStr = getFaceOfMove(notation[0]);
 			face = new Face(faceStr);
 		}
-
-		/////////////////////////////////////
-		// Breaks for middle moves.
-		// if it is a middle move:
-		// 1) get the face it matches with
-		// 2) rotate that face
-		// 3) get the middle matching the resulting face
-		/////////////////////////////////////
 
 		_rotateFacesByRotations([face], rotations);
 
@@ -231,7 +223,7 @@ const orientMoves = (notations, orientation) => {
 		}
 
 		if (!isDouble) newNotation = newNotation.toUpperCase();
-		if (isPrime) newNotation += 'prime'; // I actually think this works.
+		if (isPrime && !isMiddle) newNotation += 'prime';
 
 		return newNotation;
 	});
