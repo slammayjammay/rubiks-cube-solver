@@ -30,7 +30,7 @@ class OLLSolver extends BaseSolver {
 			'01101110': 'R B RPrime L U LPrime UPrime R BPrime RPrime', // 14
 			'21002120': 'LPrime BPrime L RPrime UPrime R U LPrime B L', // 15
 			'21001100': 'RPrime F R U RPrime UPrime FPrime U R', // 16
-			'01000100': 'R U RPrime UPrime MPrime U R rPrime', // 17
+			'01000100': 'R U RPrime UPrime MPrime U R UPrime rPrime', // 17
 			'01010101': 'M U R U RPrime UPrime M M U R UPrime rPrime', // 18
 			'10211021': 'F R U RPrime UPrime R U RPrime UPrime FPrime B U L UPrime LPrime BPrime', // 19
 			'11000120': 'R U RPrime UPrime RPrime F R FPrime', // 20
@@ -54,13 +54,13 @@ class OLLSolver extends BaseSolver {
 			'10200101': 'R UPrime RPrime U U R U B UPrime BPrime UPrime RPrime', // 38
 			'21102011': 'r U RPrime U R UPrime RPrime U R U U rPrime', // 39
 			'21112010': 'lPrime UPrime L UPrime LPrime U L UPrime LPrime U U l', // 40
-			'11100011': 'r U U RPrime UPrime R URpime rPrime', // 41
+			'11100011': 'r U U RPrime UPrime R UPrime rPrime', // 41
 			'11012000': 'F R UPrime RPrime UPrime R U RPrime FPrime', // 42
 			'11001011': 'lPrime UPrime L UPrime LPrime U U l', // 43
 			'01010000': 'r U RPrime UPrime M U R UPrime RPrime', // 44
 			'01002110': 'R U RPrime UPrime BPrime RPrime F R FPrime B', // 45
 			'01202120': 'L FPrime LPrime UPrime L F LPrime FPrime U F', // 46
-			'11001110': 'RPrime F R U RPrime FPrime U F UPrime FPrime', // 47
+			'11001110': 'RPrime F R U RPrime FPrime R F UPrime FPrime', // 47
 			'10200000': 'R R D RPrime U U R DPrime RPrime U U RPrime', // 48
 			'20112011': 'RPrime U U R R U RPrime U R U U BPrime RPrime B', // 49
 			'10000121': 'R U BPrime UPrime RPrime U R B RPrime', // 50
@@ -127,7 +127,7 @@ class OLLSolver extends BaseSolver {
 			}
 		}
 
-		throw new Error(`No algorithm found for oll string "${ollString}"`);
+		throw new Error(`No pattern found for oll string "${ollString}"`);
 	}
 
 	/**
