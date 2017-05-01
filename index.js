@@ -7,7 +7,10 @@ class Solver {
 	constructor(cubeState, options) {
 		this.cube = cubeState instanceof RubiksCube ? cubeState : new RubiksCube(cubeState);
 		this.options = options;
-		this.progress = { cross: [], f2l: [], oll: [], pll: [] };
+		this.phases = ['cross', 'f2l', 'oll', 'pll'];
+		this.progress = {};
+
+		this.phases.forEach(phase => this.progress[phase] = []);
 
     // save each partition to this.progress after each solve
 		const afterEach = (partition, phase) => {
@@ -20,15 +23,47 @@ class Solver {
 		this.f2lSolver = new F2LSolver(this.cube, this.options);
 		this.ollSolver = new OLLSolver(this.cube, this.options);
 
-		this.crossSolver.afterEach(afterEach, 'all');
-		this.f2lSolver.afterEach(afterEach, 'all');
-		this.ollSolver.afterEach(afterEach, 'all');
+		this.afterEach('all', afterEach);
 	}
 
-	afterEach(callback, phases) {
-		this.crossSolver.afterEach(callback, phases);
-		this.f2lSolver.afterEach(callback, phases);
-		this.ollSolver.afterEach(callback, phases);
+	afterEach(phases, callback) {
+		// argument parsing
+		if (typeof phases === 'function') {
+			// if first argument is a function, default phases to 'all'
+			callback = phases;
+			phases = 'all';
+		} else if (typeof phases === 'string') {
+			if (phases === 'all') {
+				// 'all': shortcut for array of all phases
+				phases = this.phases.slice();
+			} else {
+				// lastly turn phases into an array
+				phases = [phases];
+			}
+		}
+
+		// error handling
+		if (typeof callback !== 'function') {
+			throw new Error(`"afterEach" callback is not a function.`);
+		}
+
+		// error handling
+		for (let phase of phases) {
+			if (!this.phases.includes(phase)) {
+				throw new Error(`Phase "${phase}" isn't recognized. Please specify "cross", "f2l", "oll", "pll", or "all".`);
+			}
+		}
+
+		// if everything has gone okay, add the callback
+		for (let phase of phases) {
+			// ignore pll for now (hasn't been implemented yet)
+			if (phase === 'pll') {
+				continue
+			}
+
+			let solver = this[`${phase}Solver`];
+			solver.afterEach(callback);
+		}
 	}
 
 	solve() {

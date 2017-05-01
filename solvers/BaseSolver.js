@@ -13,13 +13,10 @@ class BaseSolver {
 		this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube;
 		this.options = options;
 
-		this.phases = ['cross', 'f2l', 'oll', 'pll'];
-		this._afterEachCallbacks = {};
-		this.phases.forEach(phase => this._afterEachCallbacks[phase] = []);
-
 		this.partition = {};
 		this.partitions = [];
 		this.totalMoves = [];
+		this._afterEachCallbacks = [];
 	}
 
   /**
@@ -42,30 +39,15 @@ class BaseSolver {
 		}
 	}
 
-  /**
-   * @param {string|array} phases - The phases during which to fire the callback.
-   */
-	afterEach(callback, phases) {
-		if (typeof callback !== 'function') {
-			return;
-		}
-
-    // argument parsing
-		if (typeof phases === 'string') {
-			if (phases === 'all') {
-				phases = this.phases.slice();
-			} else if (!this.phases.includes(phases)) {
-				return;
-			} else {
-				phases = [phases];
-			}
-		}
-
-		phases.forEach(phase => this._afterEachCallbacks[phase].push(callback));
+	afterEach(callback) {
+		this._afterEachCallbacks.push(callback);
 	}
 
-	triggerAfterEach(phase, callbackArgs) {
-		this._afterEachCallbacks[phase].forEach(fn => fn(...callbackArgs));
+	/**
+	 * @param {...*} callbackArgs - The arguments to call the function with.
+	 */
+	_triggerAfterEach(...callbackArgs) {
+		this._afterEachCallbacks.forEach(fn => fn(...callbackArgs));
 	}
 
   /**
@@ -89,7 +71,7 @@ class BaseSolver {
 		this.totalMoves = [];
 
 		if (!this._overrideAfterEach) {
-			this.triggerAfterEach(this.phase, [this.partition, this.phase]);
+			this._triggerAfterEach(this.partition, this.phase);
 		}
 
 		return this.partition;
