@@ -28,8 +28,9 @@ class OLLFormatter {
         front: frontFace
       }
     });
-  	console.log(chalk[color]('Algorithm:'), orientedMoves.join(' '));
+    console.log(chalk[color]('Algorithm:'), orientedMoves.join(' '));
     console.log(chalk[color]('Where front face is '), `"${frontFace}"`);
+    console.log();
   }
 }
 
