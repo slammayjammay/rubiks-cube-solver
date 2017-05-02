@@ -2,6 +2,7 @@ const RubiksCube = require('./models/RubiksCube');
 const CrossSolver = require('./solvers/cross');
 const F2LSolver = require('./solvers/f2l');
 const OLLSolver = require('./solvers/oll');
+const PLLSolver = require('./solvers/pll');
 
 class Solver {
 	constructor(cubeState, options) {
@@ -22,6 +23,7 @@ class Solver {
 		this.crossSolver = new CrossSolver(this.cube, this.options);
 		this.f2lSolver = new F2LSolver(this.cube, this.options);
 		this.ollSolver = new OLLSolver(this.cube, this.options);
+		this.pllSolver = new PLLSolver(this.cube, this.options);
 
 		this.afterEach('all', afterEach);
 	}
@@ -56,11 +58,6 @@ class Solver {
 
 		// if everything has gone okay, add the callback
 		for (let phase of phases) {
-			// ignore pll for now (hasn't been implemented yet)
-			if (phase === 'pll') {
-				continue
-			}
-
 			let solver = this[`${phase}Solver`];
 			solver.afterEach(callback);
 		}
@@ -75,6 +72,9 @@ class Solver {
 
 		this.currentSolver = this.ollSolver;
 		this.ollSolver.solve();
+
+		this.currentSolver = this.pllSolver;
+		this.pllSolver.solve();
 	}
 
 	isCrossEdgeSolved(edge) {
@@ -87,6 +87,10 @@ class Solver {
 
 	isOLLSolved() {
 		return this.ollSolver.isSolved();
+	}
+
+	isPLLSolved() {
+		return this.pllSolver.isSolved();
 	}
 
 	_updateProgress(partition, phase) {
