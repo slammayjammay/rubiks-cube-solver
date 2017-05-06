@@ -1,5 +1,5 @@
 const { expect, assert } = require('chai');
-const RubiksCube = require('../../models/RubiksCube');
+const RubiksCube = require('../../src/models/RubiksCube');
 
 describe('RubiksCube Model', () => {
 	describe('requires a correct input state', () => {

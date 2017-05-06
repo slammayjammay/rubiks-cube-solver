@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const RubiksCube = require('../models/RubiksCube');
+const RubiksCube = require('../../src/models/RubiksCube');
 
 class OLLFormatter {
   /**

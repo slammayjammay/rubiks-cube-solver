@@ -1,5 +1,5 @@
 const { assert, expect } = require('chai');
-const Cubie = require('../../models/Cubie');
+const Cubie = require('../../src/models/Cubie');
 
 describe('Cubie Model', () => {
 	let cubie;

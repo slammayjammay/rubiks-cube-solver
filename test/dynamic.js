@@ -1,11 +1,11 @@
 const minimist = require('minimist');
 const chalk = require('chalk');
-const Solver = require('../').Solver;
-const RubiksCube = require('../models/RubiksCube');
-const CrossFormatter = require('../formatters/cross');
-const F2LFormatter = require('../formatters/f2l');
-const OLLFormatter = require('../formatters/oll');
-const PLLFormatter = require('../formatters/pll');
+const Solver = require('../src/').Solver;
+const RubiksCube = require('../src/models/RubiksCube');
+const CrossFormatter = require('./formatters/cross');
+const F2LFormatter = require('./formatters/f2l');
+const OLLFormatter = require('./formatters/oll');
+const PLLFormatter = require('./formatters/pll');
 
 const argv = minimist(process.argv.slice(2));
 const NUM_RUNS = argv['num-runs'] || 1;
