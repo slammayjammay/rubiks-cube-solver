@@ -5,10 +5,12 @@ const RubiksCube = require('../models/RubiksCube');
 const CrossFormatter = require('../formatters/cross');
 const F2LFormatter = require('../formatters/f2l');
 const OLLFormatter = require('../formatters/oll');
+const PLLFormatter = require('../formatters/pll');
 
 const argv = minimist(process.argv.slice(2));
 const NUM_RUNS = argv['num-runs'] || 1;
 const SHOW_OUTPUT = argv['show-output'];
+const VERBOSE = argv['verbose'];
 
 let currentPhase;
 let successes = 0;
@@ -30,6 +32,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	let crossFormatter = new CrossFormatter(solver.crossSolver);
 	let f2lFormatter = new F2LFormatter(solver.f2lSolver);
 	let ollFormatter = new OLLFormatter(solver.ollSolver);
+	let pllFormatter = new PLLFormatter(solver.pllSolver);
 
 	// logs all recorded partitions in the solver and formats nicely
 	const logSolveData = () => {
@@ -39,17 +42,35 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		console.log(chalk.green(scrambleMoves));
 		console.log();
 
-		Object.keys(solver.progress).forEach(phase => {
-			if (phase !== currentPhase && solver.progress[phase].length > 0) {
-				console.log(chalk.bold(`====== Solving phase ${phase} ======`));
-				currentPhase = phase;
+		if (VERBOSE) {
+			Object.keys(solver.progress).forEach(phase => {
+				if (phase !== currentPhase && solver.progress[phase].length > 0) {
+					console.log(chalk.bold(`====== Solving phase ${phase} ======`));
+					currentPhase = phase;
+				}
+
+				let partitions = solver.progress[phase];
+				let formatter = eval(`${currentPhase}Formatter`);
+
+				partitions.forEach(partition => formatter.logPartition(partition, 'green'));
+			});
+		}
+
+		let solveMoves = solver.getMoves();
+		console.log(chalk.bold(`Solve moves (${solveMoves.split(' ').length}): `));
+
+		const movesPerLine = 15;
+		let counter = 0;
+		for (let move of solveMoves.split(' ')) {
+			if (counter === movesPerLine) {
+				console.log();
+				counter = 0;
 			}
 
-			let partitions = solver.progress[phase];
-			let formatter = eval(`${currentPhase}Formatter`);
-
-			partitions.forEach(partition => formatter.logPartition(partition, 'green'));
-		});
+			process.stdout.write(chalk.green(move));
+			process.stdout.write(' ');
+			counter += 1;
+		}
 	};
 
 	// cross partitions
@@ -84,6 +105,16 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		}
 	});
 
+	// pll partitions
+	solver.afterEach('pll', (partition, phase) => {
+		if (!solver.isPLLSolved()) {
+			logSolveData();
+			console.log(chalk.bold.red(`====== Failed on phase "pll" ======`));
+			pllFormatter.logPartition(partition, 'red');
+			process.exit();
+		}
+	});
+
 	try {
 		solver.solve();
 
@@ -100,6 +131,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 
 		successes += 1;
 	} catch (e) {
+		logSolveData();
 		console.log(chalk.bold.red(`====== Failed on phase ${currentPhase} ======`));
 
 		// umm, get the right formatter for the current phase's partition...
@@ -112,15 +144,4 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	if (i === NUM_RUNS - 1) {
 		console.log();
 	}
-}
-
-function logPartition({ caseNumber, moves = [] }, color = 'green') {
-	// if (before.edge) {
-	// 	let colors = before.edge.colors();
-	// 	console.log(chalk[color]('Colors:'), colors);
-	// }
-
-	console.log(chalk[color]('Case Number:'), caseNumber);
-	console.log(chalk[color]('Moves:'), moves.join(' '));
-	console.log();
 }
