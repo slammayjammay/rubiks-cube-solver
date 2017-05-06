@@ -48,6 +48,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 			process.stdout.write(' ');
 			counter += 1;
 		}
+		console.log();
 	};
 
 	// logs all recorded partitions in the solver and formats nicely
@@ -55,7 +56,6 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		console.log();
 
 		console.log(chalk.bold('Scramble moves: '));
-		// console.log(chalk.green(scrambleMoves));
 		logMoves(scrambleMoves);
 		console.log();
 
