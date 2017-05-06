@@ -112,6 +112,7 @@ class Solver {
 const solve = (cubeState, options) => {
 	let solver = new Solver(cubeState, options);
 	solver.solve();
+	return solver.getMoves();
 };
 
 module.exports = solve;
