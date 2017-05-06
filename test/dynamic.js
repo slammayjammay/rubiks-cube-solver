@@ -34,12 +34,29 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	let ollFormatter = new OLLFormatter(solver.ollSolver);
 	let pllFormatter = new PLLFormatter(solver.pllSolver);
 
+	// limits the number of moves printed per line
+	const logMoves = (moves) => {
+		const movesPerLine = 15;
+		let counter = 0;
+		for (let move of moves.split(' ')) {
+			if (counter === movesPerLine) {
+				console.log();
+				counter = 0;
+			}
+
+			process.stdout.write(chalk.green(move));
+			process.stdout.write(' ');
+			counter += 1;
+		}
+	};
+
 	// logs all recorded partitions in the solver and formats nicely
 	const logSolveData = () => {
 		console.log();
 
 		console.log(chalk.bold('Scramble moves: '));
-		console.log(chalk.green(scrambleMoves));
+		// console.log(chalk.green(scrambleMoves));
+		logMoves(scrambleMoves);
 		console.log();
 
 		if (VERBOSE) {
@@ -58,19 +75,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 
 		let solveMoves = solver.getMoves();
 		console.log(chalk.bold(`Solve moves (${solveMoves.split(' ').length}): `));
-
-		const movesPerLine = 15;
-		let counter = 0;
-		for (let move of solveMoves.split(' ')) {
-			if (counter === movesPerLine) {
-				console.log();
-				counter = 0;
-			}
-
-			process.stdout.write(chalk.green(move));
-			process.stdout.write(' ');
-			counter += 1;
-		}
+		logMoves(solveMoves);
 	};
 
 	// cross partitions
