@@ -8,6 +8,8 @@ class PLLSolver extends BaseSolver {
     super(...args);
     this.phase = 'pll';
 
+    // permutations in order based on http://badmephisto.com/pll.php, however
+    // the actual algorithms may be different.
     this.algorithms = {
 			[SOLVED_STATE]: '', // already solved
       '2 -1 1 -1 1 0 0 2': 'R R F F RPrime BPrime R F F RPrime B RPrime', // #1
@@ -18,15 +20,15 @@ class PLLSolver extends BaseSolver {
       '0 1 1 1 1 0 2 2': 'R U RPrime UPrime RPrime F R R UPrime RPrime UPrime R U RPrime FPrime', // #6
       '1 0 2 0 1 0 0 0': 'R U U RPrime UPrime R U U LPrime U RPrime UPrime L', // #7
       '0 2 2 0 1 1 1 1': 'F R UPrime RPrime UPrime R U RPrime FPrime R U RPrime UPrime RPrime F R FPrime', // #8
-      '1 -1 -1 2 -1 -1 1 0': 'RPrime U U R U U RPrime F R U RPrime UPrime RPrime FPrime R R UPrime', // #9
-      '0 1 -1 -1 2 -1 -1 1': 'R UPrime RPrime UPrime R U R D RPrime UPrime R DPrime RPrime U U RPrime UPrime', // #10
+      '1 -1 -1 2 -1 -1 1 0': 'RPrime U U R U U RPrime F R U RPrime UPrime RPrime FPrime R R', // #9
+      '0 1 -1 -1 2 -1 -1 1': 'R UPrime RPrime UPrime R U R D RPrime UPrime R DPrime RPrime U U RPrime', // #10
       '0 2 -1 -1 -1 -1 2 0': 'RPrime U RPrime UPrime BPrime D BPrime DPrime B B RPrime BPrime R B R', // #11
       '2 -1 -1 -1 -1 2 0 0': 'RPrime UPrime FPrime R U RPrime UPrime RPrime F R R UPrime RPrime UPrime R U RPrime U R', // #12
       '-1 2 2 2 -1 2 0 2': 'L U LPrime B B uPrime B UPrime BPrime U BPrime u B B', // #13
       '2 -1 2 0 2 -1 2 2': 'RPrime UPrime R B B u BPrime U B UPrime B uPrime B B', // #14
       '2 -1 1 1 0 1 1 -1': 'R R uPrime R UPrime R U RPrime u R R B UPrime BPrime', // #15
       '1 0 1 1 -1 2 -1 1': 'R R u RPrime U RPrime UPrime R uPrime R R FPrime U F', // #16
-      '1 -1 -1 1 1 -1 -1 1': 'U RPrime UPrime R UPrime R U R UPrime RPrime U R U R R UPrime RPrime U', // #17
+      '1 -1 -1 1 1 -1 -1 1': 'U RPrime UPrime R UPrime R U R UPrime RPrime U R U R R UPrime RPrime', // #17
       '0 1 0 0 0 1 0 2': 'LPrime U U L U LPrime U U R UPrime L U RPrime', // #18
       '1 1 -1 -1 1 1 -1 -1': 'R BPrime RPrime F R B RPrime FPrime R B RPrime F R BPrime RPrime FPrime', // #19
       '2 0 2 0 2 0 2 0': 'R U RPrime U R U RPrime FPrime R U RPrime UPrime RPrime F R R UPrime RPrime U U R UPrime RPrime', // #20
