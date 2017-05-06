@@ -77,6 +77,17 @@ class Solver {
 		this.pllSolver.solve();
 	}
 
+	getMoves() {
+		let moves = [];
+
+		Object.keys(this.progress).forEach(phase => {
+			let partitions = this.progress[phase];
+			partitions.forEach(partition => moves.push(...partition.moves));
+		});
+
+		return moves.join(' ');
+	}
+
 	isCrossEdgeSolved(edge) {
 		return this.crossSolver.isEdgeSolved(edge);
 	}
