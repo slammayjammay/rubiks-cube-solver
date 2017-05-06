@@ -43,7 +43,7 @@ class OLLSolver extends BaseSolver {
 			'11212010': 'F LPrime U U L U U L F F LPrime F', // 27
 			'01110020': 'R U RPrime U R UPrime RPrime UPrime RPrime F R FPrime', // 28
 			'10012100': 'RPrime UPrime R UPrime RPrime U R U R BPrime RPrime B', // 29
-			'10112021': 'RPrime UPrime R UPrime RPrime d RPrime U R B', // 30
+			'10112021': 'RPrime UPrime R UPrime RPrime U FPrime U F R', // 30
 			'01110121': 'F U R UPrime RPrime FPrime F U FPrime UPrime FPrime L F LPrime', // 31
 			'01112101': 'F U R UPrime RPrime FPrime B U BPrime UPrime SPrime U B UPrime bPrime', // 32
 			'21212000': 'lPrime U U L U LPrime U l', // 33
