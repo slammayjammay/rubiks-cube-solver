@@ -161,7 +161,7 @@ const getRotationFromTo = (face, from, to) => {
 		throw new Error(`moving ${rotationFace} from ${fromFace} to ${toFace} is not possible.`);
 	}
 
-	let move = getMoveOfFace(face);
+	let move = getMoveOfFace(face).toUpperCase();
 	let angle = Vector.getAngle(fromFace.normal(), toFace.normal());
 	if (rotationFace.vector.getMagnitude() < 0) {
 		angle *= -1;
