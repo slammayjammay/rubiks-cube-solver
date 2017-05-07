@@ -90,15 +90,24 @@ class RubiksCube {
 	}
 
 	/**
-	 * @param {array} notations - The array of notations to noramlize.
+	 * @param {array|string} notations - The to noramlize.
 	 */
 	static normalizeNotations(notations) {
-		notations = notations.filter(n => n !== '');
+		if (typeof notations === 'string') {
+			notations = notations.split(' ');
+		}
+
+		notations = notations.filter(notation => notation !== '');
 
 		return notations.map(notation => {
-			if (notation.toLowerCase().includes('prime')) {
-				notation = notation[0] + 'prime';
+			let isPrime = notation.toLowerCase().includes('prime');
+
+			notation = notation[0];
+
+			if (isPrime) {
+				notation = notation + 'prime';
 			}
+
 			return notation;
 		});
 	}
