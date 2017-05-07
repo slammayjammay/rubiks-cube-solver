@@ -85,6 +85,8 @@ class Solver {
 			partitions.forEach(partition => moves.push(...partition.moves));
 		});
 
+		moves = RubiksCube.normalizeNotations(moves);
+
 		return moves.join(' ');
 	}
 
