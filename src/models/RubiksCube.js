@@ -101,12 +101,12 @@ class RubiksCube {
 
 		return notations.map(notation => {
 			let isPrime = notation.toLowerCase().includes('prime');
+			let isWithMiddle = notation.includes('2');
 
 			notation = notation[0];
 
-			if (isPrime) {
-				notation = notation + 'prime';
-			}
+			if (isPrime) notation = notation + 'prime';
+			if (isWithMiddle) notation = notation + '2';
 
 			return notation;
 		});
@@ -284,15 +284,16 @@ class RubiksCube {
 			}
 
 			let isPrime = notation.toLowerCase().includes('prime');
-			let isDoubleMove = move === move.toLowerCase();
+			let isWithMiddle = move === move.toLowerCase();
+			let isDoubleMove  = notation.includes('2');
+
 			let { axis, mag } = this._getRotationForFace(move);
 			let cubesToRotate = this.getFace(move);
 
-			if (isPrime) {
-				mag *= -1;
-			}
+			if (isPrime) mag *= -1;
+			if (isDoubleMove) mag *= 2;
 
-			if (isDoubleMove) {
+			if (isWithMiddle) {
 				let middleMove = utils.getMiddleMatchingFace(move);
 				let middleCubies = this._getMiddleCubiesForMove(middleMove);
 				cubesToRotate = [...cubesToRotate, ...middleCubies];

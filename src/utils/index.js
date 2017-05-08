@@ -199,8 +199,13 @@ const orientMoves = (notations, orientation) => {
 
 	return notations.map(notation => {
 		let isPrime = notation.toLowerCase().includes('prime');
-		let isDouble = notation[0] === notation[0].toLowerCase();
+		let isDouble = notation.includes('2');
+		let isWithMiddle = notation[0] === notation[0].toLowerCase();
 		let isMiddle = ['m', 'e', 's'].includes(notation[0].toLowerCase());
+
+		if (isDouble) {
+			notation = notation.replace('2', '');
+		}
 
 		let face;
 
@@ -222,7 +227,8 @@ const orientMoves = (notations, orientation) => {
 			newNotation = face.toString()[0];
 		}
 
-		if (!isDouble) newNotation = newNotation.toUpperCase();
+		if (!isWithMiddle) newNotation = newNotation.toUpperCase();
+		if (isDouble) newNotation = newNotation + '2';
 		if (isPrime && !isMiddle) newNotation += 'prime';
 
 		return newNotation;

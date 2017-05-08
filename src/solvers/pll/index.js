@@ -12,26 +12,26 @@ class PLLSolver extends BaseSolver {
     // the actual algorithms may be different.
     this.algorithms = {
 			[SOLVED_STATE]: '', // already solved
-      '2 -1 1 -1 1 0 0 2': 'R R F F RPrime BPrime R F F RPrime B RPrime', // #1
-      '-1 1 -1 2 2 0 0 1': 'R BPrime R F F RPrime B R F F R R', // #2
-      '1 -1 2 2 0 0 1 -1': 'R UPrime R U R U R UPrime RPrime UPrime R R', // #3
-      '-1 1 -1 1 0 0 2 2': 'R R U R U RPrime UPrime RPrime UPrime RPrime U RPrime', // #4
-      '2 2 2 2 2 2 2 2': 'M M U M M U U M M U M M', // #5
-      '0 1 1 1 1 0 2 2': 'R U RPrime UPrime RPrime F R R UPrime RPrime UPrime R U RPrime FPrime', // #6
-      '1 0 2 0 1 0 0 0': 'R U U RPrime UPrime R U U LPrime U RPrime UPrime L', // #7
+      '2 -1 1 -1 1 0 0 2': 'R2 F2 RPrime BPrime R F2 RPrime B RPrime', // #1
+      '-1 1 -1 2 2 0 0 1': 'R BPrime R F2 RPrime B R F2 R2', // #2
+      '1 -1 2 2 0 0 1 -1': 'R UPrime R U R U R UPrime RPrime UPrime R2', // #3
+      '-1 1 -1 1 0 0 2 2': 'R2 U R U RPrime UPrime RPrime UPrime RPrime U RPrime', // #4
+      '2 2 2 2 2 2 2 2': 'M M U M M U2 M M U M M', // #5
+      '0 1 1 1 1 0 2 2': 'R U RPrime UPrime RPrime F R2 UPrime RPrime UPrime R U RPrime FPrime', // #6
+      '1 0 2 0 1 0 0 0': 'R U2 RPrime UPrime R U2 LPrime U RPrime UPrime L', // #7
       '0 2 2 0 1 1 1 1': 'F R UPrime RPrime UPrime R U RPrime FPrime R U RPrime UPrime RPrime F R FPrime', // #8
-      '1 -1 -1 2 -1 -1 1 0': 'RPrime U U R U U RPrime F R U RPrime UPrime RPrime FPrime R R', // #9
-      '0 1 -1 -1 2 -1 -1 1': 'R UPrime RPrime UPrime R U R D RPrime UPrime R DPrime RPrime U U RPrime', // #10
-      '0 2 -1 -1 -1 -1 2 0': 'RPrime U RPrime UPrime BPrime D BPrime DPrime B B RPrime BPrime R B R', // #11
-      '2 -1 -1 -1 -1 2 0 0': 'RPrime UPrime FPrime R U RPrime UPrime RPrime F R R UPrime RPrime UPrime R U RPrime U R', // #12
-      '-1 2 2 2 -1 2 0 2': 'L U LPrime B B uPrime B UPrime BPrime U BPrime u B B', // #13
-      '2 -1 2 0 2 -1 2 2': 'RPrime UPrime R B B u BPrime U B UPrime B uPrime B B', // #14
-      '2 -1 1 1 0 1 1 -1': 'R R uPrime R UPrime R U RPrime u R R B UPrime BPrime', // #15
-      '1 0 1 1 -1 2 -1 1': 'R R u RPrime U RPrime UPrime R uPrime R R FPrime U F', // #16
-      '1 -1 -1 1 1 -1 -1 1': 'U RPrime UPrime R UPrime R U R UPrime RPrime U R U R R UPrime RPrime', // #17
-      '0 1 0 0 0 1 0 2': 'LPrime U U L U LPrime U U R UPrime L U RPrime', // #18
+      '1 -1 -1 2 -1 -1 1 0': 'RPrime U2 R U2 RPrime F R U RPrime UPrime RPrime FPrime R2', // #9
+      '0 1 -1 -1 2 -1 -1 1': 'R UPrime RPrime UPrime R U R D RPrime UPrime R DPrime RPrime U2 RPrime', // #10
+      '0 2 -1 -1 -1 -1 2 0': 'RPrime U RPrime UPrime BPrime D BPrime DPrime B2 RPrime BPrime R B R', // #11
+      '2 -1 -1 -1 -1 2 0 0': 'RPrime UPrime FPrime R U RPrime UPrime RPrime F R2 UPrime RPrime UPrime R U RPrime U R', // #12
+      '-1 2 2 2 -1 2 0 2': 'L U LPrime B2 uPrime B UPrime BPrime U BPrime u B2', // #13
+      '2 -1 2 0 2 -1 2 2': 'RPrime UPrime R B2 u BPrime U B UPrime B uPrime B2', // #14
+      '2 -1 1 1 0 1 1 -1': 'R2 uPrime R UPrime R U RPrime u R2 B UPrime BPrime', // #15
+      '1 0 1 1 -1 2 -1 1': 'R2 u RPrime U RPrime UPrime R uPrime R2 FPrime U F', // #16
+      '1 -1 -1 1 1 -1 -1 1': 'U RPrime UPrime R UPrime R U R UPrime RPrime U R U R2 UPrime RPrime', // #17
+      '0 1 0 0 0 1 0 2': 'LPrime U2 L U LPrime U2 R UPrime L U RPrime', // #18
       '1 1 -1 -1 1 1 -1 -1': 'R BPrime RPrime F R B RPrime FPrime R B RPrime F R BPrime RPrime FPrime', // #19
-      '2 0 2 0 2 0 2 0': 'R U RPrime U R U RPrime FPrime R U RPrime UPrime RPrime F R R UPrime RPrime U U R UPrime RPrime', // #20
+      '2 0 2 0 2 0 2 0': 'R U RPrime U R U RPrime FPrime R U RPrime UPrime RPrime F R2 UPrime RPrime U2 R UPrime RPrime', // #20
       '0 2 0 2 0 2 0 2': 'RPrime U R UPrime RPrime FPrime UPrime F R U RPrime F RPrime FPrime R UPrime R', // #21
     };
   }
