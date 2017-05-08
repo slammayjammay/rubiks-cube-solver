@@ -18,7 +18,8 @@ class Solver {
 			this._updateProgress(partition, phase);
 		};
 
-		this.currentSolver = null; // good for debugging, hopefully
+		this.currentPhase = null; // good for debugging
+		this.currentSolver = null; // good for debugging
 
 		this.crossSolver = new CrossSolver(this.cube, this.options);
 		this.f2lSolver = new F2LSolver(this.cube, this.options);
@@ -64,15 +65,19 @@ class Solver {
 	}
 
 	solve() {
+		this.currentPhase = 'cross';
 		this.currentSolver = this.crossSolver;
 		this.crossSolver.solve();
 
+		this.currentPhase = 'f2l';
 		this.currentSolver = this.f2lSolver;
 		this.f2lSolver.solve();
 
+		this.currentPhase = 'oll';
 		this.currentSolver = this.ollSolver;
 		this.ollSolver.solve();
 
+		this.currentPhase = 'pll';
 		this.currentSolver = this.pllSolver;
 		this.pllSolver.solve();
 	}
