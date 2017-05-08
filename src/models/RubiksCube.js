@@ -90,7 +90,8 @@ class RubiksCube {
 	}
 
 	/**
-	 * @param {array|string} notations - The to noramlize.
+	 * @param {array|string} notations - The notations to noramlize.
+	 * @return {array}
 	 */
 	static normalizeNotations(notations) {
 		if (typeof notations === 'string') {
@@ -101,12 +102,12 @@ class RubiksCube {
 
 		return notations.map(notation => {
 			let isPrime = notation.toLowerCase().includes('prime');
-			let isWithMiddle = notation.includes('2');
+			let isDouble = notation.includes('2');
 
 			notation = notation[0];
 
-			if (isPrime) notation = notation + 'prime';
-			if (isWithMiddle) notation = notation + '2';
+			if (isDouble) notation = notation[0] + '2';
+			else if (isPrime) notation = notation + 'prime';
 
 			return notation;
 		});
