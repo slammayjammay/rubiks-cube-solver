@@ -12,7 +12,6 @@ const NUM_RUNS = argv['num-runs'] || 1;
 const SHOW_OUTPUT = argv['show-output'];
 const VERBOSE = argv['verbose'];
 
-let currentPhase;
 let successes = 0;
 
 if (!SHOW_OUTPUT) {
@@ -52,23 +51,21 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	};
 
 	// logs all recorded partitions in the solver and formats nicely
-	const logSolveData = () => {
+	const logSolveData = (force) => {
 		console.log();
 
 		console.log(chalk.bold('Scramble moves: '));
 		logMoves(scrambleMoves);
 		console.log();
 
-		if (VERBOSE) {
+		if (VERBOSE || force) {
 			Object.keys(solver.progress).forEach(phase => {
-				if (phase !== currentPhase && solver.progress[phase].length > 0) {
+				if (phase !== solver.currentPhase && solver.progress[phase].length > 0) {
 					console.log(chalk.bold(`====== Solving phase ${phase} ======`));
-					currentPhase = phase;
 				}
 
 				let partitions = solver.progress[phase];
-				let formatter = eval(`${currentPhase}Formatter`);
-
+				let formatter = eval(`${phase}Formatter`);
 				partitions.forEach(partition => formatter.logPartition(partition, 'green'));
 			});
 		}
@@ -136,11 +133,11 @@ for (let i = 0; i < NUM_RUNS; i++) {
 
 		successes += 1;
 	} catch (e) {
-		logSolveData();
-		console.log(chalk.bold.red(`====== Failed on phase ${currentPhase} ======`));
+		logSolveData(true);
+		console.log(chalk.bold.red(`====== Failed on phase ${solver.currentPhase} ======`));
 
 		// umm, get the right formatter for the current phase's partition...
-		let formatter = eval(`${currentPhase}Formatter`);
+		let formatter = eval(`${solver.currentPhase}Formatter`);
 		formatter.logPartition(solver.currentSolver.partition, 'red');
 
 		throw e;
