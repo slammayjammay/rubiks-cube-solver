@@ -33,5 +33,33 @@
 		"mocha": "^3.2.0",
 		"uglifyjs-webpack-plugin": "^0.4.3",
 		"webpack": "^2.5.0"
+	},
+	"eslintConfig": {
+		"env": {
+				"es6": true,
+				"node": true
+		},
+		"globals": [
+			"it",
+			"describe"
+		],
+		"rules": {
+			"indent": [
+					"error",
+					"tab"
+			],
+			"linebreak-style": [
+					"error",
+					"unix"
+			],
+			"quotes": [
+					"error",
+					"single"
+			],
+			"semi": [
+					"error",
+					"always"
+			]
+		}
 	}
 }
