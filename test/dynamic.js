@@ -86,7 +86,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		let edge = partition.cubies.edge;
 		if (!solver.isCrossEdgeSolved(edge)) {
 			logSolveData();
-			console.log(chalk.bold.red(`====== Failed on phase "cross" ======`));
+			console.log(chalk.bold.red('====== Failed on phase "cross" ======'));
 			crossFormatter.logPartition(partition, 'red');
 			process.exit();
 		}
@@ -97,7 +97,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		let { corner, edge } = partition.cubies;
 		if (!solver.isF2LPairSolved({ corner, edge })) {
 			logSolveData();
-			console.log(chalk.bold.red(`====== Failed on phase "f2l" ======`));
+			console.log(chalk.bold.red('====== Failed on phase "f2l" ======'));
 			f2lFormatter.logPartition(partition, 'red');
 			process.exit();
 		}
@@ -107,7 +107,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	solver.afterEach('oll', (partition, phase) => {
 		if (!solver.isOLLSolved()) {
 			logSolveData();
-			console.log(chalk.bold.red(`====== Failed on phase "oll" ======`));
+			console.log(chalk.bold.red('====== Failed on phase "oll" ======'));
 			ollFormatter.logPartition(partition, 'red');
 			process.exit();
 		}
@@ -117,7 +117,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 	solver.afterEach('pll', (partition, phase) => {
 		if (!solver.isPLLSolved()) {
 			logSolveData();
-			console.log(chalk.bold.red(`====== Failed on phase "pll" ======`));
+			console.log(chalk.bold.red('====== Failed on phase "pll" ======'));
 			pllFormatter.logPartition(partition, 'red');
 			process.exit();
 		}
