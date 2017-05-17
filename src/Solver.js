@@ -96,23 +96,23 @@ class Solver {
 		return moves.join(' ');
 	}
 
-  getPartitions() {
-    let ret = {};
-    let phases = Object.keys(this.progress);
-    phases.forEach(phase => {
-      let partitions = this.progress[phase];
+	getPartitions() {
+		let ret = {};
+		let phases = Object.keys(this.progress);
+		phases.forEach(phase => {
+			let partitions = this.progress[phase];
 
-      if (partitions.length === 1) {
-        ret[phase] = partitions[0].moves.join(' ');
-      } else {
-        let phaseMoves = [];
-        this.progress[phase].forEach(partition => phaseMoves.push(partition.moves.join(' ')));
-        ret[phase] = phaseMoves;
-      }
-    });
+			if (partitions.length === 1) {
+				ret[phase] = partitions[0].moves.join(' ');
+			} else {
+				let phaseMoves = [];
+				this.progress[phase].forEach(partition => phaseMoves.push(partition.moves.join(' ')));
+				ret[phase] = phaseMoves;
+			}
+		});
 
-    return ret;
-  }
+		return ret;
+	}
 
 	isCrossEdgeSolved(edge) {
 		return this.crossSolver.isEdgeSolved(edge);
