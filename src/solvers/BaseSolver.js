@@ -2,14 +2,14 @@ const RubiksCube = require('../models/RubiksCube');
 const utils = require('../utils/');
 
 class BaseSolver {
-  /**
-   * Solves the first step following the Fridrich Method: the cross. Solves the
-   * cross on the UP face by default.
-   *
-   * @param {string|RubiksCube} rubiksCube - This can either be a 54-character
-   * long string representing the cube state (in this case it will have to
-   * "build" another rubik's Cube), or an already built RubiksCube object.
-   */
+	/**
+	 * Solves the first step following the Fridrich Method: the cross. Solves the
+	 * cross on the UP face by default.
+	 *
+	 * @param {string|RubiksCube} rubiksCube - This can either be a 54-character
+	 * long string representing the cube state (in this case it will have to
+	 * "build" another rubik's Cube), or an already built RubiksCube object.
+	 */
 	constructor(rubiksCube, options = {}) {
 		this.cube = typeof rubiksCube === 'string' ? new RubiksCube(rubiksCube) : rubiksCube;
 		this.options = options;
@@ -20,10 +20,10 @@ class BaseSolver {
 		this._afterEachCallbacks = [];
 	}
 
-  /**
-   * @param {string|array} notation - A string of move(s) to execute and store.
-   * @param {object} options - The options to pass to RubiksCube#move.
-   */
+	/**
+	 * @param {string|array} notation - A string of move(s) to execute and store.
+	 * @param {object} options - The options to pass to RubiksCube#move.
+	 */
 	move(notations, options) {
 		if (typeof notations === 'string') {
 			notations = notations.split(' ');
@@ -51,12 +51,12 @@ class BaseSolver {
 		this._afterEachCallbacks.forEach(fn => fn(...callbackArgs));
 	}
 
-  /**
-   * Solves the edge and/or corner and returns information about the state
-   * about them right before they are solved. It's important to construct the
-   * object in steps for debugging, so that we can still have access to e.g.
-   * the case number if the solve method fails.
-   */
+	/**
+	 * Solves the edge and/or corner and returns information about the state
+	 * about them right before they are solved. It's important to construct the
+	 * object in steps for debugging, so that we can still have access to e.g.
+	 * the case number if the solve method fails.
+	 */
 	_solve(cubies = {}) {
 
 		this.partition = {};

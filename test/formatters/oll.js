@@ -2,9 +2,9 @@ const chalk = require('chalk');
 const utils = require('../../src/utils/');
 
 class OLLFormatter {
-  /**
-   * Expects a cross solver for access to its methods.
-   */
+	/**
+	 * Expects a cross solver for access to its methods.
+	 */
 	constructor(ollSolver) {
 		this.solver = ollSolver;
 		this.phase = 'oll';
@@ -18,7 +18,7 @@ class OLLFormatter {
 		let pattern = this.solver.findPattern(ollString);
 		console.log(chalk[color]('Detected pattern:'), pattern);
 
-  	console.log(chalk[color]('Moves:'), moves.join(' '));
+		console.log(chalk[color]('Moves:'), moves.join(' '));
 
 		let frontFace = this.solver._getFrontFace(ollString, pattern);
 

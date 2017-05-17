@@ -1,9 +1,9 @@
 const chalk = require('chalk');
 
 class CrossFormatter {
-  /**
-   * Expects a cross solver for access to its methods.
-   */
+	/**
+	 * Expects a cross solver for access to its methods.
+	 */
 	constructor(crossSolver) {
 		this.solver = crossSolver;
 		this.phase = 'cross';
@@ -13,9 +13,9 @@ class CrossFormatter {
 		let colors = cubies.edge.colors();
 		console.log(chalk[color]('Colors:'), colors);
 
-  	console.log(chalk[color]('Case Number:'), caseNumber);
-  	console.log(chalk[color]('Moves:'), moves.join(' '));
-  	console.log();
+		console.log(chalk[color]('Case Number:'), caseNumber);
+		console.log(chalk[color]('Moves:'), moves.join(' '));
+		console.log();
 	}
 }
 

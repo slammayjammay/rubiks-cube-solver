@@ -1,9 +1,9 @@
 const chalk = require('chalk');
 
 class F2LFormatter {
-  /**
-   * Expects a cross solver for access to its methods.
-   */
+	/**
+	 * Expects a cross solver for access to its methods.
+	 */
 	constructor(f2lSolver) {
 		this.solver = f2lSolver;
 		this.phase = 'f2l';
@@ -13,9 +13,9 @@ class F2LFormatter {
 		let colors = cubies.edge.colors();
 		console.log(chalk[color]('Colors:'), colors);
 
-  	console.log(chalk[color]('Case Number:'), caseNumber);
-  	console.log(chalk[color]('Moves:'), moves.join(' '));
-  	console.log();
+		console.log(chalk[color]('Case Number:'), caseNumber);
+		console.log(chalk[color]('Moves:'), moves.join(' '));
+		console.log();
 	}
 }
 
