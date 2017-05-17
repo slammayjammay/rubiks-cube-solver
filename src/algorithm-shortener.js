@@ -77,10 +77,13 @@ class AlgorithmShortener {
 		};
 
 		// double-able
-		this.canDouble = move1 === move2;
+		this.canDouble = (move1 === move2 && !move1.includes('2'));
 
 		// cancel-able
-		this.canCancel = (!data1.isDouble && !data2.isDouble && data1.isPrime !== data2.isPrime);
+		let bothAreDouble = (data1.isDouble && data2.isDouble);
+		let neitherAreDouble = (!data1.isDouble && !data2.isDouble);
+		let oppositeDirections = (neitherAreDouble && data1.isPrime !== data2.isPrime)
+		this.canCancel = (bothAreDouble || oppositeDirections);
 
 		// one is a double-move and the other isn't
 		this.canCombine = (data1.isDouble !== data2.isDouble);
