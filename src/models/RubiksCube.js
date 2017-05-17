@@ -1,5 +1,6 @@
 const Cubie = require('./Cubie');
 const utils = require('../utils');
+const algorithmShortener = require('../algorithm-shortener');
 
 const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
 
@@ -19,31 +20,6 @@ class RubiksCube {
 		return cube;
 	}
 
-	static getRandomMoves(length) {
-		let randomMoves = [];
-		let totalMoves = [
-			'F',
-			'FPrime',
-			'R',
-			'RPrime',
-			'U',
-			'UPrime',
-			'D',
-			'DPrime',
-			'L',
-			'LPrime',
-			'B',
-			'BPrime'
-		];
-
-		for (let i = 0; i < length; i++) {
-			let idx = ~~(Math.random() * totalMoves.length);
-			randomMoves.push(totalMoves[idx]);
-		}
-
-		return randomMoves.join(' ');
-	}
-
 	/**
 	 * @param {string|array} notations - The list of moves to reverse.
 	 * @return {string}
@@ -53,7 +29,7 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
-		notations = RubiksCube.normalizeNotations(notations);
+		notations = utils.normalizeNotations(notations);
 
 		let reversedMoves = [];
 
@@ -66,51 +42,33 @@ class RubiksCube {
 		return reversedMoves.join(' ');
 	}
 
-	/**
-	 * @param {string|array} notations - The move notation.
-	 * @param {object} options - Move options.
-	 * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
-	 */
-	static transformNotations(notations, options = {}) {
-		if (typeof notations === 'string') {
-			notations = notations.split(' ');
+	static getRandomMoves(length = 25) {
+		let randomMoves = [];
+		let totalMoves = [
+			'F',
+			'Fprime',
+			'R',
+			'Rprime',
+			'U',
+			'Uprime',
+			'D',
+			'Dprime',
+			'L',
+			'Lprime',
+			'B',
+			'Bprime'
+		];
+
+		while (randomMoves.length < length) {
+			for (let i = 0; i < length - randomMoves.length; i++) {
+				let idx = ~~(Math.random() * totalMoves.length);
+				randomMoves.push(totalMoves[idx]);
+			}
+
+			randomMoves = algorithmShortener(randomMoves).split(' ');
 		}
 
-		notations = RubiksCube.normalizeNotations(notations);
-
-		if (options.upperCase) {
-			notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
-		}
-
-		if (options.orientation) {
-			notations = utils.orientMoves(notations, options.orientation);
-		}
-
-		return notations;
-	}
-
-	/**
-	 * @param {array|string} notations - The notations to noramlize.
-	 * @return {array}
-	 */
-	static normalizeNotations(notations) {
-		if (typeof notations === 'string') {
-			notations = notations.split(' ');
-		}
-
-		notations = notations.filter(notation => notation !== '');
-
-		return notations.map(notation => {
-			let isPrime = notation.toLowerCase().includes('prime');
-			let isDouble = notation.includes('2');
-
-			notation = notation[0];
-
-			if (isDouble) notation = notation[0] + '2';
-			else if (isPrime) notation = notation + 'prime';
-
-			return notation;
-		});
+		return randomMoves.join(' ');
 	}
 
 	/**
@@ -275,7 +233,7 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
-		notations = RubiksCube.transformNotations(notations, options);
+		notations = utils.transformNotations(notations, options);
 
 		for (let notation of notations) {
 			let move = notation[0];

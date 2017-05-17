@@ -67,6 +67,53 @@ const getFaceMatchingMiddle = (middle) => {
 };
 
 /**
+ * @param {string|array} notations - The move notation.
+ * @param {object} options - Move options.
+ * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
+ */
+const transformNotations = (notations, options = {}) => {
+	if (typeof notations === 'string') {
+		notations = notations.split(' ');
+	}
+
+	notations = normalizeNotations(notations);
+
+	if (options.upperCase) {
+		notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
+	}
+
+	if (options.orientation) {
+		notations = orientMoves(notations, options.orientation);
+	}
+
+	return notations;
+};
+
+/**
+ * @param {array|string} notations - The notations to noramlize.
+ * @return {array}
+ */
+const normalizeNotations = (notations) => {
+	if (typeof notations === 'string') {
+		notations = notations.split(' ');
+	}
+
+	notations = notations.filter(notation => notation !== '');
+
+	return notations.map(notation => {
+		let isPrime = notation.toLowerCase().includes('prime');
+		let isDouble = notation.includes('2');
+
+		notation = notation[0];
+
+		if (isDouble) notation = notation[0] + '2';
+		else if (isPrime) notation = notation + 'prime';
+
+		return notation;
+	});
+};
+
+/**
  * Finds the direction from an origin face to a target face. The origin face
  * will be oriented so that it becomes FRONT. An orientation object must be
  * provided that specifies any of these faces (exclusively): TOP, RIGHT, DOWN,
@@ -240,6 +287,8 @@ module.exports = {
 	getMoveOfFace,
 	getMiddleMatchingFace,
 	getFaceMatchingMiddle,
+	transformNotations,
+	normalizeNotations,
 	getDirectionFromFaces,
 	getRotationFromTo,
 	getFaceFromDirection,

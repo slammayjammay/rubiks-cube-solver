@@ -3,6 +3,7 @@ const CrossSolver = require('./solvers/cross');
 const F2LSolver = require('./solvers/f2l');
 const OLLSolver = require('./solvers/oll');
 const PLLSolver = require('./solvers/pll');
+const utils = require('./utils');
 
 class Solver {
 	constructor(cubeState, options) {
@@ -90,7 +91,7 @@ class Solver {
 			partitions.forEach(partition => moves.push(...partition.moves));
 		});
 
-		moves = RubiksCube.normalizeNotations(moves);
+		moves = utils.normalizeNotations(moves);
 
 		return moves.join(' ');
 	}

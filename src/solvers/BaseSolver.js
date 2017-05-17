@@ -1,4 +1,5 @@
 const RubiksCube = require('../models/RubiksCube');
+const utils = require('../utils/');
 
 class BaseSolver {
   /**
@@ -32,7 +33,7 @@ class BaseSolver {
 
 		// this step is also in RubiksCube#move, but it is important we do it here
 		// as well. The notations need to be saved to the partition correctly.
-		notations = RubiksCube.transformNotations(notations, options);
+		notations = utils.transformNotations(notations, options);
 
 		for (let notation of notations) {
 			this.totalMoves.push(notation);

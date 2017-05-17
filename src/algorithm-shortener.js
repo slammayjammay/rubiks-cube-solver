@@ -1,11 +1,11 @@
-const RubiksCube = require('./models/RubiksCube');
+const utils = require('./utils');
 
 class AlgorithmShortener {
 	/**
 	 * @param {array|string} notations - The notations to shorten.
 	 */
 	constructor(notations) {
-		this.notations = RubiksCube.normalizeNotations(notations);
+		this.notations = utils.normalizeNotations(notations);
 		this.original = this.notations.slice(); // coz im scared
 		this.moves = [];
 		this.window = [];
@@ -146,6 +146,6 @@ class AlgorithmShortener {
 
 module.exports = (notations) => {
 	notations = new AlgorithmShortener(notations).shorten();
-	notations = RubiksCube.normalizeNotations(notations);
+	notations = utils.normalizeNotations(notations);
 	return notations.join(' ');
 };

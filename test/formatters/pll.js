@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const RubiksCube = require('../../src/models/RubiksCube');
+const utils = require('../../src/utils/');
 
 class PLLFormatter {
   /**
@@ -22,7 +22,7 @@ class PLLFormatter {
 
 		let frontFace = this.solver._getFrontFace(pllString, pattern);
 
-		let orientedMoves = RubiksCube.transformNotations(moves, {
+		let orientedMoves = utils.transformNotations(moves, {
 			orientation: {
 				up: 'down',
 				front: frontFace

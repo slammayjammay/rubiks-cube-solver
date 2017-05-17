@@ -2,6 +2,7 @@ const minimist = require('minimist');
 const chalk = require('chalk');
 const Solver = require('../src/').Solver;
 const RubiksCube = require('../src/models/RubiksCube');
+const utils = require('../src/utils/');
 const CrossFormatter = require('./formatters/cross');
 const F2LFormatter = require('./formatters/f2l');
 const OLLFormatter = require('./formatters/oll');
