@@ -6,11 +6,15 @@ const CrossFormatter = require('./formatters/cross');
 const F2LFormatter = require('./formatters/f2l');
 const OLLFormatter = require('./formatters/oll');
 const PLLFormatter = require('./formatters/pll');
+const algorithmShortener = require('../src/algorithm-shortener');
 
 const argv = minimist(process.argv.slice(2));
 const NUM_RUNS = argv['num-runs'] || 1;
 const SHOW_OUTPUT = argv['show-output'];
 const VERBOSE = argv['verbose'];
+const TEST_OPTIMIZED = argv['optimized'];
+
+const OPTIMIZATION_ERR_MESSAGE = 'Optimization failed.';
 
 let successes = 0;
 
@@ -71,8 +75,10 @@ for (let i = 0; i < NUM_RUNS; i++) {
 		}
 
 		let solveMoves = solver.getMoves();
-		console.log(chalk.bold(`Solve moves (${solveMoves.split(' ').length}): `));
+		let numMoves = solveMoves.split(' ').length;
+		console.log(chalk.bold(`Solve moves (${numMoves}): `));
 		logMoves(solveMoves);
+		console.log();
 	};
 
 	// cross partitions
@@ -131,14 +137,42 @@ for (let i = 0; i < NUM_RUNS; i++) {
 			process.stdout.write(chalk.green('✔'));
 		}
 
+		if (TEST_OPTIMIZED) {
+			let optimizedMoves = algorithmShortener(solver.getMoves());
+			cube.move(scrambleMoves);
+			cube.move(optimizedMoves);
+
+			numMoves = optimizedMoves.split(' ').length;
+
+			if (cube.isSolved()) {
+				if (SHOW_OUTPUT) {
+					console.log(chalk.bold(`Optimized (${numMoves}):`));
+					logMoves(optimizedMoves);
+					console.log();
+				}
+			} else {
+				throw new Error(OPTIMIZATION_ERR_MESSAGE);
+			}
+		}
+
 		successes += 1;
 	} catch (e) {
 		logSolveData(true);
-		console.log(chalk.bold.red(`====== Failed on phase ${solver.currentPhase} ======`));
 
-		// umm, get the right formatter for the current phase's partition...
-		let formatter = eval(`${solver.currentPhase}Formatter`);
-		formatter.logPartition(solver.currentSolver.partition, 'red');
+		if (solver.currentSolver) {
+			console.log(chalk.bold.red(`====== Failed on phase ${solver.currentPhase} ======`));
+
+			// get the right formatter for the current phase's partition...
+			let formatter = eval(`${solver.currentPhase}Formatter`);
+			formatter.logPartition(solver.currentSolver.partition, 'red');
+		}
+
+		if (e.message === OPTIMIZATION_ERR_MESSAGE) {
+			let optimizedMoves = algorithmShortener(solver.getMoves());
+			console.log(chalk.bold.red(`Failed optimizing (${numMoves}):`));
+			logMoves(optimizedMoves);
+			console.log();
+		}
 
 		throw e;
 	}
