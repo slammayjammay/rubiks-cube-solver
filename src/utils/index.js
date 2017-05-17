@@ -53,7 +53,7 @@ const getMoveOfFace = (face) => {
 const getMiddleMatchingFace = (face) => {
 	face = face.toLowerCase()[0];
 	return _middlesMatchingFace[face];
-}
+};
 
 const getFaceMatchingMiddle = (middle) => {
 	middle = middle.toLowerCase();
@@ -64,7 +64,7 @@ const getFaceMatchingMiddle = (middle) => {
 			return face;
 		}
 	}
-}
+};
 
 /**
  * Finds the direction from an origin face to a target face. The origin face
@@ -194,7 +194,7 @@ const getRotationFromTo = (face, from, to) => {
  */
 const orientMoves = (notations, orientation) => {
 	orientation = _toLowerCase(orientation);
-	let rotations = _getRotationsForOrientation(orientation)
+	let rotations = _getRotationsForOrientation(orientation);
 	rotations.reverse().map(rotation => Vector.reverseRotation(rotation));
 
 	return notations.map(notation => {
@@ -272,7 +272,6 @@ function _toLowerCase(object) {
  */
 function _prepOrientationForDirection(orientation, front) {
 	let keys = Object.keys(orientation);
-	let values = keys.map(key => orientation[key]);
 
 	if (keys.length <= 1 && ['front', 'back'].includes(keys[0])) {
 		throw new Error(`Orientation object "${orientation}" is ambiguous. Please specify one of these faces: "up", "right", "down", "left"`);

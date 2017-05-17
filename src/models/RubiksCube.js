@@ -86,7 +86,7 @@ class RubiksCube {
 			notations = utils.orientMoves(notations, options.orientation);
 		}
 
-		return notations
+		return notations;
 	}
 
 	/**

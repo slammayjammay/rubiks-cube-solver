@@ -16,7 +16,7 @@ class AlgorithmShortener {
 		while (this.notations.length > 0) {
 			if (this.madeOptimization) {
 				this.populateWindowBackwards();
-				} else {
+			} else {
 				this.populateWindowForwards();
 			}
 
@@ -38,7 +38,7 @@ class AlgorithmShortener {
 			if (typeof move !== 'undefined') {
 				this.window.unshift(move);
 			} else {
-				let move = this.notations.shift()
+				let move = this.notations.shift();
 				this.window.push(move);
 			}
 		}
@@ -82,7 +82,7 @@ class AlgorithmShortener {
 		// cancel-able
 		let bothAreDouble = (data1.isDouble && data2.isDouble);
 		let neitherAreDouble = (!data1.isDouble && !data2.isDouble);
-		let oppositeDirections = (neitherAreDouble && data1.isPrime !== data2.isPrime)
+		let oppositeDirections = (neitherAreDouble && data1.isPrime !== data2.isPrime);
 		this.canCancel = (bothAreDouble || oppositeDirections);
 
 		// one is a double-move and the other isn't
@@ -110,7 +110,6 @@ class AlgorithmShortener {
 	}
 
 	cancelMoves(move1, move2) {
-		this.thing = true;
 		return '';
 	}
 
@@ -148,5 +147,5 @@ class AlgorithmShortener {
 module.exports = (notations) => {
 	notations = new AlgorithmShortener(notations).shorten();
 	notations = RubiksCube.normalizeNotations(notations);
-	return notations.join(' ')
+	return notations.join(' ');
 };

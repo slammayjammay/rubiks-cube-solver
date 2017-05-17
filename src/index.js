@@ -47,7 +47,7 @@ class Solver {
 
 		// error handling
 		if (typeof callback !== 'function') {
-			throw new Error(`"afterEach" callback is not a function.`);
+			throw new Error('"afterEach" callback is not a function.');
 		}
 
 		// error handling
