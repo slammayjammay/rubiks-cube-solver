@@ -65,7 +65,7 @@ R U R' U' L F' R2 D' U' L'
   * **left** face as `dubrluulu`.
   * **back** face as `rrbfbulll`.
 
-Done! Our Rubik's Cube state is
+Done! Now we just add them all up in order -- **front right up down left back** -- and our Rubik's Cube state becomes
 ```
 llflfbbrrdubrrdfbdlddfububrrfudddfffdubrluulurrbfbulll
 ```
