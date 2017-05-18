@@ -20,6 +20,14 @@ let solveMoves = solver(cubeState);
 console.log(solveMoves);
 ```
 
+## Options
+### `partitioned` <small>boolean</small>
+Returns an object with the four phases as keys (`cross`, `f2l`, `oll`, `pll`).
+
+The `cross` and `f2l` values are an array of 4 strings -- the moves to get each cross edge and f2l pair into place.
+
+The `oll` and `pll` values are the strings holding the respective algorithms.
+
 # <a name="rubiks-cube-state"></a>Rubik's Cube State
 A cube state is a string containing a total of (6 faces) * (9 colors per face) = 56 characters, with no spaces. Each character represents the "color" for your chosen orientation (more on this below), and must be one of these 6: `f`, `r`, `u`, `d`, `l`, `b`. Instead of characters representing actual colors, like `g` for `green`, they represent the color of each face. The character `r` stands for "the middle color on the right face".
 
