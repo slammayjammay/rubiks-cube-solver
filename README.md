@@ -8,12 +8,12 @@ Takes a string representing a [Rubik's Cube state](#rubiks-cube-state) as input 
 const solver = require('rubiks-cube-solver');
 
 let cubeState = [
-  'llflfbbrr', // front
-  'dubrrdfbd', // right
-  'lddfububr', // up
-  'rfudddfff', // down
-  'dubrluulu', // left
-  'rrbfbulll' // back
+  'flulfbddr', // front
+  'rudrruddl', // right
+  'dbbburrfb', // up
+  'llffdrubf', // down
+  'rludlubrf', // left
+  'lubfbfudl' // back
 ].join('');
 
 let solveMoves = solver(cubeState);
@@ -50,7 +50,7 @@ Once you've oriented the cube correctly for each face, provide colors starting f
 ## Example
 If you have a Rubik's Cube in front of you, you can follow along! I will take a solved cube and make these moves (when the **green** face is facing toward you and the **white** face is facing up)
 ```
-R U R' U' L F' R2 D' U' L'
+R' U L B U F L2 D R D U' R
 ```
 ...and then determine the cube state.
 
@@ -60,36 +60,45 @@ R U R' U' L F' R2 D' U' L'
 2) Providing colors
 * First, we will provide the colors of the **front** face. Because of our chosen orientation, this face is **green**.
   * Then we will orient the cube such that the **green** face is facing us and our chosen **up** face (white) is facing up. (This orientation is the same as our default orientation)
-  * Going through each color in the correct order, we end up with the colors (actual colors): `orange orange green orange green blue blue red red`.
-  * Knowing that our chosen **left** face is orange, our **back** face is blue, etc., we translate these colors to the characters used for the state: `llflfbbrr`
+  * Going through each color in the correct order, we end up with the colors: `green orange white orange green blue yellow yellow red`.
+  * Knowing that **orange** is our **l**eft face, **green** is our **f**ront face, **yellow** is our **d**own face, etc., we translate these colors to the characters used for the state: `flulfbddr`
 * Next, we move on the the **right** face -- red.
-  * Then we orient the cube so that the red face is facing us and the **up** face (white) faces up.
-  * And we get these colors: `yellow white blue red red yellow green blue yellow`. The state string for these colors is `dubrrdfbd`.
-* Next is **up** -- white. At this point, our cube state is (state for **front**) + (state for **right**) = `llflfbbrrdubrrdfbd`
+  * Then we orient the cube so that the **red** face is facing us and the **up** face (white) faces up.
+  * And we get these colors: `red white yellow red red white yellow yellow orange`. The state string for these colors is `rudrruddl`.
+* Next is **up** -- white. At this point, our cube state is (state for **front**) + (state for **right**) = `flulfbddrrudrruddl`
   * For this face, we will orient such that our chosen **up** face (white) faces us and our chosen **front** face (green) faces down.
-  * We get the colors `orange yellow yellow green white blue white blue red` which translates to `lddfububr`.
+  * We get the colors `yellow blue blue blue white red red green blue` which translates to `dbbburrfb`.
 * Continuing this process we get:
-  * **down** face as `rfudddfff`.
-  * **left** face as `dubrluulu`.
-  * **back** face as `rrbfbulll`.
+  * **down** face as `llffdrubf`.
+  * **left** face as `rludlubrf`.
+  * **back** face as `lubfbfudl`.
 
 Done! Now we just add them all up in order -- **front right up down left back** -- and our Rubik's Cube state becomes
 ```
-llflfbbrrdubrrdfbdlddfububrrfudddfffdubrluulurrbfbulll
+flulfbddrrudrruddldbbburrfbllffdrubfrludlubrflubfbfudl
 ```
 
-The outputted solution to this is: (71 moves)
+The solution to this is:
 ```
-U2 L U2 Lprime Uprime F Uprime Bprime
-Uprime R Uprime L D Lprime D B Dprime
-Bprime Dprime L Dprime Lprime F Dprime
-Fprime D F D Fprime D2 Lprime D L D2
-Lprime D L D2 Bprime D2 B D2 Bprime D
-B2 F2 Rprime F Rprime Fprime R2 F Rprime
-F Bprime L Bprime Lprime F L B Lprime
-Fprime L B Lprime F L Bprime Lprime Fprime
+Cross:
+Uprime F U B Uprime L U2 Lprime
+Uprime R Uprime B U
+
+F2L:
+Dprime Bprime Dprime B Rprime
+Dprime R D B D Bprime Dprime
+B D Bprime Dprime B D Bprime
+Fprime Dprime F D2 R Dprime
+Rprime D2 R Dprime Rprime
+
+OLL:
+b D Bprime D B D2 bprime
+
+PLL:
+B2 dprime B Dprime B D Bprime
+d B2 R Dprime Rprime Dprime
 ```
-and are the moves you must do while orienting the cube in your chosen orientation.
+When making these moves, be sure to have the cube oriented in your chosen orientation from earlier.
 
 # <a name="rubiks-cube-notations"></a>Rubik's Cube Notations
 [This](https://ruwix.com/the-rubiks-cube/notation/) is a list of all the different notations, but I'll try to explain here as well.
