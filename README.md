@@ -48,7 +48,7 @@ When providing colors for the **down** face, orient the cube such that the **dow
 Once you've oriented the cube correctly for each face, provide colors starting from the upper left, moving horizontally to the right, and ending up on the bottom right -- like reading a book.
 
 ## Example
-If you have a solved cube in front of you, you can follow along! I will take a solved cube and make these moves...
+If you have a Rubik's Cube in front of you, you can follow along! I will take a solved cube and make these moves (when the **green** face is facing toward you and the **white** face is facing up)
 ```
 R U R' U' L F' R2 D' U' L'
 ```
