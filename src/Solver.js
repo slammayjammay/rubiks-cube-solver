@@ -6,8 +6,31 @@ const PLLSolver = require('./solvers/pll');
 const utils = require('./utils');
 
 class Solver {
+	/**
+	 * @param {string|RubiksCube} cubeState - Can be one of 3 things:
+	 * 1) A string representing a Rubik's Cube state.
+	 * 2) A string containing a list of moves to make from a solved state to
+	 *    identify a cube state.
+	 * 3) An instance of a RubiksCube.
+	 */
 	constructor(cubeState, options) {
-		this.cube = cubeState instanceof RubiksCube ? cubeState : new RubiksCube(cubeState);
+		if (cubeState instanceof RubiksCube) {
+			this.cube = cubeState;
+		} else if (typeof cubeState === 'string') {
+			// if there are spaces present in cubeState, assume it's a set of
+			// scramble moves.
+			// it's possible that one or no scramble moves are present.
+			let magicNum = 6; // longest possible move string -- e.g. Rprime
+			if (cubeState.split(' ').length > 1 || cubeState.length <= magicNum) {
+				this.cube = RubiksCube.Solved();
+				this.cube.move(cubeState);
+			} else {
+				this.cube = new RubiksCube(cubeState);
+			}
+		} else {
+			throw new Error('"cubeState" is not a valid cubeState. Please provide a list of scramble moves or a string representing a cube state');
+		}
+
 		this.options = options;
 		this.phases = ['cross', 'f2l', 'oll', 'pll'];
 		this.progress = {};
