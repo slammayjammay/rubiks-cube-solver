@@ -1,4 +1,5 @@
 const Solver = require('./Solver');
+const algorithmShortener = require('./algorithm-shortener');
 
 /**
  * @param {string} cubeState - The string representing a cube state.
@@ -13,7 +14,7 @@ const solve = (cubeState, options = {}) => {
 	if (options.partitioned) {
 		return solver.getPartitions();
 	} else {
-		return solver.getMoves();
+		return algorithmShortener(solver.getMoves());
 	}
 };
 
