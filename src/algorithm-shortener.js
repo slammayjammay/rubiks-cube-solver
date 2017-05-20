@@ -43,7 +43,7 @@ class AlgorithmShortener {
 			}
 		}
 
-		this.window.filter(move => typeof move !== 'undefined');
+		this.window = this.window.filter(move => typeof move !== 'undefined');
 	}
 
 	populateWindowForwards() {
@@ -55,14 +55,14 @@ class AlgorithmShortener {
 			this.window.push(this.notations.shift());
 		}
 
-		this.window.filter(move => typeof move !== 'undefined');
+		this.window = this.window.filter(move => typeof move !== 'undefined');
 	}
 
 	checkForOptimizations() {
 		let [move1, move2] = this.window.slice();
 
 		// no optimizations if the moves don't rotate the same face
-		if (move1[0] !== move2[0]) {
+		if (!move2 || move1[0] !== move2[0]) {
 			return;
 		}
 
