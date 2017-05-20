@@ -5,6 +5,7 @@
 	"main": "lib/index.js",
 	"scripts": {
 		"build": "webpack",
+		"prepublish": "npm run build",
 		"test": "mocha test/**/* || true",
 		"test:dynamic": "node test/dynamic.js",
 		"test:models": "mocha test/models/* || true",
