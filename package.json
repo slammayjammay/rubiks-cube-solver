@@ -23,7 +23,11 @@
     "fridrich"
   ],
   "author": "Scott McKenzie",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slammayjammay/rubiks-cube-solver"
+  },
+  "license": "MIT",
   "dependencies": {
     "array-element-combiner": "^1.0.0",
     "gl-vec3": "^1.0.3"
