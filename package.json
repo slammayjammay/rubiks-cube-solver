@@ -23,6 +23,7 @@
 	"author": "Scott McKenzie",
 	"license": "ISC",
 	"dependencies": {
+		"array-element-combiner": "^1.0.0",
 		"gl-vec3": "^1.0.3"
 	},
 	"devDependencies": {

@@ -1,151 +1,48 @@
-const utils = require('./utils');
+const combiner = require('array-element-combiner');
 
-class AlgorithmShortener {
-	/**
-	 * @param {array|string} notations - The notations to shorten.
-	 */
-	constructor(notations) {
-		this.notations = utils.normalizeNotations(notations);
-		this.original = this.notations.slice(); // coz im scared
-		this.moves = [];
-		this.window = [];
-		this.madeOptimization = false;
-	}
+const parallelMoves = {
+	F: 'B',
+	R: 'L',
+	U: 'D'
+};
 
-	shorten() {
-		while (this.notations.length > 0) {
-			if (this.madeOptimization) {
-				this.populateWindowBackwards();
-			} else {
-				this.populateWindowForwards();
-			}
-
-			this.reset();
-
-			this.checkForOptimizations();
-			this.makeOptimizations();
-		}
-
-		this.moves.push(...this.window);
-
-		return this.moves;
-	}
-
-	populateWindowBackwards() {
-		while (this.window.length < 2) {
-			let move = this.moves.pop();
-
-			if (typeof move !== 'undefined') {
-				this.window.unshift(move);
-			} else {
-				let move = this.notations.shift();
-				this.window.push(move);
-			}
-		}
-
-		this.window = this.window.filter(move => typeof move !== 'undefined');
-	}
-
-	populateWindowForwards() {
-		if (this.window.length > 1) {
-			this.moves.push(this.window.shift());
-		}
-
-		while (this.window.length < 2) {
-			this.window.push(this.notations.shift());
-		}
-
-		this.window = this.window.filter(move => typeof move !== 'undefined');
-	}
-
-	checkForOptimizations() {
-		let [move1, move2] = this.window.slice();
-
-		// no optimizations if the moves don't rotate the same face
-		if (!move2 || move1[0] !== move2[0]) {
-			return;
-		}
-
-		let data1 = {
-			isPrime: move1.includes('prime'),
-			isDouble: move1.includes('2')
-		};
-
-		let data2 = {
-			isPrime: move2.includes('prime'),
-			isDouble: move2.includes('2')
-		};
-
-		// double-able
-		this.canDouble = (move1 === move2 && !move1.includes('2'));
-
-		// cancel-able
-		let bothAreDouble = (data1.isDouble && data2.isDouble);
-		let neitherAreDouble = (!data1.isDouble && !data2.isDouble);
-		let oppositeDirections = (neitherAreDouble && data1.isPrime !== data2.isPrime);
-		this.canCancel = (bothAreDouble || oppositeDirections);
-
-		// one is a double-move and the other isn't
-		this.canCombine = (data1.isDouble !== data2.isDouble);
-	}
-
-	makeOptimizations() {
-		let optimizedMove;
-
-		if (this.canDouble) {
-			optimizedMove = this.doubleMoves(...this.window);
-		} else if (this.canCancel) {
-			optimizedMove = this.cancelMoves(...this.window);
-		} else if (this.canCombine) {
-			optimizedMove = this.combineMoves(...this.window);
-		}
-
-		if (typeof optimizedMove !== 'undefined') {
-			if (optimizedMove !== '') {
-				this.moves.push(optimizedMove);
-			}
-			this.window = [];
-			this.madeOptimization = true;
-		}
-	}
-
-	cancelMoves(move1, move2) {
-		return '';
-	}
-
-	combineMoves(move1, move2) {
-		let [dir1, dir2] = [1, 1];
-
-		if (move1.includes('prime')) dir1 = -1;
-		else if (move1.includes('2')) dir1 = 2;
-
-		if (move2.includes('prime')) dir2 = -1;
-		else if (move2.includes('2')) dir2 = 2;
-
-		let combinedDir = dir1 + dir2;
-		if (combinedDir === 1) combinedDir = '';
-		else if (Math.abs(combinedDir) === 2) combinedDir = '2';
-		else if (combinedDir === -1 || combinedDir === 3) combinedDir = 'prime';
-
-		if (combinedDir === 4) {
-			return '';
-		}
-
-		return `${move1[0]}${combinedDir}`;
-	}
-
-	doubleMoves(move1, move2) {
-		return `${move1[0]}2`;
-	}
-
-	reset() {
-		this.canDouble = this.canCancel = this.canCombine = false;
-		this.madeOptimization = false;
-	}
-}
-
+/**
+ * @param {array|string} notations - The array of move notations.
+ */
 module.exports = (notations) => {
-	notations = new AlgorithmShortener(notations).shorten();
-	notations = utils.normalizeNotations(notations);
-	return notations.join(' ');
+	if (typeof notations === 'string') {
+		notations = notations.split(' ');
+	}
+
+	const options = {
+		compare(a, b) {
+			return a[0] === b[0];
+		},
+		combine(a, b) {
+			const aDir = a.includes('2') ? 2 : (a.includes('prime') ? -1 : 1);
+			const bDir = b.includes('2') ? 2 : (b.includes('prime') ? -1 : 1);
+
+			let totalDir = aDir + bDir;
+
+			if (totalDir === 4) totalDir = 0;
+			if (totalDir === -2) totalDir = 2;
+			if (totalDir === 3) totalDir = -1;
+
+			if (totalDir === 0) {
+				return '';
+			}
+
+			let dirString = totalDir === 2 ? '2' : (totalDir === -1 ? 'prime' : '');
+
+			return `${a[0]}${dirString}`;
+		},
+		cancel(value){
+			return value === '';
+		},
+		ignore(a, b) {
+			return (parallelMoves[a] === b || parallelMoves[b] === a);
+		}
+	};
+
+	return combiner(notations, options).join(' ');
 };
