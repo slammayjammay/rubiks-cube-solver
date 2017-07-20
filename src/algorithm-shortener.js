@@ -40,7 +40,7 @@ module.exports = (notations) => {
 			return value === '';
 		},
 		ignore(a, b) {
-			return (parallelMoves[a] === b || parallelMoves[b] === a);
+			return (parallelMoves[a[0]] === b[0] || parallelMoves[b[0]] === a[0]);
 		}
 	};
 
