@@ -1,67 +1,41 @@
 {
-	"name": "rubiks-cube-solver",
-	"version": "1.0.0",
-	"description": "Outputs a solution using the Fridrich Method for a given cube state.",
-	"main": "lib/index.js",
-	"scripts": {
-		"build": "webpack",
-		"prepublish": "npm run build",
-		"test": "mocha test/**/* || true",
-		"test:dynamic": "node test/dynamic.js",
-		"test:models": "mocha test/models/* || true",
-		"test:solvers": "mocha test/solvers/* || true",
-		"test:utils": "mocha test/utils/* || true"
-	},
-	"keywords": [
-		"rubiks",
-		"cube",
-		"solve",
-		"solver",
-		"algorithm",
-		"fridrich"
-	],
-	"author": "Scott McKenzie",
-	"license": "ISC",
-	"dependencies": {
-		"array-element-combiner": "^1.0.0",
-		"gl-vec3": "^1.0.3"
-	},
-	"devDependencies": {
-		"babel-loader": "^7.0.0",
-		"babel-preset-es2015": "^6.24.1",
-		"chai": "^3.5.0",
-		"chalk": "^1.1.3",
-		"minimist": "^1.2.0",
-		"mocha": "^3.2.0",
-		"uglifyjs-webpack-plugin": "^0.4.3",
-		"webpack": "^2.5.0"
-	},
-	"eslintConfig": {
-		"env": {
-			"es6": true,
-			"node": true
-		},
-		"globals": [
-			"it",
-			"describe"
-		],
-		"rules": {
-			"indent": [
-				"error",
-				"tab"
-			],
-			"linebreak-style": [
-				"error",
-				"unix"
-			],
-			"quotes": [
-				"error",
-				"single"
-			],
-			"semi": [
-				"error",
-				"always"
-			]
-		}
-	}
+  "name": "rubiks-cube-solver",
+  "version": "1.0.0",
+  "description": "Outputs a solution using the Fridrich Method for a given cube state.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "webpack",
+    "lint": "eslint .",
+    "prepublish": "npm run build",
+    "test": "mocha test/**/* || true",
+    "test:dynamic": "node test/dynamic.js",
+    "test:models": "mocha test/models/* || true",
+    "test:solvers": "mocha test/solvers/* || true",
+    "test:utils": "mocha test/utils/* || true"
+  },
+  "keywords": [
+    "rubiks",
+    "cube",
+    "solve",
+    "solver",
+    "algorithm",
+    "fridrich"
+  ],
+  "author": "Scott McKenzie",
+  "license": "ISC",
+  "dependencies": {
+    "array-element-combiner": "^1.0.0",
+    "gl-vec3": "^1.0.3"
+  },
+  "devDependencies": {
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^3.5.0",
+    "chalk": "^1.1.3",
+    "eslint": "^4.2.0",
+    "minimist": "^1.2.0",
+    "mocha": "^3.2.0",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "webpack": "^2.5.0"
+  }
 }
