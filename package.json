@@ -4,7 +4,8 @@
   "description": "Outputs a solution using the Fridrich Method for a given cube state.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "npm run clean && webpack",
+    "clean": "rm -rf lib/",
     "lint": "eslint .",
     "prepublish": "npm run build",
     "test": "mocha test/**/* || true",
