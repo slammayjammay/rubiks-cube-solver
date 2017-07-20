@@ -37,7 +37,7 @@ class Solver {
 
 		this.phases.forEach(phase => this.progress[phase] = []);
 
-    // save each partition to this.progress after each solve
+		// save each partition to this.progress after each solve
 		const afterEach = (partition, phase) => {
 			this._updateProgress(partition, phase);
 		};

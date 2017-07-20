@@ -8,8 +8,8 @@ class PLLSolver extends BaseSolver {
 		super(...args);
 		this.phase = 'pll';
 
-    // permutations in order based on http://badmephisto.com/pll.php, however
-    // the actual algorithms may be different.
+		// permutations in order based on http://badmephisto.com/pll.php, however
+		// the actual algorithms may be different.
 		this.algorithms = {
 			[SOLVED_STATE]: '', // already solved
 			'2 -1 1 -1 1 0 0 2': 'R2 F2 RPrime BPrime R F2 RPrime B RPrime', // #1
@@ -157,17 +157,17 @@ class PLLSolver extends BaseSolver {
 	}
 
 	_getCubiePermutation(cubie) {
-    // pick a face, any face (expect for the down face)
+		// pick a face, any face (expect for the down face)
 		let face = cubie.faces().find(face => face !== 'down');
 
-    // get the cube face this face lies on
+		// get the cube face this face lies on
 		let cubeFace = utils.getFaceOfMove(cubie.getColorOfFace(face));
 
-    // find the move that will permute the cubie correctly
+		// find the move that will permute the cubie correctly
 		let moveToSolveCubie = utils.getRotationFromTo('down', face, cubeFace);
 		moveToSolveCubie = moveToSolveCubie.toLowerCase();
 
-    // translate the move to a number
+		// translate the move to a number
 		let dir;
 		if (moveToSolveCubie === '') dir = 0;
 		else if (moveToSolveCubie.includes('prime')) dir = 1;

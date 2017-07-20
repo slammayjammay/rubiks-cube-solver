@@ -9,7 +9,7 @@ const R = (moves) => RubiksCube.reverseMoves(moves);
  * Corner is on UP face and edge is on DOWN face.
  */
 class Case3Solver extends BaseSolver {
-  /**
+	/**
    * 2 cases:
    *
    * 1) Corner's cross color is on the cross face.
@@ -32,10 +32,10 @@ class Case3Solver extends BaseSolver {
 		let primaryColor = edge.getColorOfFace(currentFace);
 
 		let targetFace = utils.getFaceFromDirection(
-      corner.getFaceOfColor(primaryColor),
-      primaryColor === corner.getColorOfFace(rightFace) ? 'right' : 'left',
-      { up: 'down' }
-    );
+			corner.getFaceOfColor(primaryColor),
+			primaryColor === corner.getColorOfFace(rightFace) ? 'right' : 'left',
+			{ up: 'down' }
+		);
 		let isLeft = primaryColor === corner.getColorOfFace(leftFace);
 
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
@@ -58,10 +58,10 @@ class Case3Solver extends BaseSolver {
 
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		let isLeft = utils.getDirectionFromFaces(
-      corner.getFaceOfColor(otherColor),
-      corner.getFaceOfColor('u'),
-      { up: 'down' }
-    ) === 'left';
+			corner.getFaceOfColor(otherColor),
+			corner.getFaceOfColor('u'),
+			{ up: 'down' }
+		) === 'left';
 		let dir = isLeft ? 'DPrime' : 'D';
 		let moveFace = corner.getFaceOfColor('u');
 		moveFace = isLeft ? R(moveFace) : moveFace;

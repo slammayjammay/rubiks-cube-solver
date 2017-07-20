@@ -9,19 +9,19 @@ const R = (moves) => RubiksCube.reverseMoves(moves);
  * Corner is on the DOWN face and edge is not on DOWN or UP face.
  */
 class case2Solver extends BaseSolver {
-  /**
-   * 4 cases:
-   *
-   * ---- Group 1: Corner's white color is on DOWN face ----
-   * 1) Pair can be matched up.
-   * 2) Pair cannot be matched up.
-   *
-   * ---- Group 2: Corner's white color is not on DOWN face ----
-   * 3) Corner's other color can match up with the edge color on that face.
-   * 4) Corner's other color cannot match up with the edge color on that face.
-   */
+	/**
+	 * 4 cases:
+	 *
+	 * ---- Group 1: Corner's white color is on DOWN face ----
+	 * 1) Pair can be matched up.
+	 * 2) Pair cannot be matched up.
+	 *
+	 * ---- Group 2: Corner's white color is not on DOWN face ----
+	 * 3) Corner's other color can match up with the edge color on that face.
+	 * 4) Corner's other color cannot match up with the edge color on that face.
+	 */
 	_getCaseNumber({ corner, edge }) {
-    // get relative right faces of corner and edge
+		// get relative right faces of corner and edge
 		let cFaces = corner.faces().filter(face => face !== 'down');
 		let eFaces = edge.faces();
 		let cornerDir = utils.getDirectionFromFaces(cFaces[0], cFaces[1], { up: 'down' });
@@ -41,13 +41,13 @@ class case2Solver extends BaseSolver {
 			return color !== 'u' && color !== corner.getColorOfFace('down');
 		});
 		let isLeft = utils.getDirectionFromFaces(
-      corner.getFaceOfColor(otherColor),
-      corner.getFaceOfColor('u'),
-      { up: 'down' }
-    ) === 'left';
+			corner.getFaceOfColor(otherColor),
+			corner.getFaceOfColor('u'),
+			{ up: 'down' }
+		) === 'left';
 		let matchingEdgeColor = isLeft ?
-      edge.getColorOfFace(edgeRight) :
-      edge.colors().find(c => edge.getFaceOfColor(c) !== edgeRight);
+			edge.getColorOfFace(edgeRight) :
+			edge.colors().find(c => edge.getFaceOfColor(c) !== edgeRight);
 
 		if (otherColor === matchingEdgeColor) {
 			return 3;
@@ -101,19 +101,17 @@ class case2Solver extends BaseSolver {
 		let otherColor = corner.colors().find(c => ![downColor, 'u'].includes(c));
 		let matchingColor = caseNum === 3 ? otherColor : downColor;
 		let isLeft = utils.getDirectionFromFaces(
-      corner.getFaceOfColor(otherColor),
-      corner.getFaceOfColor('u'),
-      { up: 'down' }
-    ) === 'left';
+			corner.getFaceOfColor(otherColor),
+			corner.getFaceOfColor('u'),
+			{ up: 'down' }
+		) === 'left';
 
 		let currentFace = corner.getFaceOfColor('u');
-    // let targetFace = utils.getFaceOfMove(otherColor)
+		// let targetFace = utils.getFaceOfMove(otherColor)
 		let targetFace = edge.getFaceOfColor(matchingColor);
 
 		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
 		let moveFace = isLeft ? targetFace : R(targetFace);
-    // let moveFace = utils.getFaceOfMove(otherColor)
-    // moveFace = isLeft ? moveFace : R(moveFace)
 		let dir = isLeft ? 'DPrime' : 'D';
 		dir = caseNum === 4 ? R(dir) : dir;
 
