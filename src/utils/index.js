@@ -1,6 +1,6 @@
-const cross = require('gl-vec3/cross');
-const Face = require('../models/Face');
-const Vector = require('../models/Vector');
+import cross from 'gl-vec3/cross';
+import { Face } from '../models/Face';
+import { Vector } from '../models/Vector';
 
 // maps each face with the notation for their middle moves
 const _middlesMatchingFace = {
@@ -282,7 +282,7 @@ const orientMoves = (notations, orientation) => {
 	});
 };
 
-module.exports = {
+export {
 	getFaceOfMove,
 	getMoveOfFace,
 	getMiddleMatchingFace,

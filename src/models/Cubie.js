@@ -1,5 +1,5 @@
-const Vector = require('./Vector');
-const Face = require('./Face');
+import { Vector } from './Vector';
+import { Face } from './Face';
 
 class Cubie {
 	/**
@@ -213,4 +213,4 @@ class Cubie {
 	}
 }
 
-module.exports = Cubie;
+export { Cubie };

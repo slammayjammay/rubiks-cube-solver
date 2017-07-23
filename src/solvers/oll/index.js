@@ -1,6 +1,6 @@
-const RubiksCube = require('../../models/RubiksCube');
-const BaseSolver = require('../BaseSolver');
-const utils = require('../../utils');
+import { RubiksCube } from '../../models/RubiksCube';
+import { BaseSolver } from '../BaseSolver';
+import { getDirectionFromFaces } from '../../utils';
 
 const SOLVED_STATE = '00000000';
 const R = (moves) => RubiksCube.reverseMoves(moves);
@@ -177,7 +177,7 @@ class OLLSolver extends BaseSolver {
 		}
 
 		let [face1, face2] = cubie.faces().filter(face => face !== 'down');
-		let dir = utils.getDirectionFromFaces(face1, face2, { up: 'down' });
+		let dir = getDirectionFromFaces(face1, face2, { up: 'down' });
 		let rightFace = dir === 'right' ? face2 : face1;
 
 		return cubie.getColorOfFace(rightFace) === 'd' ? 1 : 2;
@@ -210,4 +210,4 @@ class OLLSolver extends BaseSolver {
 	}
 }
 
-module.exports = OLLSolver;
+export { OLLSolver };

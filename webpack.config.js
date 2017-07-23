@@ -1,12 +1,16 @@
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
-	entry: './src/index.js',
-	output: {
-		path: __dirname + '/lib/',
-		filename: 'index.js',
-		libraryTarget: 'umd'
-	},
+const output = {
+	path: __dirname + '/lib/',
+	library: 'rubiksCubeSolver',
+	libraryTarget: 'umd'
+};
+
+const es5 = {
+	entry: './src/index.common.js',
+	output: Object.assign({}, output, {
+		filename: 'index.common.js'
+	}),
 	module: {
 		loaders: [
 			{
@@ -22,3 +26,12 @@ module.exports = {
 		new UglifyJSPlugin()
 	]
 };
+
+const es6 = {
+	entry: './src/index.js',
+	output: Object.assign({}, output, {
+		filename: 'index.es6.js'
+	})
+};
+
+module.exports = [es5, es6];

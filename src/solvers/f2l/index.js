@@ -1,13 +1,13 @@
-const RubiksCube = require('../../models/RubiksCube');
-const utils = require('../../utils');
-const BaseSolver = require('./BaseSolver');
-const Case1Solver = require('./cases/case-1');
-const Case2Solver = require('./cases/case-2');
-const Case3Solver = require('./cases/case-3');
+import { RubiksCube } from '../../models/RubiksCube';
+import { F2LBaseSolver } from './F2LBaseSolver';
+import { Case1Solver } from './cases/case-1';
+import { Case2Solver } from './cases/case-2';
+import { Case3Solver } from './cases/case-3';
+import { getDirectionFromFaces } from '../../utils';
 
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
-class F2LSolver extends BaseSolver {
+class F2LSolver extends F2LBaseSolver {
 	constructor(...args) {
 		super(...args);
 
@@ -129,7 +129,7 @@ class F2LSolver extends BaseSolver {
 		}
 
 		let faces = corner.faces().filter(face => face !== 'up');
-		let dir = utils.getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
+		let dir = getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
 		let cornerRightFace = dir === 'right' ? faces[1] : faces[0];
 
 		this.move(`${cornerRightFace} D ${R(cornerRightFace)}`, { upperCase: true });
@@ -141,4 +141,4 @@ class F2LSolver extends BaseSolver {
 	}
 }
 
-module.exports = F2LSolver;
+export { F2LSolver };

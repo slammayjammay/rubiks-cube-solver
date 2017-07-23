@@ -1,4 +1,4 @@
-const combiner = require('array-element-combiner');
+import combiner from 'array-element-combiner';
 
 const parallelMoves = {
 	F: 'B',
@@ -9,7 +9,7 @@ const parallelMoves = {
 /**
  * @param {array|string} notations - The array of move notations.
  */
-module.exports = (notations) => {
+const algorithmShortener = (notations) => {
 	if (typeof notations === 'string') {
 		notations = notations.split(' ');
 	}
@@ -46,3 +46,5 @@ module.exports = (notations) => {
 
 	return combiner(notations, options).join(' ');
 };
+
+export { algorithmShortener };

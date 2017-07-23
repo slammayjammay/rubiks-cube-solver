@@ -1,6 +1,8 @@
-const BaseSolver = require('../BaseSolver');
-const RubiksCube = require('../../models/RubiksCube');
-const utils = require('../../utils');
+import { BaseSolver } from '../BaseSolver';
+import { RubiksCube } from '../../models/RubiksCube';
+import {
+	getDirectionFromFaces, getFaceOfMove, getRotationFromTo, getMoveOfFace
+} from '../../utils';
 
 const CROSS_COLOR = 'u';
 const R = (moves) => RubiksCube.reverseMoves(moves);
@@ -76,7 +78,7 @@ class CrossSolver extends BaseSolver {
 
 		let crossFace = edge.getFaceOfColor(CROSS_COLOR);
 		let otherFace = edge.getFaceOfColor(edge.colors().find(color => color !== CROSS_COLOR));
-		let direction = utils.getDirectionFromFaces(crossFace, otherFace, { up: 'up' });
+		let direction = getDirectionFromFaces(crossFace, otherFace, { up: 'up' });
 
 		if (direction === 'right') {
 			return 5;
@@ -107,10 +109,10 @@ class CrossSolver extends BaseSolver {
 	}
 
 	_solveCase4({ edge }) {
-		let prepMove = utils.getRotationFromTo(
+		let prepMove = getRotationFromTo(
 			'down',
 			edge.getFaceOfColor('u'),
-			utils.getFaceOfMove(edge.getColorOfFace('down'))
+			getFaceOfMove(edge.getColorOfFace('down'))
 		);
 		this.move(prepMove, { upperCase: true });
 
@@ -133,12 +135,12 @@ class CrossSolver extends BaseSolver {
 	_case1And2Helper({ edge }, caseNum) {
 		let crossColorFace = caseNum === 1 ? 'up' : 'down';
 		let currentFace = edge.faces().find(face => face !== crossColorFace);
-		let targetFace = utils.getFaceOfMove(edge.getColorOfFace(currentFace));
+		let targetFace = getFaceOfMove(edge.getColorOfFace(currentFace));
 
-		let solveMoves = utils.getRotationFromTo(crossColorFace, currentFace, targetFace);
+		let solveMoves = getRotationFromTo(crossColorFace, currentFace, targetFace);
 
 		if (caseNum === 2) {
-			let edgeToCrossFace = utils.getMoveOfFace(targetFace);
+			let edgeToCrossFace = getMoveOfFace(targetFace);
 			solveMoves += ` ${edgeToCrossFace} ${edgeToCrossFace}`;
 		}
 
@@ -158,10 +160,10 @@ class CrossSolver extends BaseSolver {
 	_case5And6Helper({ edge }, caseNum) {
 		let otherColor = edge.colors().find(color => color !== 'u');
 		let currentFace = edge.getFaceOfColor(otherColor);
-		let targetFace = utils.getFaceOfMove(otherColor);
+		let targetFace = getFaceOfMove(otherColor);
 
-		let prepMove = utils.getRotationFromTo('up', currentFace, targetFace);
-		let edgeToCrossFace = utils.getMoveOfFace(currentFace);
+		let prepMove = getRotationFromTo('up', currentFace, targetFace);
+		let edgeToCrossFace = getMoveOfFace(currentFace);
 
 		if (caseNum === 6) {
 			edgeToCrossFace = R(edgeToCrossFace);
@@ -179,4 +181,4 @@ class CrossSolver extends BaseSolver {
 	}
 }
 
-module.exports = CrossSolver;
+export { CrossSolver };

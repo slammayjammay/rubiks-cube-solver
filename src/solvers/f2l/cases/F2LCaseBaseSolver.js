@@ -1,4 +1,4 @@
-const F2LBaseSolver = require('../BaseSolver');
+import { F2LBaseSolver } from '../F2LBaseSolver';
 
 class F2LCaseBaseSolver extends F2LBaseSolver {
 	solve({ corner, edge }) {
@@ -6,4 +6,4 @@ class F2LCaseBaseSolver extends F2LBaseSolver {
 	}
 }
 
-module.exports = F2LCaseBaseSolver;
+export { F2LCaseBaseSolver };

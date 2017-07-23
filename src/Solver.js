@@ -1,9 +1,9 @@
-const RubiksCube = require('./models/RubiksCube');
-const CrossSolver = require('./solvers/cross');
-const F2LSolver = require('./solvers/f2l');
-const OLLSolver = require('./solvers/oll');
-const PLLSolver = require('./solvers/pll');
-const utils = require('./utils');
+import { RubiksCube } from './models/RubiksCube';
+import { CrossSolver } from './solvers/cross';
+import { F2LSolver } from './solvers/f2l';
+import { OLLSolver } from './solvers/oll';
+import { PLLSolver } from './solvers/pll';
+import { normalizeNotations } from './utils';
 
 class Solver {
 	/**
@@ -114,7 +114,7 @@ class Solver {
 			partitions.forEach(partition => moves.push(...partition.moves));
 		});
 
-		moves = utils.normalizeNotations(moves);
+		moves = normalizeNotations(moves);
 
 		return moves.join(' ');
 	}
@@ -158,4 +158,4 @@ class Solver {
 	}
 }
 
-module.exports = Solver;
+export { Solver };

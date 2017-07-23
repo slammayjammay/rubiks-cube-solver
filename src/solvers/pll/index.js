@@ -1,5 +1,7 @@
-const BaseSolver = require('../BaseSolver');
-const utils = require('../../utils');
+import { BaseSolver } from '../BaseSolver';
+import {
+	getFaceOfMove, getRotationFromTo, getDirectionFromFaces
+} from '../../utils';
 
 const SOLVED_STATE = '0 0 0 0 0 0 0 0';
 
@@ -56,8 +58,8 @@ class PLLSolver extends BaseSolver {
 		// may need an extra rotation of DOWN for a complete solve
 		let cubie = this.cube.getCubie(['down', 'front']); // any cubie on DOWN
 		let origin = 'front';
-		let target = utils.getFaceOfMove(cubie.getColorOfFace(origin));
-		let lastLayerMove = utils.getRotationFromTo('down', origin, target);
+		let target = getFaceOfMove(cubie.getColorOfFace(origin));
+		let lastLayerMove = getRotationFromTo('down', origin, target);
 
 		this.move(lastLayerMove);
 	}
@@ -93,11 +95,11 @@ class PLLSolver extends BaseSolver {
 			let color2 = cubie2.getColorOfFace(faceToCheck);
 
 			// find the direction between the two
-			let face1 = utils.getFaceOfMove(color1);
-			let face2 = utils.getFaceOfMove(color2);
+			let face1 = getFaceOfMove(color1);
+			let face2 = getFaceOfMove(color2);
 
 			// turn it into a number
-			let direction = utils.getDirectionFromFaces(face1, face2, { up: 'down' });
+			let direction = getDirectionFromFaces(face1, face2, { up: 'down' });
 			if (direction === 'front') direction = 0;
 			if (direction === 'right') direction = 1;
 			if (direction === 'left') direction = -1;
@@ -161,10 +163,10 @@ class PLLSolver extends BaseSolver {
 		let face = cubie.faces().find(face => face !== 'down');
 
 		// get the cube face this face lies on
-		let cubeFace = utils.getFaceOfMove(cubie.getColorOfFace(face));
+		let cubeFace = getFaceOfMove(cubie.getColorOfFace(face));
 
 		// find the move that will permute the cubie correctly
-		let moveToSolveCubie = utils.getRotationFromTo('down', face, cubeFace);
+		let moveToSolveCubie = getRotationFromTo('down', face, cubeFace);
 		moveToSolveCubie = moveToSolveCubie.toLowerCase();
 
 		// translate the move to a number
@@ -197,4 +199,4 @@ class PLLSolver extends BaseSolver {
 	}
 }
 
-module.exports = PLLSolver;
+export { PLLSolver };

@@ -1,6 +1,9 @@
-const BaseSolver = require('../BaseSolver');
-const RubiksCube = require('../../models/RubiksCube');
-const utils = require('../../utils');
+import { BaseSolver } from '../BaseSolver';
+import { RubiksCube } from '../../models/RubiksCube';
+import {
+	getFaceOfMove, getDirectionFromFaces, getFaceFromDirection, getRotationFromTo,
+	getMoveOfFace
+} from '../../utils';
 
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
@@ -37,7 +40,7 @@ class F2LBaseSolver extends BaseSolver {
 		// are the edge's colors on the correct face? (e.g. is the edge's 'F' color
 		// on the 'FRONT' face)?
 		for (let color of edge.colors()) {
-			if (edge.getFaceOfColor(color) !== utils.getFaceOfMove(color)) {
+			if (edge.getFaceOfColor(color) !== getFaceOfMove(color)) {
 				return false;
 			}
 		}
@@ -88,7 +91,7 @@ class F2LBaseSolver extends BaseSolver {
 		}
 
 		// corner and edge must be one move away from matching
-		let isOneMoveFromMatched = utils.getDirectionFromFaces(
+		let isOneMoveFromMatched = getDirectionFromFaces(
 			corner.getFaceOfColor(otherColor),
 			edge.getFaceOfColor(corner.getColorOfFace('down')),
 			{ up: 'up' }
@@ -107,17 +110,17 @@ class F2LBaseSolver extends BaseSolver {
 			return edge.getFaceOfColor(color) !== 'down';
 		});
 
-		let isLeft = utils.getDirectionFromFaces(
+		let isLeft = getDirectionFromFaces(
 			edge.getFaceOfColor(matchedColor),
 			corner.getFaceOfColor('u'),
 			{ up: 'down' }
 		) === 'left';
 
-		let matchingFace = utils.getFaceOfMove(matchedColor);
+		let matchingFace = getFaceOfMove(matchedColor);
 		let currentFace = corner.getFaceOfColor(matchedColor);
-		let prepFace = utils.getFaceFromDirection(matchingFace, isLeft ? 'left' : 'right', { up: 'down' });
+		let prepFace = getFaceFromDirection(matchingFace, isLeft ? 'left' : 'right', { up: 'down' });
 
-		let prep = utils.getRotationFromTo('down', currentFace, prepFace);
+		let prep = getRotationFromTo('down', currentFace, prepFace);
 		let open = isLeft ? matchingFace : R(matchingFace);
 		let insert = isLeft ? 'DPrime' : 'D';
 
@@ -136,17 +139,17 @@ class F2LBaseSolver extends BaseSolver {
 			return edge.getFaceOfColor(color) !== 'down';
 		});
 
-		let isLeft = utils.getDirectionFromFaces(
+		let isLeft = getDirectionFromFaces(
 			corner.getFaceOfColor('u'),
 			edge.getFaceOfColor(matchedColor),
 			{ up: 'down' }
 		).toUpperCase() === 'LEFT';
 
 		let currentFace = corner.getFaceOfColor('u');
-		let prepFace = utils.getFaceOfMove(matchedColor);
+		let prepFace = getFaceOfMove(matchedColor);
 
-		let prep = utils.getRotationFromTo('down', currentFace, prepFace);
-		let match = utils.getMoveOfFace(prepFace);
+		let prep = getRotationFromTo('down', currentFace, prepFace);
+		let match = getMoveOfFace(prepFace);
 		match = isLeft ? R(match) : match;
 		let insert = isLeft ? 'DPrime' : 'D';
 
@@ -167,4 +170,4 @@ class F2LBaseSolver extends BaseSolver {
 	}
 }
 
-module.exports = F2LBaseSolver;
+export { F2LBaseSolver };

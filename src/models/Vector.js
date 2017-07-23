@@ -1,11 +1,16 @@
-const angle = require('gl-vec3/angle');
-const cross = require('gl-vec3/cross');
-const rotateX = require('gl-vec3/rotateX');
-const rotateY = require('gl-vec3/rotateY');
-const rotateZ = require('gl-vec3/rotateZ');
+import angle from 'gl-vec3/angle';
+import cross from 'gl-vec3/cross';
+import rotateX from 'gl-vec3/rotateX';
+import rotateY from 'gl-vec3/rotateY';
+import rotateZ from 'gl-vec3/rotateZ';
+
+const rotate = {
+	x: rotateX,
+	y: rotateY,
+	z: rotateZ
+};
 
 class Vector {
-
 	/**
 	 * Factory method.
 	 * @param {string} vector - Space-deliminated x, y, and z values.
@@ -195,10 +200,11 @@ class Vector {
 	 * @return {Vector}
 	 */
 	rotate(axis, angle) {
-		let rotateFn = eval(`rotate${axis.toUpperCase()}`);
-		this.set(rotateFn([], this.vector, [0, 0, 0], angle));
+		axis = axis.toLowerCase();
+
+		this.set(rotate[axis]([], this.vector, [0, 0, 0], angle));
 		return this;
 	}
 }
 
-module.exports = Vector;
+export { Vector };

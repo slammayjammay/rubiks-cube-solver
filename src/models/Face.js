@@ -1,4 +1,4 @@
-const Vector = require('./Vector');
+import { Vector } from './Vector';
 
 const faceToNormal = {
 	front: '0 0 1',
@@ -110,4 +110,4 @@ Face.DOWN = new Face('DOWN');
 Face.LEFT = new Face('LEFT');
 Face.BACK = new Face('BACK');
 
-module.exports = Face;
+export { Face };

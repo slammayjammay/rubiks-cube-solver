@@ -1,6 +1,8 @@
-const Cubie = require('./Cubie');
-const utils = require('../utils');
-const algorithmShortener = require('../algorithm-shortener');
+import { Cubie } from './Cubie';
+import { algorithmShortener } from '../algorithm-shortener';
+import {
+	normalizeNotations, transformNotations, getMiddleMatchingFace
+} from '../utils';
 
 const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
 
@@ -29,7 +31,7 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
-		notations = utils.normalizeNotations(notations);
+		notations = normalizeNotations(notations);
 
 		let reversedMoves = [];
 
@@ -233,7 +235,7 @@ class RubiksCube {
 			notations = notations.split(' ');
 		}
 
-		notations = utils.transformNotations(notations, options);
+		notations = transformNotations(notations, options);
 
 		for (let notation of notations) {
 			let move = notation[0];
@@ -253,7 +255,7 @@ class RubiksCube {
 			if (isDoubleMove) mag *= 2;
 
 			if (isWithMiddle) {
-				let middleMove = utils.getMiddleMatchingFace(move);
+				let middleMove = getMiddleMatchingFace(move);
 				let middleCubies = this._getMiddleCubiesForMove(middleMove);
 				cubesToRotate = [...cubesToRotate, ...middleCubies];
 			}
@@ -404,4 +406,4 @@ class RubiksCube {
 	}
 }
 
-module.exports = RubiksCube;
+export { RubiksCube };

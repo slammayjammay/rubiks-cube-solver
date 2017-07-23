@@ -1,5 +1,5 @@
-const Solver = require('./Solver');
-const algorithmShortener = require('./algorithm-shortener');
+import { Solver } from './Solver';
+import { algorithmShortener } from './algorithm-shortener';
 
 /**
  * @param {string} cubeState - The string representing a cube state.
@@ -18,5 +18,23 @@ const solve = (cubeState, options = {}) => {
 	}
 };
 
-module.exports = solve;
-module.exports.Solver = Solver;
+export default solve;
+export { Solver };
+
+// models
+export { Cubie } from './models/Cubie';
+export { RubiksCube } from './models/RubiksCube';
+export { Face } from './models/Face';
+export { Vector } from './models/Vector';
+
+// solvers
+export { CrossSolver } from './solvers/cross';
+export { F2LSolver } from './solvers/f2l';
+export { OLLSolver } from './solvers/oll';
+export { PLLSolver } from './solvers/pll';
+
+// algorithm shortener
+export { algorithmShortener } from './algorithm-shortener';
+
+// utils
+export * from './utils';

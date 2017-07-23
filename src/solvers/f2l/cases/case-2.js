@@ -1,6 +1,8 @@
-const RubiksCube = require('../../../models/RubiksCube');
-const BaseSolver = require('./BaseSolver');
-const utils = require('../../../utils');
+import { RubiksCube } from '../../../models/RubiksCube';
+import { F2LCaseBaseSolver } from './F2LCaseBaseSolver';
+import {
+	getDirectionFromFaces, getRotationFromTo, getFaceOfMove
+} from '../../../utils';
 
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
@@ -8,7 +10,7 @@ const R = (moves) => RubiksCube.reverseMoves(moves);
  * Top level case 2:
  * Corner is on the DOWN face and edge is not on DOWN or UP face.
  */
-class case2Solver extends BaseSolver {
+class Case2Solver extends F2LCaseBaseSolver {
 	/**
 	 * 4 cases:
 	 *
@@ -24,8 +26,8 @@ class case2Solver extends BaseSolver {
 		// get relative right faces of corner and edge
 		let cFaces = corner.faces().filter(face => face !== 'down');
 		let eFaces = edge.faces();
-		let cornerDir = utils.getDirectionFromFaces(cFaces[0], cFaces[1], { up: 'down' });
-		let edgeDir = utils.getDirectionFromFaces(eFaces[0], eFaces[1], { up: 'down' });
+		let cornerDir = getDirectionFromFaces(cFaces[0], cFaces[1], { up: 'down' });
+		let edgeDir = getDirectionFromFaces(eFaces[0], eFaces[1], { up: 'down' });
 		let cornerRight = cornerDir === 'right' ? cFaces[1] : cFaces[0];
 		let edgeRight = edgeDir === 'right' ? eFaces[1] : eFaces[0];
 
@@ -40,7 +42,7 @@ class case2Solver extends BaseSolver {
 		let otherColor = corner.colors().find(color => {
 			return color !== 'u' && color !== corner.getColorOfFace('down');
 		});
-		let isLeft = utils.getDirectionFromFaces(
+		let isLeft = getDirectionFromFaces(
 			corner.getFaceOfColor(otherColor),
 			corner.getFaceOfColor('u'),
 			{ up: 'down' }
@@ -61,11 +63,11 @@ class case2Solver extends BaseSolver {
 		let currentFace = corner.getFaceOfColor(color);
 		let targetFace = edge.getFaceOfColor(color);
 
-		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
+		let prep = getRotationFromTo('down', currentFace, targetFace);
 		this.move(prep, { upperCase: true });
 
 		let [face1, face2] = edge.faces();
-		let dir = utils.getDirectionFromFaces(face1 , face2, { up: 'down' });
+		let dir = getDirectionFromFaces(face1 , face2, { up: 'down' });
 		let rightFace = dir === 'right' ? face2 : face1;
 
 		this.move(`${rightFace} DPrime ${R(rightFace)}`, { upperCase: true });
@@ -76,10 +78,10 @@ class case2Solver extends BaseSolver {
 		let currentFace = corner.getFaceOfColor(edge.colors()[0]);
 		let targetFace = edge.getFaceOfColor(edge.colors()[1]);
 
-		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
+		let prep = getRotationFromTo('down', currentFace, targetFace);
 		this.move(prep, { upperCase: true });
 
-		let dir = utils.getDirectionFromFaces(edge.faces()[0], edge.faces()[1], { up: 'down' });
+		let dir = getDirectionFromFaces(edge.faces()[0], edge.faces()[1], { up: 'down' });
 		let rightFace = edge.faces()[dir === 'right' ? 1 : 0];
 
 		this.move(`${rightFace} D ${R(rightFace)} DPrime`, { upperCase: true });
@@ -100,17 +102,17 @@ class case2Solver extends BaseSolver {
 		let downColor = corner.getColorOfFace('down');
 		let otherColor = corner.colors().find(c => ![downColor, 'u'].includes(c));
 		let matchingColor = caseNum === 3 ? otherColor : downColor;
-		let isLeft = utils.getDirectionFromFaces(
+		let isLeft = getDirectionFromFaces(
 			corner.getFaceOfColor(otherColor),
 			corner.getFaceOfColor('u'),
 			{ up: 'down' }
 		) === 'left';
 
 		let currentFace = corner.getFaceOfColor('u');
-		// let targetFace = utils.getFaceOfMove(otherColor)
+		// let targetFace = getFaceOfMove(otherColor)
 		let targetFace = edge.getFaceOfColor(matchingColor);
 
-		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
+		let prep = getRotationFromTo('down', currentFace, targetFace);
 		let moveFace = isLeft ? targetFace : R(targetFace);
 		let dir = isLeft ? 'DPrime' : 'D';
 		dir = caseNum === 4 ? R(dir) : dir;
@@ -122,4 +124,4 @@ class case2Solver extends BaseSolver {
 	}
 }
 
-module.exports = case2Solver;
+export { Case2Solver };

@@ -1,6 +1,8 @@
-const RubiksCube = require('../../../models/RubiksCube');
-const BaseSolver = require('./BaseSolver');
-const utils = require('../../../utils');
+import { RubiksCube } from '../../../models/RubiksCube';
+import { F2LCaseBaseSolver } from './F2LCaseBaseSolver';
+import {
+	getDirectionFromFaces, getFaceFromDirection, getRotationFromTo
+} from '../../../utils';
 
 const R = (moves) => RubiksCube.reverseMoves(moves);
 
@@ -8,7 +10,7 @@ const R = (moves) => RubiksCube.reverseMoves(moves);
  * Top level case 3:
  * Corner is on UP face and edge is on DOWN face.
  */
-class Case3Solver extends BaseSolver {
+class Case3Solver extends F2LCaseBaseSolver {
 	/**
    * 2 cases:
    *
@@ -25,20 +27,20 @@ class Case3Solver extends BaseSolver {
 
 	_solveCase1({ corner, edge }) {
 		let faces = corner.faces().filter(face => face !== 'up');
-		let direction = utils.getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
+		let direction = getDirectionFromFaces(faces[0], faces[1], { up: 'down' });
 		let [leftFace, rightFace] = direction === 'right' ? faces : faces.reverse();
 
 		let currentFace = edge.faces().find(face => face !== 'down');
 		let primaryColor = edge.getColorOfFace(currentFace);
 
-		let targetFace = utils.getFaceFromDirection(
+		let targetFace = getFaceFromDirection(
 			corner.getFaceOfColor(primaryColor),
 			primaryColor === corner.getColorOfFace(rightFace) ? 'right' : 'left',
 			{ up: 'down' }
 		);
 		let isLeft = primaryColor === corner.getColorOfFace(leftFace);
 
-		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
+		let prep = getRotationFromTo('down', currentFace, targetFace);
 		let moveFace = isLeft ? rightFace : R(leftFace);
 		let dir = isLeft ? 'DPrime' : 'D';
 
@@ -56,8 +58,8 @@ class Case3Solver extends BaseSolver {
 		let willBeMatched = otherColor !== primaryColor;
 		let targetFace = corner.getFaceOfColor(willBeMatched ? otherColor : 'u');
 
-		let prep = utils.getRotationFromTo('down', currentFace, targetFace);
-		let isLeft = utils.getDirectionFromFaces(
+		let prep = getRotationFromTo('down', currentFace, targetFace);
+		let isLeft = getDirectionFromFaces(
 			corner.getFaceOfColor(otherColor),
 			corner.getFaceOfColor('u'),
 			{ up: 'down' }
@@ -72,4 +74,4 @@ class Case3Solver extends BaseSolver {
 	}
 }
 
-module.exports = Case3Solver;
+export { Case3Solver };
