@@ -24,8 +24,6 @@ export { Solver };
 // models
 export { Cubie } from './models/Cubie';
 export { RubiksCube } from './models/RubiksCube';
-export { Face } from './models/Face';
-export { Vector } from './models/Vector';
 
 // solvers
 export { CrossSolver } from './solvers/cross';
@@ -35,6 +33,3 @@ export { PLLSolver } from './solvers/pll';
 
 // algorithm shortener
 export { algorithmShortener } from './algorithm-shortener';
-
-// utils
-export * from './utils';
