@@ -4,6 +4,7 @@ import { F2LSolver } from './solvers/f2l';
 import { OLLSolver } from './solvers/oll';
 import { PLLSolver } from './solvers/pll';
 import { normalizeNotations } from './utils';
+import { algorithmShortener } from './algorithm-shortener';
 
 class Solver {
 	/**
@@ -126,10 +127,12 @@ class Solver {
 			let partitions = this.progress[phase];
 
 			if (partitions.length === 1) {
-				ret[phase] = partitions[0].moves.join(' ');
+				ret[phase] = algorithmShortener(partitions[0].moves);
 			} else {
 				let phaseMoves = [];
-				this.progress[phase].forEach(partition => phaseMoves.push(partition.moves.join(' ')));
+				this.progress[phase].forEach(partition => {
+					phaseMoves.push(algorithmShortener(partition.moves));
+				});
 				ret[phase] = phaseMoves;
 			}
 		});
