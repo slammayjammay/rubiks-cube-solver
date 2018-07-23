@@ -1,7 +1,7 @@
-const { assert } = require('chai');
-const RubiksCube = require('../../../src/models/RubiksCube');
-const Cubie = require('../../../src/models/Cubie');
-const F2LSolver = require('../../../src/solvers/f2l');
+import { assert } from 'chai';
+import { RubiksCube } from '../../../src/models/RubiksCube';
+import { Cubie } from '../../../src/models/Cubie';
+import { F2LSolver } from '../../../src/solvers/f2l';
 
 describe('F2L Base Solver', () => {
 	let solver = new F2LSolver(RubiksCube.Solved());

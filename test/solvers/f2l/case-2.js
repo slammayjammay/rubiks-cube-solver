@@ -1,7 +1,7 @@
-const { assert } = require('chai');
-const RubiksCube = require('../../../src/models/RubiksCube');
-const Cubie = require('../../../src/models/Cubie');
-const Case2Solver = require('../../../src/solvers/f2l/cases/case-2');
+import { assert } from 'chai';
+import { RubiksCube } from '../../../src/models/RubiksCube';
+import { Cubie } from '../../../src/models/Cubie';
+import { Case2Solver } from '../../../src/solvers/f2l/cases/case-2';
 
 let tests = [];
 

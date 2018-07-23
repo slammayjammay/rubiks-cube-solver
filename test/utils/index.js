@@ -1,5 +1,5 @@
-const { assert } = require('chai');
-const utils = require('../../src/utils');
+import { assert } from 'chai';
+import * as utils from '../../src/utils';
 
 describe('Utils', () => {
 	it('correcly returns a face given a move', () => {

@@ -37,7 +37,7 @@ const algorithmShortener = (notations) => {
 
 			return `${a[0]}${dirString}`;
 		},
-		cancel(value){
+		cancel(value) {
 			return value === '';
 		},
 		ignore(a, b) {

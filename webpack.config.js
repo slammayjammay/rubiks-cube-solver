@@ -15,10 +15,7 @@ const es5 = {
 		loaders: [
 			{
 				loader: 'babel-loader',
-				test: /\.js$/,
-				query: {
-					presets: ['es2015']
-				}
+				test: /\.js$/
 			}
 		]
 	},

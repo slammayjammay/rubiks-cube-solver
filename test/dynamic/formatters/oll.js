@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const utils = require('../../src/utils/');
+import chalk from 'chalk';
+import { transformNotations } from '../../../src/utils/';
 
 class OLLFormatter {
 	/**
@@ -22,7 +22,7 @@ class OLLFormatter {
 
 		let frontFace = this.solver._getFrontFace(ollString, pattern);
 
-		let orientedMoves = utils.transformNotations(moves, {
+		let orientedMoves = transformNotations(moves, {
 			orientation: {
 				up: 'down',
 				front: frontFace
@@ -34,4 +34,4 @@ class OLLFormatter {
 	}
 }
 
-module.exports = OLLFormatter;
+export { OLLFormatter };

@@ -16,7 +16,7 @@ const _middlesMatchingFace = {
  * @param {string} move - The notation of a move, e.g. rPrime.
  * @return {string}
  */
-const getFaceOfMove = (move) => {
+export const getFaceOfMove = (move) => {
 	if (typeof move !== 'string') {
 		throw new TypeError('move must be a string');
 	}
@@ -36,7 +36,7 @@ const getFaceOfMove = (move) => {
  * @param {string} face - The string identifying a face.
  * @return {string}
  */
-const getMoveOfFace = (face) => {
+export const getMoveOfFace = (face) => {
 	if (typeof face !== 'string') {
 		throw new TypeError('face must be a string');
 	}
@@ -50,12 +50,12 @@ const getMoveOfFace = (face) => {
 	return face[0];
 };
 
-const getMiddleMatchingFace = (face) => {
+export const getMiddleMatchingFace = (face) => {
 	face = face.toLowerCase()[0];
 	return _middlesMatchingFace[face];
 };
 
-const getFaceMatchingMiddle = (middle) => {
+export const getFaceMatchingMiddle = (middle) => {
 	middle = middle.toLowerCase();
 
 	for (let face of Object.keys(_middlesMatchingFace)) {
@@ -71,7 +71,7 @@ const getFaceMatchingMiddle = (middle) => {
  * @param {object} options - Move options.
  * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
  */
-const transformNotations = (notations, options = {}) => {
+export const transformNotations = (notations, options = {}) => {
 	if (typeof notations === 'string') {
 		notations = notations.split(' ');
 	}
@@ -93,7 +93,7 @@ const transformNotations = (notations, options = {}) => {
  * @param {array|string} notations - The notations to noramlize.
  * @return {array}
  */
-const normalizeNotations = (notations) => {
+export const normalizeNotations = (notations) => {
 	if (typeof notations === 'string') {
 		notations = notations.split(' ');
 	}
@@ -134,7 +134,7 @@ const normalizeNotations = (notations) => {
  * @param {object} orientation - The object that specifies the cube orientation.
  * @return {string|number}
  */
-const getDirectionFromFaces = (origin, target, orientation) => {
+export const getDirectionFromFaces = (origin, target, orientation) => {
 	orientation = _toLowerCase(orientation);
 	orientation = _prepOrientationForDirection(orientation, origin);
 
@@ -168,7 +168,7 @@ const getDirectionFromFaces = (origin, target, orientation) => {
  * @param {object} orientation - The orientation object.
  * @return {string}
  */
-const getFaceFromDirection = (origin, direction, orientation) => {
+export const getFaceFromDirection = (origin, direction, orientation) => {
 	orientation = _toLowerCase(orientation);
 	orientation = _prepOrientationForDirection(orientation, origin);
 
@@ -196,7 +196,7 @@ const getFaceFromDirection = (origin, direction, orientation) => {
  * @param {string} to - The target face.
  * @return {string}
  */
-const getRotationFromTo = (face, from, to) => {
+export const getRotationFromTo = (face, from, to) => {
 	const rotationFace = new Face(face);
 	const fromFace = new Face(from);
 	const toFace = new Face(to);
@@ -239,7 +239,7 @@ const getRotationFromTo = (face, from, to) => {
  * @param {array} notations - An array of notation strings.
  * @param {object} orientation - The orientation object.
  */
-const orientMoves = (notations, orientation) => {
+export const orientMoves = (notations, orientation) => {
 	orientation = _toLowerCase(orientation);
 	let rotations = _getRotationsForOrientation(orientation);
 	rotations.reverse().map(rotation => Vector.reverseRotation(rotation));
@@ -282,7 +282,7 @@ const orientMoves = (notations, orientation) => {
 	});
 };
 
-export {
+export default {
 	getFaceOfMove,
 	getMoveOfFace,
 	getMiddleMatchingFace,

@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const utils = require('../../src/utils/');
+import chalk from 'chalk';
+import { transformNotations } from '../../../src/utils/';
 
 class PLLFormatter {
 	/**
@@ -22,7 +22,7 @@ class PLLFormatter {
 
 		let frontFace = this.solver._getFrontFace(pllString, pattern);
 
-		let orientedMoves = utils.transformNotations(moves, {
+		let orientedMoves = transformNotations(moves, {
 			orientation: {
 				up: 'down',
 				front: frontFace
@@ -34,4 +34,4 @@ class PLLFormatter {
 	}
 }
 
-module.exports = PLLFormatter;
+export { PLLFormatter };

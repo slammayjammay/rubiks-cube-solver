@@ -1,5 +1,5 @@
-const { assert, expect } = require('chai');
-const Cubie = require('../../src/models/Cubie');
+import { assert, expect } from 'chai';
+import { Cubie } from '../../src/models/Cubie';
 
 describe('Cubie Model', () => {
 	let cubie;

@@ -1,7 +1,7 @@
-const { assert } = require('chai');
-const RubiksCube = require('../../../src/models/RubiksCube');
-const Cubie = require('../../../src/models/Cubie');
-const Case1Solver = require('../../../src/solvers/f2l/cases/case-3');
+import { assert } from 'chai';
+import { RubiksCube } from '../../../src/models/RubiksCube';
+import { Cubie } from '../../../src/models/Cubie';
+import { Case3Solver } from '../../../src/solvers/f2l/cases/case-3';
 
 let tests = [];
 
@@ -27,7 +27,7 @@ describe('F2L case 3 solver', () => {
 		let edge = new Cubie({ position: edgePos, colorMap: edgeMap });
 		cube._cubies.push(...[corner, edge]);
 
-		let solver = new Case1Solver(cube);
+		let solver = new Case3Solver(cube);
 
 		it(`identifies case ${caseNum + 1}`, () => {
 			assert(solver._getCaseNumber({ corner, edge }) === caseNum + 1);

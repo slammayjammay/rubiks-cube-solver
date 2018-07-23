@@ -1,26 +1,7 @@
-const minimist = require('minimist');
-const chalk = require('chalk');
-// const Solver = require('../src/').Solver;
-// const RubiksCube = require('../src/models/RubiksCube');
-// const utils = require('../src/utils/');
-// const CrossFormatter = require('./formatters/cross');
-// const F2LFormatter = require('./formatters/f2l');
-// const OLLFormatter = require('./formatters/oll');
-// const PLLFormatter = require('./formatters/pll');
-// const algorithmShortener = require('../src/algorithm-shortener');
-
-
-import {
-	Solver,
-	RubiksCube,
-	utils,
-	CrossFormatter,
-	F2LFormatter,
-	OLLFormatter,
-	PLLFormatter,
-	algorithmShortener
-} from './lib';
-
+import minimist from 'minimist';
+import chalk from 'chalk';
+import { RubiksCube, Solver, algorithmShortener } from '../../src/';
+import { CrossFormatter, F2LFormatter, OLLFormatter, PLLFormatter } from './formatters';
 
 const argv = minimist(process.argv.slice(2));
 const NUM_RUNS = argv['num-runs'] || 1;

@@ -1,7 +1,7 @@
-const { assert } = require('chai');
-const RubiksCube = require('../../../src/models/RubiksCube');
-const Cubie = require('../../../src/models/Cubie');
-const CrossSolver = require('../../../src/solvers/cross');
+import { assert } from 'chai';
+import { RubiksCube } from '../../../src/models/RubiksCube';
+import { Cubie } from '../../../src/models/Cubie';
+import { CrossSolver } from '../../../src/solvers/cross';
 
 let case1Tests = [
 	{ face1: 'UP', face2: 'FRONT', color1: 'U', color2: 'F' },

@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 class F2LFormatter {
 	/**
@@ -19,4 +19,4 @@ class F2LFormatter {
 	}
 }
 
-module.exports = F2LFormatter;
+export { F2LFormatter };

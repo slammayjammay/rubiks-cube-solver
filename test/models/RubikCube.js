@@ -1,5 +1,5 @@
-const { expect, assert } = require('chai');
-const RubiksCube = require('../../src/models/RubiksCube');
+import { expect, assert } from 'chai';
+import { RubiksCube } from '../../src/models/RubiksCube';
 
 describe('RubiksCube Model', () => {
 	describe('requires a correct input state', () => {

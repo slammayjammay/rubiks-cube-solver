@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 class CrossFormatter {
 	/**
@@ -19,4 +19,4 @@ class CrossFormatter {
 	}
 }
 
-module.exports = CrossFormatter;
+export { CrossFormatter };
