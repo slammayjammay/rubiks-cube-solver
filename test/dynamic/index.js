@@ -137,7 +137,7 @@ for (let i = 0; i < NUM_RUNS; i++) {
 			cube.move(scrambleMoves);
 			cube.move(optimizedMoves);
 
-			numMoves = optimizedMoves.split(' ').length;
+			let numMoves = optimizedMoves.split(' ').length;
 
 			if (cube.isSolved()) {
 				if (SHOW_OUTPUT) {
