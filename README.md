@@ -103,6 +103,8 @@ When making these moves, be sure to have the cube oriented in your chosen orient
 # <a name="rubiks-cube-notations"></a>Rubik's Cube Notations
 [This](https://ruwix.com/the-rubiks-cube/notation/) is a list of all the different notations, but I'll try to explain here as well.
 
-There are notations for moving each face on a Rubik's Cube: either clockwise, counter-clockwise, or a 180 degree turn. For example, `F` denotes a clockwise rotation of the `front` face, `F'` for a counter-clockwise rotation, or `F2` for the 180 degree turn. Each face has their own notation: **F**ront, **R**ight, **U**p, **D**own, **L**eft, **B**ack. There are also notations for middle moves: `M`, `E`, and `S`. I don't know why those letters are used.
+There are notations for moving each face on a Rubik's Cube: either clockwise, counter-clockwise, or a 180 degree turn. For example, `F` denotes a clockwise rotation of the `front` face, `F'` for a counter-clockwise rotation, and `F2` for the 180 degree turn. Each face has their own notation: **F**ront, **R**ight, **U**p, **D**own, **L**eft, **B**ack. There are also notations for middle moves: `M`, `E`, and `S`. I don't know why those letters are used.
+
+Notation is case-sensitive: upper-case denotes a single-layer turn and lower-case denotes a double-layer turn. A double-layer turn is a turn of a middle slice on top of a single-layer turn (in the context of a 3x3x3). For example, the move `r` is the same as `R M'` and `b'` is the same as `B' S`. The middle moves `M`, `E`, and `S` cannot be lower-case otherwise they would be ambiguous.
 
 As an aside, official notation uses `'` (apostrophe) to denote a counter-clockwise rotation, but since we're in JavaScript instead append `prime` (e.g. replace `R'` with `Rprime`). Also, this solver does not recognize the moves `X`, `Y`, or `Z`.
