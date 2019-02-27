@@ -70,23 +70,25 @@ export const getFaceMatchingMiddle = (middle) => {
  * @param {string|array} notations - The move notation.
  * @param {object} options - Move options.
  * @prop {boolean} options.upperCase - Turn all moves to upper case (i.e. no "double" moves).
+ *
+ * @return {string|array} -- whichever was initially given.
  */
 export const transformNotations = (notations, options = {}) => {
-	if (typeof notations === 'string') {
-		notations = notations.split(' ');
-	}
-
-	notations = normalizeNotations(notations);
+	let normalized = normalizeNotations(notations);
 
 	if (options.upperCase) {
-		notations = notations.map(n => n[0].toUpperCase() + n.slice(1));
+		normalized = normalized.map(n => n[0].toUpperCase() + n.slice(1));
 	}
 
 	if (options.orientation) {
-		notations = orientMoves(notations, options.orientation);
+		normalized = orientMoves(normalized, options.orientation);
 	}
 
-	return notations;
+	if (options.reverse) {
+		normalized = _reverseNotations(normalized);
+	}
+
+	return typeof notations === 'string' ? normalized.join(' ') : normalized;
 };
 
 /**
@@ -282,19 +284,6 @@ export const orientMoves = (notations, orientation) => {
 	});
 };
 
-export default {
-	getFaceOfMove,
-	getMoveOfFace,
-	getMiddleMatchingFace,
-	getFaceMatchingMiddle,
-	transformNotations,
-	normalizeNotations,
-	getDirectionFromFaces,
-	getRotationFromTo,
-	getFaceFromDirection,
-	orientMoves
-};
-
 //-----------------
 // Helper functions
 //-----------------
@@ -394,3 +383,33 @@ function _rotateFacesByRotations(faces, rotations) {
 		}
 	}
 }
+
+/**
+ * @param {array} notations
+ * @return {array}
+ */
+function _reverseNotations(notations) {
+	const reversed = [];
+
+	for (let notation of notations) {
+		let isPrime = notation.includes('prime');
+		notation = isPrime ? notation[0] : notation[0] + 'prime';
+		reversed.push(notation);
+	}
+
+	return typeof moves === 'string' ? reversed.join(' ') : reversed;
+}
+
+export default {
+	getFaceOfMove,
+	getMoveOfFace,
+	getMiddleMatchingFace,
+	getFaceMatchingMiddle,
+	transformNotations,
+	normalizeNotations,
+	getDirectionFromFaces,
+	getRotationFromTo,
+	getFaceFromDirection,
+	orientMoves
+};
+
