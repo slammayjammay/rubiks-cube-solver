@@ -1,7 +1,7 @@
 import { Cubie } from './Cubie';
 import { algorithmShortener } from '../algorithm-shortener';
 import {
-	normalizeNotations, transformNotations, getMiddleMatchingFace
+	transformNotations, getMiddleMatchingFace
 } from '../utils';
 
 const SOLVED_STATE = 'fffffffffrrrrrrrrruuuuuuuuudddddddddlllllllllbbbbbbbbb';
@@ -14,6 +14,19 @@ class RubiksCube {
 		return new RubiksCube(SOLVED_STATE);
 	}
 
+	/**
+	 * Factory method.
+	 * @param {string|array} moves
+	 */
+	static FromMoves(moves) {
+		const cube = RubiksCube.Solved();
+		cube.move(moves);
+		return cube;
+	}
+
+	/**
+	 * Factory method. Returns an instance of a scrambled Rubiks Cube.
+	 */
 	static Scrambled() {
 		let cube = RubiksCube.Solved();
 		let randomMoves = RubiksCube.getRandomMoves(25);
@@ -24,24 +37,23 @@ class RubiksCube {
 
 	/**
 	 * @param {string|array} notations - The list of moves to reverse.
-	 * @return {string}
+	 * @return {string|array} -- whichever was initially given.
 	 */
-	static reverseMoves(notations) {
-		if (typeof notations === 'string') {
-			notations = notations.split(' ');
-		}
+	static reverseMoves(moves) {
+		return RubiksCube.transformMoves(moves, { reverse: true });
+	}
 
-		notations = normalizeNotations(notations);
-
-		let reversedMoves = [];
-
-		for (let notation of notations) {
-			let isPrime = notation.includes('prime');
-			notation = isPrime ? notation[0] : notation[0] + 'prime';
-			reversedMoves.push(notation);
-		}
-
-		return reversedMoves.join(' ');
+	/**
+	 * @param {string|array} moves - The moves to transform;
+	 * @param {object} options
+	 * @prop {boolean} options.upperCase - Turn lowercase moves into uppercase.
+	 * @prop {object} options.orientation - An object describing the orientation
+	 * from which to makes the moves. See src/js/utils#orientMoves.
+	 *
+	 * @return {string|array} -- whichever was initially given.
+	 */
+	static transformMoves(moves, options = {}) {
+		return transformNotations(moves, options);
 	}
 
 	static getRandomMoves(length = 25) {
@@ -270,9 +282,6 @@ class RubiksCube {
 		return this.toString() === SOLVED_STATE;
 	}
 
-	/**
-	 * @return {string}
-	 */
 	toString() {
 		let cubeState = '';
 
@@ -285,6 +294,10 @@ class RubiksCube {
 		}
 
 		return cubeState;
+	}
+
+	clone() {
+		return new RubiksCube(this.toString());
 	}
 
 	/**
