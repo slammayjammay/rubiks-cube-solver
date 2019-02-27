@@ -1,6 +1,6 @@
 {
   "name": "rubiks-cube-solver",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Outputs a solution using the Fridrich Method for a given cube state.",
   "main": "lib/index.common.js",
   "module": "lib/index.es6.js",
