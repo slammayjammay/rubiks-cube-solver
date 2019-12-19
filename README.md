@@ -29,7 +29,7 @@ The `cross` and `f2l` keys each point to an array of 4 strings -- the moves to g
 The `oll` and `pll` keys each point to an algorithm string.
 
 # <a name="rubiks-cube-state"></a>Rubik's Cube State
-A cube state is a string containing a total of (6 faces) * (9 colors per face) = 56 characters, with no spaces. Each character represents the "color" for your chosen orientation (more on this below), and must be one of these 6: `f`, `r`, `u`, `d`, `l`, `b`. Instead of characters representing actual colors, like `g` for `green`, they represent the color of each face. The character `r` stands for "the middle color on the right face".
+A cube state is a string containing a total of (6 faces) * (9 colors per face) = 54 characters, with no spaces. Each character represents the "color" for your chosen orientation (more on this below), and must be one of these 6: `f`, `r`, `u`, `d`, `l`, `b`. Instead of characters representing actual colors, like `g` for `green`, they represent the color of each face. The character `r` stands for "the middle color on the right face".
 
 There is a specific process you must follow to correctly turn a Rubik's Cube into a string.
 
