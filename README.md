@@ -17,7 +17,8 @@ let cubeState = [
 ].join('');
 
 let solveMoves = solver(cubeState);
-console.log(solveMoves);
+let options = { partitioned: false };
+console.log(solveMoves, options);
 ```
 
 ## Options
